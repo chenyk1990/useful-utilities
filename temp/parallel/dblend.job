@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# *****************************************************
+# Job script for Stampede ( Parallel DBLENDSEIS ) 
+# Yangkang Chen
+# TCCS, UT Austin
+# 2 Aug. 2014
+# *****************************************************
+
+
+#SBATCH -J dblendseis            # Job name; stored in $SLURM_JOB_NAME
+#SBATCH -o dblendseis.%j.out     # Output file; %j expands to jobid
+#SBATCH -e dblendseis.%j.err     # Error file; %j expands to jobid
+#SBATCH -p normal           	 # Queue name
+#SBATCH -N 2              	 # This is nodes, not cores (16 cores/node)
+#SBATCH -n 32              	 # Total number of MPI tasks  (if omitted, n=N)
+#SBATCH -t 00:30:00         	 # Max time allotted for job
+#SBATCH -A Madagascar-workshop   # Special allocations acct code for tng course
+
+export RSF_THREADS=32
+export RSF_CLUSTER=`host.sh`
+# echo $RSF_CLUSTER
+export OMP_NUM_THREADS=16	 # Only for OpenMP
+
+pscons 
+
+
+
+

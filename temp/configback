@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+./configure API=c++,matlab,fortran --prefix=~/RSFROOT/ PETSCPATH=~/RSFROOT/petsc-3.4.2/ PETSCLIBPATH=~/RSFROOT/petsc-3.4.2/arch-linux2-c-debug/lib/ PETSCLIBS=petsc
