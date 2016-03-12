@@ -1,0 +1,77 @@
+from rsf.proj import* 
+from rsf.prog import RSFROOT
+
+
+#compile for c
+proj = Project()
+prog=proj.Program('bayesthr',['Mbayesthr.c'],
+								CPPPATH=os.path.join(RSFROOT,'include'),
+								LIBPATH=[os.path.join(RSFROOT,'lib'),'/usr/lib64/atlas/'],
+								LIBS=['rsf','m','blas','lapack'])
+
+clip=0.8 #display percentage
+
+
+def Grey(data,other): 
+	Result(data,'grey label2=Position unit2="km" label1=Time unit1="s" title="" wherexlabel=b scalebar=n wheretitle=t %s'%other)
+
+
+#############################################################################
+######## Clean data
+#############################################################################
+Flow('data',None,
+     '''
+     sigmoid d1=.004 n1=200 d2=.008 n2=256 |
+     smooth rect1=3 diff1=1 | smooth rect1=3 |
+     put label2=Distance | scale axis=2
+     ''')
+Grey('data','clip=0.8')
+
+Flow('dip','data','dip rect1=5 rect2=5')
+Grey('dip','color=j')
+
+Flow('slet','data dip','seislet dip=${SOURCES[1]} adj=y inv=y eps=0.01')
+Grey('slet','label2=scale unit2= ')
+
+#############################################################################
+######## Noisy data
+#############################################################################
+Flow('datan','data','noise var=0.05 seed=201414')
+Grey('datan','clip=0.8')
+Flow('dipn','datan','dip rect1=5 rect2=5')
+Grey('dipn','color=j')
+
+Flow('sletn','datan dipn','seislet dip=${SOURCES[1]} adj=y inv=y eps=0.1 type=b')
+Grey('sletn','label2=scale unit2= ')
+
+Flow('sletthr','sletn %s'%prog[0],'./${SOURCES[1]} type=soft')
+Grey('sletthr','label2=scale unit2= ')
+Flow('sletthr1','sletn ','threshold1 ifperc=1 thr=60 type=soft')
+Grey('sletthr1','label2=scale unit2= ')
+
+Flow('data-slet','sletthr dipn','seislet dip=${SOURCES[1]} adj=n inv=y type=b eps=0.1')
+Grey('data-slet','clip=0.8')
+Flow('data-slet1','sletthr1 dipn','seislet dip=${SOURCES[1]} adj=n inv=y type=b eps=0.1')
+Grey('data-slet1','clip=0.8')
+
+Flow('dif','datan data-slet','add scale=1,-1 ${SOURCES[1]}')
+Grey('dif','clip=0.8')
+Flow('dif1','datan data-slet1','add scale=1,-1 ${SOURCES[1]}')
+Grey('dif1','clip=0.8')
+
+
+## Using pwdspray
+
+Flow('data-spray','datan dipn',
+	'''
+     pwspray dip=${SOURCES[1]} ns=10 reduce=triangle |
+     smooth rect1=3
+     ''')
+Grey('data-spray','clip=0.8')
+
+Flow('dif-spray','datan data-spray','add scale=1,-1 ${SOURCES[1]}')
+Grey('dif-spray','clip=0.8')
+
+
+
+End()
