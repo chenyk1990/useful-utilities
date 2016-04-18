@@ -1,0 +1,11 @@
+# GMT 5 Session common arguments shelf
+BEGIN GMT 5.2.1
+B	+tLow Order Geoidg30
+J	H
+JH	H6i
+Jx	x1i
+R	g
+X	0.25i
+Y	3.4i
+L	7
+END
