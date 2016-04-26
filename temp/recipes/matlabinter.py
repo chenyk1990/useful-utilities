@@ -40,7 +40,7 @@ Flow('file1',[os.path.join(matROOT,matfun+'.m'),'file0'],
 # INITIALIZATION
 ########################################################################
 matlab         = WhereIs('matlab')
-matROOT = '/home/chenyk/chenyk/matlibcyk/Mada_matlab'
+matROOT = os.environ['HOME']+'/chenyk/matlibcyk/Mada_matlab'
 matfun = 'FXEMD'
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 

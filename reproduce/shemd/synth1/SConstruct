@@ -24,7 +24,7 @@ if not matlab:
 ## generate and process synthetic data
 ############################################################
 Flow('clean linear linear-fxmssa0 linear-fxemd0 linear-fxemdmssa0',[os.path.join(matROOT,matfun+'.m')],
-     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     '''./matlab 
      -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${TARGETS[0]}','${TARGETS[1]}','${TARGETS[2]}','${TARGETS[3]}','${TARGETS[4]}');quit"
      '''%vars(),stdin=0,stdout=-1)
 
