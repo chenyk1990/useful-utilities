@@ -1,0 +1,220 @@
+
+\documentclass[oneside,english]{book}
+\usepackage[T1]{fontenc}
+%% DK DK we do not accept accented letters, use the old LaTeX syntax
+%% DK DK for them instead: \'e \`e  \"e \^e and so on.
+%% DK DK \usepackage[latin1]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{longtable}
+\usepackage{varioref}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{amsmath}
+
+% tables
+\usepackage{booktabs}
+
+% figures
+\usepackage[pdftex]{graphicx}
+
+% we are running pdflatex, so convert .eps files to .pdf
+%\usepackage{epstopdf}
+
+\usepackage{amssymb}
+\IfFileExists{url.sty}{\usepackage{url}}
+                      {\newcommand{\url}{\texttt}}
+\usepackage[authoryear]{natbib}
+
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxcode}
+{\begin{list}{}{
+\setlength{\rightmargin}{\leftmargin}
+\setlength{\listparindent}{0pt}% needed for AMS classes
+\raggedright
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\normalfont\ttfamily}%
+ \item[]}
+{\end{list}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+% fonts
+\usepackage{times}
+\usepackage{natbib}
+
+% date of last edit
+\date{\today}
+
+% colors for the text
+\usepackage[dvipsnames,usenames]{color}
+\newcommand{\red}[1]{\textcolor{Red}{#1}}
+\definecolor{light-gray}{rgb}{0.7,0.7,0.7}
+\definecolor{dark-gray}{rgb}{0.1,0.1,0.3}
+\definecolor{light-blue}{rgb}{0.7,0.7,0.9}
+\definecolor{dark-blue}{rgb}{0.2,0.2,0.5}
+
+% create thumbnails
+\usepackage[pdftex]{thumbpdf}
+
+% hyperlinks to sections and references
+\usepackage[pdftex]{hyperref}
+% more options
+\hypersetup{
+  bookmarks=true,
+  bookmarksnumbered=true,
+  pdfpagemode=UseNone,
+  pdfstartview=FitH,
+  pdfpagelayout=SinglePage,
+  pdfborder={0 0 0},
+  colorlinks=true,      % color links
+  citecolor=dark-gray,  % citation links
+  filecolor=dark-gray,  % file links
+  linkcolor=dark-gray,  % internal link (rgb values)
+  urlcolor=dark-blue    % external weblinks
+}
+
+\newcommand{\urlwithparentheses}[1]{(\url{#1})}
+
+% biblio GJI
+\bibliographystyle{abbrvnat}
+
+\newcommand{\toall}[1]{\textbf{*** All: #1 ***}}
+\newcommand{\tojeroen}[1]{\textbf{*** Jeroen: #1 ***}}
+\newcommand{\tobrian}[1]{\textbf{*** Brian: #1 ***}}
+\newcommand{\tovala}[1]{\textbf{*** Vala: #1 ***}}
+\newcommand{\tovalabrian}[1]{\textbf{*** Vala \& Brian: #1 ***}}
+\newcommand{\tovalaqinya}[1]{\textbf{*** Vala \& Qinya: #1 ***}}
+\newcommand{\toqinya}[1]{\textbf{*** Qinya: #1 ***}}
+\newcommand{\tomin}[1]{\textbf{*** Min: #1 ***}}
+\newcommand{\toalessia}[1]{\textbf{*** Alessia: #1 ***}}
+\newcommand{\todimitri}[1]{\textbf{*** Dimitri: #1 ***}}
+
+\newcommand{\nexxi}{\mbox{\texttt{NEX\_XI}}}
+\newcommand{\nexeta}{\mbox{\texttt{NEX\_ETA}}}
+\newcommand{\nprocxi}{\mbox{\texttt{NPROC\_XI}}}
+\newcommand{\nproceta}{\mbox{\texttt{NPROC\_ETA}}}
+\newcommand{\nchunks}{\mbox{\texttt{NCHUNKS}}}
+
+% Latex generated graphics
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
+\usepackage{babel}
+\makeatother
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\begin{center}
+\vspace*{-1.8truecm}
+\noindent\makebox[\textwidth]{\noindent\includegraphics[width=0.83\paperwidth]{figures/specfem_3d_globe-cover.pdf}}
+\end{center}
+%
+\title{\thispagestyle{empty}\textbf{SPECFEM3D\_GLOBE}\\
+\textbf{User Manual}}
+%
+\author{$\copyright$ Princeton University (USA) and CNRS / University of Marseille (France),\\
+ETH Z\"urich (Switzerland),\\
+Version 7.0}
+
+\date{\noindent \today}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{authors}
+
+\newpage{}
+
+\include{sponsors}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage{}
+
+\tableofcontents{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{01_introduction}
+
+\include{02_getting_started}
+
+\include{03_running_the_mesher}
+
+\include{04_running_the_solver}
+
+\include{05_regional_simulations}
+
+\include{06_adjoint_simulations}
+
+\include{07_doing_tomography}
+
+\include{08_noise_simulations}
+
+\include{09_gravity_calculations}
+
+\include{10_graphics}
+
+\include{11_running_scheduler}
+
+\include{12_changing_the_model}
+
+\include{13_post_processing}
+
+\include{14_informations_for_developers}
+
+\include{features}
+
+\include{bug_reports}
+
+\include{notes_and_acknowledgement}
+
+\include{copyright_and_version}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{\small \bibliography{bibliography}}{\small \par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\include{A_reference_frame}
+
+\include{B_non-dimensionalization_conventions}
+
+\include{C_benchmarks}
+
+\include{D_SAC_headers}
+
+\include{E_channel_codes}
+
+\include{F_troubleshooting}
+
+\include{G_license}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

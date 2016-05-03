@@ -1,0 +1,52 @@
+Subject: voici le code complet, pour que tu puisses maintenant faire des modifications et des tests
+Date: Tue, 27 May 2014
+From: Dimitri Komatitsch
+Organization: CNRS, Marseille, France
+To: Roland Martin, Sylvain Bonvalot, Sean Bruinsma
+
+Bonjour Roland, bonjour a tous,
+
+voici le code complet, pour que tu puisses maintenant faire des modifications et des tests :
+
+- pour le telecharger :
+git clone --recursive --branch devel
+https://github.com/geodynamics/specfem3d_globe.git
+
+- dans le repertoire "utils/Roland_Sylvain_gravity" tu trouveras tous
+les fichiers d'entree, les scripts pour lancer le code sur la machine
+CURIE a Paris, et les scripts GMT pour dessiner les resultats de sortie
+
+- il te faudra juste deplacer le fichier Par_file de
+"utils/Roland_Sylvain_gravity" dans le repertoire "DATA", le fichier
+constants.h.in dans le repertoire "setup", et decompresser le fichier
+saved_observation_grid_real_x_y_z_used_by_the_code.txt.bz2
+
+- ensuite, deplacer les trois fichiers
+saved_observation_grid_real_x_y_z_used_by_the_code.txt,
+script_MPI_128.sh et submit_all_MPI_128.sh dans le repertoire principal
+(racine) du code
+
+- taper ceci sur CURIE :
+
+./configure FC=ifort CC=icc MPIFC=mpif90 --enable-double-precision
+make clean
+make meshfem3D
+
+- lancer le code en tapant :
+./submit_all_MPI_600cores.sh
+
+Le calcul prendra environ 4h45.
+
+Pour voir toutes mes modifications dans le code source du code pour
+ajouter la gravi pour vous, il te suffit de taper ceci :
+
+grep -i -n --color=always roland_sylvain src/*/*90
+
+et
+
+grep -i -n --color=always roland_sylvain setup/*.in
+
+
+Amities,
+Dimitri.
+

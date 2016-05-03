@@ -1,0 +1,1 @@
+../amplitude/run_this_example.sh
