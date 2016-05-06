@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#PBS -A GEO111
+##PBS -A GEO111
+#PBS -A CSC190SPECFEM
 #PBS -N SPECFEM3D_solver
 #PBS -j oe
 #PBS -o job_solver.$PBS_JOBID.o
@@ -47,3 +48,4 @@ echo
 echo "see results in directory: OUTPUT_FILES/"
 echo
 echo "done: `date`"
+

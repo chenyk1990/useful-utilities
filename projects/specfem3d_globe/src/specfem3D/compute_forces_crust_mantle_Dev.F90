@@ -53,10 +53,8 @@
     COMPUTE_AND_STORE_STRAIN,USE_LDDRK
 
   use specfem_par_crustmantle,only: &
-    xstore => xstore_crust_mantle,ystore => ystore_crust_mantle,zstore => zstore_crust_mantle, &
-    xix => xix_crust_mantle,xiy => xiy_crust_mantle,xiz => xiz_crust_mantle, &
-    etax => etax_crust_mantle,etay => etay_crust_mantle,etaz => etaz_crust_mantle, &
-    gammax => gammax_crust_mantle,gammay => gammay_crust_mantle,gammaz => gammaz_crust_mantle, &
+    rstore => rstore_crust_mantle, &
+    deriv => deriv_mapping_crust_mantle, &
     kappavstore => kappavstore_crust_mantle,kappahstore => kappahstore_crust_mantle, &
     muvstore => muvstore_crust_mantle,muhstore => muhstore_crust_mantle, &
     eta_anisostore => eta_anisostore_crust_mantle, &
@@ -76,40 +74,50 @@
 
   use specfem_par,only: wgllwgll_xy_3D,wgllwgll_xz_3D,wgllwgll_yz_3D
 
+#ifdef FORCE_VECTORIZATION
+  ! optimized arrays
+  use specfem_par_crustmantle,only: &
+    ibool_inv_tbl => ibool_inv_tbl_crust_mantle, &
+    ibool_inv_st => ibool_inv_st_crust_mantle, &
+    num_globs => num_globs_crust_mantle, &
+    phase_iglob => phase_iglob_crust_mantle
+#endif
+
 !daniel: att - debug
 !  use specfem_par,only: it,NSTEP
 
   implicit none
 
-  integer :: NSPEC,NGLOB,NSPEC_ATT
+  integer,intent(in) :: NSPEC,NGLOB,NSPEC_ATT
 
   ! time step
-  real(kind=CUSTOM_REAL) deltat
+  real(kind=CUSTOM_REAL),intent(in) :: deltat
 
   ! displacement, velocity and acceleration
-  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB) :: displ_crust_mantle
-  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB) :: accel_crust_mantle
+  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB),intent(in) :: displ_crust_mantle
+  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB),intent(inout) :: accel_crust_mantle
 
   ! variable sized array variables
-  integer :: vnspec
+  integer,intent(in) :: vnspec
 
   ! memory variables for attenuation
   ! memory variables R_ij are stored at the local rather than global level
   ! to allow for optimization of cache access by compiler
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT) :: R_xx,R_yy,R_xy,R_xz,R_yz
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT),intent(inout) :: R_xx,R_yy,R_xy,R_xz,R_yz
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT),intent(inout) :: &
     R_xx_lddrk,R_yy_lddrk,R_xy_lddrk,R_xz_lddrk,R_yz_lddrk
 
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     epsilondev_xx,epsilondev_yy,epsilondev_xy,epsilondev_xz,epsilondev_yz
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: epsilon_trace_over_3
+
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_CRUST_MANTLE_STRAIN_ONLY),intent(inout) :: epsilon_trace_over_3
 
   ! [alpha,beta,gamma]val reduced to N_SLS and factor_common to N_SLS*NUM_NODES
-  real(kind=CUSTOM_REAL), dimension(ATT1_VAL,ATT2_VAL,ATT3_VAL,N_SLS,vnspec) :: factor_common
-  real(kind=CUSTOM_REAL), dimension(N_SLS) :: alphaval,betaval,gammaval
+  real(kind=CUSTOM_REAL), dimension(ATT1_VAL,ATT2_VAL,ATT3_VAL,N_SLS,vnspec),intent(in) :: factor_common
+  real(kind=CUSTOM_REAL), dimension(N_SLS),intent(in) :: alphaval,betaval,gammaval
 
   ! inner/outer element run flag
-  logical :: phase_is_inner
+  logical,intent(in) :: phase_is_inner
 
   ! local parameters
 
@@ -123,7 +131,7 @@
 
   real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ) :: dummyx_loc,dummyy_loc,dummyz_loc
 
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NDIM) :: sum_terms
+  real(kind=CUSTOM_REAL), dimension(NDIM,NGLLX,NGLLY,NGLLZ,NSPEC_CRUST_MANTLE) :: sum_terms
 
   real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,5) :: epsilondev_loc
   real(kind=CUSTOM_REAL) fac1,fac2,fac3
@@ -136,10 +144,13 @@
   integer :: iphase
 
 #ifdef FORCE_VECTORIZATION
-  integer :: ijk
+  integer :: ijk_spec,ip,iglob_p,ijk
 #else
   integer :: i,j,k
 #endif
+
+  integer,parameter :: NGLL2 = NGLLY * NGLLZ
+  integer,parameter :: NGLL3 = NGLLX * NGLLY * NGLLZ
 
 ! ****************************************************
 !   big loop over all spectral elements in the solid
@@ -155,13 +166,13 @@
   endif
 
 !$OMP PARALLEL DEFAULT(NONE) &
-!$OMP SHARED(xix,xiy,xiz,etax,etay,etaz,gammax,gammay,gammaz, &
+!$OMP SHARED(deriv, &
 !$OMP one_minus_sum_beta,epsilon_trace_over_3,c11store,c12store,c13store,c14store,c15store, &
 !$OMP c16store,c22store,c23store,c24store,c25store,c26store,c33store,c34store,c35store, &
 !$OMP c36store,c44store,c45store,c46store,c55store,c56store,c66store,ispec_is_tiso, &
-!$OMP kappavstore,muvstore,kappahstore,muhstore,eta_anisostore,ibool,ystore,zstore, &
+!$OMP kappavstore,muvstore,kappahstore,muhstore,eta_anisostore,ibool, &
 !$OMP R_xx,R_yy,R_xy,R_xz,R_yz, &
-!$OMP xstore,minus_gravity_table,minus_deriv_gravity_table,density_table, &
+!$OMP rstore,minus_gravity_table,minus_deriv_gravity_table,density_table, &
 !$OMP displ_crust_mantle,wgll_cube,hprime_xxt,hprime_xx, &
 !$OMP vnspec, &
 !$OMP accel_crust_mantle, &
@@ -174,9 +185,14 @@
 !$OMP num_elements, USE_LDDRK, &
 !$OMP wgllwgll_xy_3D, wgllwgll_xz_3D, wgllwgll_yz_3D, &
 !$OMP R_xx_lddrk,R_yy_lddrk,R_xy_lddrk,R_xz_lddrk,R_yz_lddrk, &
-!$OMP deltat, COMPUTE_AND_STORE_STRAIN ) &
-!$OMP PRIVATE(ispec,fac1,fac2,fac3,sum_terms,ispec_p, &
+!$OMP sum_terms, &
 #ifdef FORCE_VECTORIZATION
+!$OMP ibool_inv_tbl, ibool_inv_st, num_globs, phase_iglob, &
+#endif
+!$OMP deltat, COMPUTE_AND_STORE_STRAIN ) &
+!$OMP PRIVATE(ispec,fac1,fac2,fac3,ispec_p, &
+#ifdef FORCE_VECTORIZATION
+!$OMP ijk_spec, ip, iglob_p, &
 !$OMP ijk, &
 #else
 !$OMP i,j,k, &
@@ -220,8 +236,8 @@
        ! anisotropic element
        call compute_element_aniso(ispec, &
                                   minus_gravity_table,density_table,minus_deriv_gravity_table, &
-                                  xstore,ystore,zstore, &
-                                  xix,xiy,xiz,etax,etay,etaz,gammax,gammay,gammaz, &
+                                  rstore, &
+                                  deriv, &
                                   wgll_cube, &
                                   c11store,c12store,c13store,c14store,c15store,c16store,c22store, &
                                   c23store,c24store,c25store,c26store,c33store,c34store,c35store, &
@@ -238,8 +254,8 @@
           ! isotropic element
           call compute_element_iso(ispec, &
                                    minus_gravity_table,density_table,minus_deriv_gravity_table, &
-                                   xstore,ystore,zstore, &
-                                   xix,xiy,xiz,etax,etay,etaz,gammax,gammay,gammaz, &
+                                   rstore, &
+                                   deriv, &
                                    wgll_cube, &
                                    kappavstore,muvstore, &
                                    ibool, &
@@ -253,8 +269,8 @@
           ! transverse isotropic element
           call compute_element_tiso(ispec, &
                                      minus_gravity_table,density_table,minus_deriv_gravity_table, &
-                                     xstore,ystore,zstore, &
-                                     xix,xiy,xiz,etax,etay,etaz,gammax,gammay,gammaz, &
+                                     rstore, &
+                                     deriv, &
                                      wgll_cube, &
                                      kappavstore,kappahstore,muvstore,muhstore,eta_anisostore, &
                                      ibool, &
@@ -285,9 +301,9 @@
       fac1 = wgllwgll_yz_3D(INDEX_IJK)
       fac2 = wgllwgll_xz_3D(INDEX_IJK)
       fac3 = wgllwgll_xy_3D(INDEX_IJK)
-      sum_terms(INDEX_IJK,1) = - (fac1*newtempx1(INDEX_IJK) + fac2*newtempx2(INDEX_IJK) + fac3*newtempx3(INDEX_IJK))
-      sum_terms(INDEX_IJK,2) = - (fac1*newtempy1(INDEX_IJK) + fac2*newtempy2(INDEX_IJK) + fac3*newtempy3(INDEX_IJK))
-      sum_terms(INDEX_IJK,3) = - (fac1*newtempz1(INDEX_IJK) + fac2*newtempz2(INDEX_IJK) + fac3*newtempz3(INDEX_IJK))
+      sum_terms(1,INDEX_IJK,ispec) = - (fac1*newtempx1(INDEX_IJK) + fac2*newtempx2(INDEX_IJK) + fac3*newtempx3(INDEX_IJK))
+      sum_terms(2,INDEX_IJK,ispec) = - (fac1*newtempy1(INDEX_IJK) + fac2*newtempy2(INDEX_IJK) + fac3*newtempy3(INDEX_IJK))
+      sum_terms(3,INDEX_IJK,ispec) = - (fac1*newtempz1(INDEX_IJK) + fac2*newtempz2(INDEX_IJK) + fac3*newtempz3(INDEX_IJK))
 
     ENDDO_LOOP_IJK
 
@@ -296,15 +312,15 @@
 
 #ifdef FORCE_VECTORIZATION
       do ijk = 1,NDIM*NGLLCUBE
-        sum_terms(ijk,1,1,1) = sum_terms(ijk,1,1,1) + rho_s_H(ijk,1,1,1)
+        sum_terms(ijk,1,1,1,ispec) = sum_terms(ijk,1,1,1,ispec) + rho_s_H(ijk,1,1,1)
       enddo
 #else
       do k = 1,NGLLZ
         do j = 1,NGLLY
           do i = 1,NGLLX
-            sum_terms(INDEX_IJK,1) = sum_terms(INDEX_IJK,1) + rho_s_H(INDEX_IJK,1)
-            sum_terms(INDEX_IJK,2) = sum_terms(INDEX_IJK,2) + rho_s_H(INDEX_IJK,2)
-            sum_terms(INDEX_IJK,3) = sum_terms(INDEX_IJK,3) + rho_s_H(INDEX_IJK,3)
+            sum_terms(1,INDEX_IJK,ispec) = sum_terms(1,INDEX_IJK,ispec) + rho_s_H(INDEX_IJK,1)
+            sum_terms(2,INDEX_IJK,ispec) = sum_terms(2,INDEX_IJK,ispec) + rho_s_H(INDEX_IJK,2)
+            sum_terms(3,INDEX_IJK,ispec) = sum_terms(3,INDEX_IJK,ispec) + rho_s_H(INDEX_IJK,3)
           enddo
         enddo
       enddo
@@ -312,10 +328,15 @@
 
     endif
 
-
     ! updates acceleration
-
 #ifdef FORCE_VECTORIZATION
+    ! update will be done later at the very end..
+#else
+    ! updates for non-vectorization case
+
+! note: Critical OpenMP here might degrade performance,
+!       especially for a larger number of threads (>8).
+!       Using atomic operations can partially help.
 #ifndef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
 !$OMP CRITICAL
 #endif
@@ -326,40 +347,26 @@
 !IBM* ASSERT (NODEPS)
 !pgi$ ivdep
 !DIR$ IVDEP
-    do ijk = 1,NGLLCUBE
-#else
-    do k = 1,NGLLZ
-      do j = 1,NGLLY
-        do i = 1,NGLLX
-#endif
-
-          iglob = ibool(INDEX_IJK,ispec)
-
-          ! do NOT use array syntax ":" for the three statements below otherwise most compilers
-          ! will not be able to vectorize the outer loop
+    DO_LOOP_IJK
+      iglob = ibool(INDEX_IJK,ispec)
 #ifdef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
 !$OMP ATOMIC
 #endif
-          accel_crust_mantle(1,iglob) = accel_crust_mantle(1,iglob) + sum_terms(INDEX_IJK,1)
+      accel_crust_mantle(1,iglob) = accel_crust_mantle(1,iglob) + sum_terms(1,INDEX_IJK,ispec)
 #ifdef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
 !$OMP ATOMIC
 #endif
-          accel_crust_mantle(2,iglob) = accel_crust_mantle(2,iglob) + sum_terms(INDEX_IJK,2)
+      accel_crust_mantle(2,iglob) = accel_crust_mantle(2,iglob) + sum_terms(2,INDEX_IJK,ispec)
 #ifdef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
 !$OMP ATOMIC
 #endif
-          accel_crust_mantle(3,iglob) = accel_crust_mantle(3,iglob) + sum_terms(INDEX_IJK,3)
-
-#ifdef FORCE_VECTORIZATION
-    enddo
+      accel_crust_mantle(3,iglob) = accel_crust_mantle(3,iglob) + sum_terms(3,INDEX_IJK,ispec)
+    ENDDO_LOOP_IJK
 #ifndef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
 !$OMP END CRITICAL
 #endif
-#else
-        enddo
-      enddo
-    enddo
 #endif
+
     ! update memory variables based upon the Runge-Kutta scheme
     ! convention for attenuation
     ! term in xx = 1
@@ -406,7 +413,80 @@
 
   enddo ! of spectral element loop NSPEC_CRUST_MANTLE
 !$OMP enddo
+
+  ! updates acceleration
+#ifdef FORCE_VECTORIZATION
+  ! updates for vectorized case
+  ! loops over all global nodes in this phase (inner/outer)
+!$OMP DO
+  do iglob_p = 1,num_globs(iphase)
+    ! global node index
+    iglob = phase_iglob(iglob_p,iphase)
+    ! loops over valence points
+    do ip = ibool_inv_st(iglob_p,iphase),ibool_inv_st(iglob_p+1,iphase)-1
+      ! local 1D index from array ibool
+      ijk_spec = ibool_inv_tbl(ip,iphase)
+
+      ! do NOT use array syntax ":" for the three statements below otherwise most compilers
+      ! will not be able to vectorize the outer loop
+      accel_crust_mantle(1,iglob) = accel_crust_mantle(1,iglob) + sum_terms(1,ijk_spec,1,1,1)
+      accel_crust_mantle(2,iglob) = accel_crust_mantle(2,iglob) + sum_terms(2,ijk_spec,1,1,1)
+      accel_crust_mantle(3,iglob) = accel_crust_mantle(3,iglob) + sum_terms(3,ijk_spec,1,1,1)
+    enddo
+  enddo
+!$OMP enddo
+#endif
+
 !$OMP END PARALLEL
+
+
+! kept here for reference: updating for non-vectorized case
+! timing example:
+!         update here will take: 1m 25s
+!         update in ispec-loop : 1m 20s
+! thus a 6% increase...
+!
+! this gets even slower for MIC and a large number of OpenMP threads
+! (for best performance use the vectorized version)
+!
+! ! similar as above but with i/j/k/ispec-indexing
+!  do iglob_p = 1,num_globs(iphase)
+!    ! global node index
+!    iglob = phase_iglob(iglob_p,iphase)
+!    ! loops over valence points
+!    do ip = ibool_inv_st(iglob_p,iphase),ibool_inv_st(iglob_p+1,iphase)-1
+!      ! local 1D index from array ibool
+!      ijk_spec = ibool_inv_tbl(ip,iphase)
+!
+!      ! uses (i,j,k,ispec) indexing!
+!      !
+!      ! converts to i/j/k/ispec-indexing (starting from 0)
+!      ijk_spec = ijk_spec - 1
+!
+!      ispec = int(ijk_spec / NGLL3)
+!      ijk = ijk_spec - ispec * NGLL3
+!
+!      k = int(ijk / NGLL2)
+!      j = int((ijk - k * NGLL2) / NGLLX)
+!      i = ijk - k * NGLL2 - j * NGLLX
+!
+!      ! converts back to indexing starting from 1
+!      ispec = ispec + 1
+!      i = i + 1
+!      j = j + 1
+!      k = k + 1
+!
+!      ! checks
+!      !if (i < 1 .or. i > NGLLX .or. j < 1 .or. j > NGLLY .or. k < 1 .or. k > NGLLZ .or. ispec < 1 .or. ispec > NSPEC) then
+!      !  print *,'Error i/j/k-index: ',i,j,k,ispec,'from',ijk_spec,ijk
+!      !  stop 'Error invalid i-index'
+!      !endif
+!
+!      accel_crust_mantle(1,iglob) = accel_crust_mantle(1,iglob) + sum_terms(1,i,j,k,ispec)
+!      accel_crust_mantle(2,iglob) = accel_crust_mantle(2,iglob) + sum_terms(2,i,j,k,ispec)
+!      accel_crust_mantle(3,iglob) = accel_crust_mantle(3,iglob) + sum_terms(3,i,j,k,ispec)
+!    enddo
+!  enddo
 
   contains
 
@@ -443,6 +523,7 @@
 
   ! matrix-matrix multiplication
   do j = 1,n3
+!dir$ ivdep
     do i = 1,n1
       C1(i,j) =  A(i,1) * B1(1,j) &
                + A(i,2) * B1(2,j) &
@@ -487,6 +568,7 @@
 
   ! matrix-matrix multiplication
   do j = 1,n3
+!dir$ ivdep
     do i = 1,n1
       C1(i,j) =  A1(i,1) * B(1,j) &
                + A1(i,2) * B(2,j) &
@@ -530,10 +612,10 @@
   integer :: i,j,k
 
   ! matrix-matrix multiplication
-  do j = 1,n2
-    do i = 1,n1
-      ! for efficiency it is better to leave this loop on k inside, it leads to slightly faster code
-      do k = 1,n3
+  do k = 1,n3
+    do j = 1,n2
+!dir$ ivdep
+      do i = 1,n1
         C1(i,j,k) =  A1(i,1,k) * B(1,j) &
                    + A1(i,2,k) * B(2,j) &
                    + A1(i,3,k) * B(3,j) &

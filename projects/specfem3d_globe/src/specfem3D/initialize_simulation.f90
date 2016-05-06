@@ -29,14 +29,18 @@
 
   use specfem_par
   use specfem_par_movie
+  use manager_adios
 
   implicit none
+
+  include 'version.fh'
 
   ! local parameters
   integer :: sizeprocs
   integer :: ier
   character(len=MAX_STRING_LEN) :: dummystring
   character(len=MAX_STRING_LEN) :: path_to_add
+  logical :: simul_run_flag
 
   ! sizeprocs returns number of processes started (should be equal to NPROCTOT).
   ! myrank is the rank of each process, between 0 and sizeprocs-1.
@@ -57,6 +61,7 @@
     write(IMAIN,*) '**** Specfem3D MPI Solver ****'
     write(IMAIN,*) '******************************'
     write(IMAIN,*)
+    write(IMAIN,*) 'Version: ', git_version
     write(IMAIN,*)
     call flush_IMAIN()
   endif
@@ -220,6 +225,9 @@
   if (NUMBER_OF_SIMULTANEOUS_RUNS > 1 .and. mygroup >= 0) then
     write(path_to_add,"('run',i4.4,'/')") mygroup + 1
     STATIONS_FILE = path_to_add(1:len_trim(path_to_add))//STATIONS_FILE(1:len_trim(STATIONS_FILE))
+    simul_run_flag = .true.
+  else
+    simul_run_flag = .false.
   endif
 
   ! get total number of receivers
@@ -252,8 +260,8 @@
     if (myrank == 0 ) call initialize_vtkwindow(GPU_MODE)
   endif
 
-  if (ADIOS_ENABLED .or. OUTPUT_SEISMOS_ASDF) then
-    call adios_setup()
+  if (ADIOS_ENABLED) then
+    call initialize_adios()
   endif
   !if (ADIOS_ENABLED) then
     ! TODO use only one ADIOS group to write simulation parameters
@@ -262,6 +270,11 @@
     !call write_solver_info_header_ADIOS()
     !call write_specfem_header_adios()
   !endif
+
+  if (SIMULATION_TYPE == 2 .or. SIMULATION_TYPE == 3 &
+       .and. READ_ADJSRC_ASDF) then
+    call asdf_setup(current_asdf_handle, path_to_add, simul_run_flag)
+  endif
 
   ! synchronizes processes
   call synchronize_all()
@@ -312,6 +325,13 @@
       if (myrank == 0) write(IMAIN,*) 'ROTATION:',ROTATION,ROTATION_VAL
       write(*,*) 'ROTATION:', ROTATION, ROTATION_VAL
       call exit_MPI(myrank,'Error in compiled parameters ROTATION, please recompile solver')
+  endif
+  if (EXACT_MASS_MATRIX_FOR_ROTATION .NEQV. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
+      if (myrank == 0) write(IMAIN,*) 'EXACT_MASS_MATRIX_FOR_ROTATION:', &
+                                      EXACT_MASS_MATRIX_FOR_ROTATION,EXACT_MASS_MATRIX_FOR_ROTATION_VAL
+      write(*,*) 'EXACT_MASS_MATRIX_FOR_ROTATION:', &
+                  EXACT_MASS_MATRIX_FOR_ROTATION, EXACT_MASS_MATRIX_FOR_ROTATION_VAL
+      call exit_MPI(myrank,'Error in compiled parameters EXACT_MASS_MATRIX_FOR_ROTATION, please recompile solver')
   endif
   if (ATTENUATION .NEQV. ATTENUATION_VAL) then
       if (myrank == 0) write(IMAIN,*) 'ATTENUATION:',ATTENUATION,ATTENUATION_VAL
@@ -475,6 +495,15 @@
     if (ATTENUATION_VAL) then
       if (N_SLS /= 3 ) &
         call exit_mpi(myrank,'GPU mode does not support N_SLS /= 3 yet')
+    endif
+  endif
+
+  ! checks rotation w/ exact mass matrix: changes mass matrix
+  if (EXACT_MASS_MATRIX_FOR_ROTATION .and. SIMULATION_TYPE == 3) then
+    if (UNDO_ATTENUATION .NEQV. UNDO_ATTENUATION_VAL) then
+      if (myrank == 0) write(IMAIN,*) 'UNDO_ATTENUATION:',UNDO_ATTENUATION,UNDO_ATTENUATION_VAL
+      write(*,*) 'UNDO_ATTENUATION:', UNDO_ATTENUATION, UNDO_ATTENUATION_VAL
+      call exit_MPI(myrank,'Error in compiled parameters, please recompile solver 21')
     endif
   endif
 

@@ -456,16 +456,18 @@
   call init_mpi()
 
   ! force Flush-To-Zero if available to avoid very slow Gradual Underflow trapping
+#ifndef __MIC__
   call force_ftz()
+#endif
 
   ! initializes simulation parameters
   call initialize_simulation()
 
-  ! starts reading the databases
-  call read_mesh_databases()
-
   ! sets up reference element GLL points/weights/derivatives
   call setup_GLL_points()
+
+  ! starts reading the databases
+  call read_mesh_databases()
 
   ! reads topography & bathymetry & ellipticity
   call read_topography_bathymetry()

@@ -99,6 +99,7 @@ end module my_mpi
 
   ! broadcast parameters read from master to all processes
   my_local_mpi_comm_world = MPI_COMM_WORLD
+
   call bcast_all_singlei(NUMBER_OF_SIMULTANEOUS_RUNS)
   call bcast_all_singlel(BROADCAST_SAME_MESH_AND_MODEL)
 
@@ -123,6 +124,8 @@ end module my_mpi
   call world_unsplit()
 
 ! stop all the MPI processes, and exit
+  ! do NOT remove the barrier here, it is critical in order for the failsafe mechanism to work fine when it is activated
+  call MPI_BARRIER(MPI_COMM_WORLD,ier)
   call MPI_FINALIZE(ier)
   if (ier /= 0) stop 'Error finalizing MPI'
 
@@ -182,6 +185,8 @@ end module my_mpi
   ! until all the others are finished instead of calling MPI_ABORT(), which would instead kill all the runs,
   ! including all the successful ones
   if(USE_FAILSAFE_MECHANISM .and. NUMBER_OF_SIMULTANEOUS_RUNS > 1) then
+    ! do NOT remove the barrier here, it is critical in order to let other runs finish before calling MPI_FINALIZE
+    call MPI_BARRIER(MPI_COMM_WORLD,ier)
     call MPI_FINALIZE(ier)
     if (ier /= 0) stop 'Error finalizing MPI'
   else
@@ -1131,8 +1136,8 @@ end module my_mpi
 
   subroutine recv_cr(recvbuf, recvcount, dest, recvtag)
 
-  use constants
   use my_mpi
+  use constants,only: CUSTOM_REAL
 
   implicit none
 
@@ -1311,8 +1316,8 @@ end module my_mpi
 
   subroutine send_cr(sendbuf, sendcount, dest, sendtag)
 
-  use constants
   use my_mpi
+  use constants,only: CUSTOM_REAL
 
   implicit none
 
@@ -1353,8 +1358,8 @@ end module my_mpi
   subroutine sendrecv_cr(sendbuf, sendcount, dest, sendtag, &
                          recvbuf, recvcount, source, recvtag)
 
-  use constants
   use my_mpi
+  use constants,only: CUSTOM_REAL
 
   implicit none
 
@@ -1566,6 +1571,81 @@ end module my_mpi
 !-------------------------------------------------------------------------------------------------
 !
 
+  subroutine all_gather_all_i(sendbuf, recvbuf, NPROC)
+
+  use constants
+  use my_mpi
+
+  implicit none
+
+  integer :: NPROC
+  integer :: sendbuf
+  integer, dimension(NPROC) :: recvbuf
+
+  integer :: ier
+
+  call MPI_Allgather(sendbuf,1,MPI_INTEGER, &
+                  recvbuf,1,MPI_INTEGER, &
+                  my_local_mpi_comm_world,ier)
+
+  end subroutine all_gather_all_i
+
+!
+!-------------------------------------------------------------------------------------------------
+!
+
+  subroutine all_gather_all_r(sendbuf, sendcnt, recvbuf, recvcnt, recvoffset, dim1, NPROC)
+
+  use constants
+  use my_mpi
+
+  implicit none
+
+  integer :: sendcnt, dim1, NPROC
+
+  real, dimension(NPROC) :: sendbuf
+  real, dimension(dim1, NPROC) :: recvbuf
+
+  integer, dimension(NPROC) :: recvoffset, recvcnt
+
+  integer :: ier
+
+  call MPI_Allgatherv(sendbuf,sendcnt,MPI_REAL, &
+                  recvbuf,recvcnt,recvoffset,MPI_REAL, &
+                  my_local_mpi_comm_world,ier)
+
+  end subroutine all_gather_all_r
+
+!
+!-------------------------------------------------------------------------------------------------
+!
+
+  subroutine all_gather_all_ch(sendbuf, sendcnt, recvbuf, recvcnt, recvoffset, dim1, dim2, NPROC)
+
+  use constants
+  use my_mpi
+
+  implicit none
+
+  integer :: sendcnt, dim1, dim2, NPROC
+
+  character(len=dim2), dimension(NPROC) :: sendbuf
+  character(len=dim2), dimension(dim1, NPROC) :: recvbuf
+
+  integer, dimension(NPROC) :: recvoffset, recvcnt
+
+  integer :: ier
+
+  call MPI_Allgatherv(sendbuf,sendcnt,MPI_CHARACTER, &
+                  recvbuf,recvcnt,recvoffset,MPI_CHARACTER, &
+                  my_local_mpi_comm_world,ier)
+
+  end subroutine all_gather_all_ch
+
+!
+!-------------------------------------------------------------------------------------------------
+!
+
   subroutine scatter_all_singlei(sendbuf, recvbuf, NPROC)
 
   use my_mpi
@@ -1630,6 +1710,27 @@ end module my_mpi
 !-------------------------------------------------------------------------------------------------
 !
 
+  subroutine world_rank_comm(rank,comm)
+
+  use my_mpi
+
+  implicit none
+
+  integer,intent(out) :: rank
+  integer,intent(in) :: comm
+
+  ! local parameters
+  integer :: ier
+
+  call MPI_COMM_RANK(comm,rank,ier)
+  if (ier /= 0 ) stop 'Error getting MPI rank'
+
+  end subroutine world_rank_comm
+
+!
+!-------------------------------------------------------------------------------------------------
+!
+
   subroutine world_duplicate(comm)
 
   use my_mpi
@@ -1638,6 +1739,16 @@ end module my_mpi
 
   integer,intent(out) :: comm
   integer :: ier
+
+  ! note: see http://www.mpich.org/static/docs/v3.1/www3/MPI_Comm_dup.html
+  ! "..
+  ! This routine is used to create a new communicator that has a new communication context but contains
+  ! the same group of processes as the input communicator. Since all MPI communication is performed within
+  ! a communicator (specifies as the group of processes plus the context), this routine provides an effective way
+  ! to create a private communicator for use by a software module or library.
+  !
+  ! In particular, no library routine should use MPI_COMM_WORLD as the communicator;
+  ! instead, a duplicate of a user-specified communicator should always be used."
 
   call MPI_COMM_DUP(my_local_mpi_comm_world,comm,ier)
   if (ier /= 0 ) stop 'Error duplicating my_local_mpi_comm_world communicator'
@@ -1697,14 +1808,37 @@ end module my_mpi
 !-------------------------------------------------------------------------------------------------
 !
 
+  subroutine world_comm_free(comm)
+
+  use my_mpi
+
+  implicit none
+
+  integer,intent(inout) :: comm
+
+  ! local parameters
+  integer :: ier
+
+  call MPI_Comm_free(comm,ier)
+  if (ier /= 0 ) stop 'Error freeing MPI communicator'
+
+  end subroutine world_comm_free
+
+
+!
+!-------------------------------------------------------------------------------------------------
+!
+
 ! create sub-communicators if needed, if running more than one earthquake from the same job.
 ! create a sub-communicator for each independent run;
 ! if there is a single run to do, then just copy the default communicator to the new one
   subroutine world_split()
 
   use my_mpi
+
   use constants,only: MAX_STRING_LEN,OUTPUT_FILES_BASE, &
     IMAIN,ISTANDARD_OUTPUT,mygroup,I_should_read_the_database
+
   use shared_parameters,only: NUMBER_OF_SIMULTANEOUS_RUNS,BROADCAST_SAME_MESH_AND_MODEL,OUTPUT_FILES
 
   implicit none

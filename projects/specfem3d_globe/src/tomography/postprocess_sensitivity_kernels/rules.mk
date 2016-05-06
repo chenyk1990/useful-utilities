@@ -37,12 +37,14 @@ tomography/postprocess_sensitivity_kernels_TARGETS = \
 	$E/xcombine_sem \
 	$E/xdifference_sem \
 	$E/xinterpolate_model \
+	$E/xcreate_cross_section \
 	$E/xsmooth_sem \
 	$(EMPTY_MACRO)
 	
 ifeq ($(ADIOS),yes)
 tomography/postprocess_sensitivity_kernels_TARGETS += \
 	$E/xconvert_model_file_adios \
+	$E/xinterpolate_model_adios \
 	$(EMPTY_MACRO)
 endif
 
@@ -52,6 +54,7 @@ tomography/postprocess_sensitivity_kernels_OBJECTS = \
 	$(xcombine_sem_OBJECTS) \
 	$(xdifference_sem_OBJECTS) \
 	$(xinterpolate_model_OBJECTS) \
+	$(xcreate_cross_section_OBJECTS) \
 	$(xsmooth_sem_OBJECTS) \
 	$(xconvert_model_file_adios_OBJECTS) \
 	$(EMPTY_MACRO)
@@ -63,6 +66,7 @@ tomography/postprocess_sensitivity_kernels_SHARED_OBJECTS = \
 	$(xcombine_sem_SHARED_OBJECTS) \
 	$(xdifference_sem_SHARED_OBJECTS) \
 	$(xinterpolate_model_SHARED_OBJECTS) \
+	$(xcreate_cross_section_SHARED_OBJECTS) \
 	$(xsmooth_sem_SHARED_OBJECTS) \
 	$(xconvert_model_file_adios_SHARED_OBJECTS) \
 	$(EMPTY_MACRO)
@@ -108,7 +112,7 @@ xconvert_model_file_adios_SHARED_OBJECTS = \
 	$O/adios_helpers_definitions.shared_adios_module.o \
 	$O/adios_helpers_writers.shared_adios_module.o \
 	$O/adios_helpers.shared_adios.o \
-	$O/adios_manager.shared_adios.o \
+	$O/adios_manager.shared_adios_module.o \
 	$(EMPTY_MACRO)
 
 ${E}/xconvert_model_file_adios: $(xconvert_model_file_adios_OBJECTS) $(xconvert_model_file_adios_SHARED_OBJECTS)
@@ -210,6 +214,7 @@ xinterpolate_model_SHARED_OBJECTS = \
 	$O/gll_library.shared.o \
 	$O/heap_sort.shared.o \
 	$O/hex_nodes.shared.o \
+	$O/interpolate.shared.o \
 	$O/lagrange_poly.shared.o \
 	$O/recompute_jacobian.shared.o \
 	$O/search_kdtree.shared.o \
@@ -221,8 +226,34 @@ xinterpolate_model_SHARED_OBJECTS = \
 # extra dependencies
 $O/interpolate_model.postprocess.o: $O/search_kdtree.shared.o
 
+
 ${E}/xinterpolate_model: $(xinterpolate_model_OBJECTS) $(xinterpolate_model_SHARED_OBJECTS)
 	${MPIFCCOMPILE_CHECK} -o $@ $+ $(MPILIBS)
+
+##
+## xinterpolate_model_adios
+##
+xinterpolate_model_adios_OBJECTS = \
+	$O/postprocess_par.postprocess_module.o \
+	$O/interpolate_model.postprocess_adios.o \
+	$(EMPTY_MACRO)
+
+xinterpolate_model_adios_SHARED_OBJECTS = \
+	$(xinterpolate_model_SHARED_OBJECTS)
+
+xinterpolate_model_adios_SHARED_OBJECTS += \
+	$O/adios_helpers_definitions.shared_adios_module.o \
+	$O/adios_helpers_writers.shared_adios_module.o \
+	$O/adios_helpers.shared_adios.o \
+	$O/adios_manager.shared_adios_module.o \
+	$(EMPTY_MACRO)
+
+# extra dependencies
+$O/interpolate_model.postprocess_adios.o: $O/search_kdtree.shared.o $O/adios_manager.shared_adios_module.o
+
+${E}/xinterpolate_model_adios: $(xinterpolate_model_adios_OBJECTS) $(xinterpolate_model_adios_SHARED_OBJECTS)
+	${MPIFCCOMPILE_CHECK} -o $@ $+ $(MPILIBS)
+
 
 ##
 ## xsmooth_sem
@@ -257,6 +288,48 @@ ${E}/xsmooth_sem: $(xsmooth_sem_OBJECTS) $(xsmooth_sem_SHARED_OBJECTS)
 	${MPIFCCOMPILE_CHECK} -o $@ $+ $(MPILIBS)
 
 
+##
+## xcreate_cross_section
+##
+xcreate_cross_section_OBJECTS = \
+	$O/postprocess_par.postprocess_module.o \
+	$O/create_cross_section.postprocess.o \
+	$O/parse_kernel_names.postprocess.o \
+	$(EMPTY_MACRO)
+
+xcreate_cross_section_SHARED_OBJECTS = \
+	$O/shared_par.shared_module.o \
+	$O/parallel.sharedmpi.o \
+	$O/binary_c_io.cc.o \
+	$O/create_name_database.shared.o \
+	$O/exit_mpi.shared.o \
+	$O/flush_system.shared.o \
+	$O/gll_library.shared.o \
+	$O/heap_sort.shared.o \
+	$O/hex_nodes.shared.o \
+	$O/interpolate.shared.o \
+	$O/intgrl.shared.o \
+	$O/lagrange_poly.shared.o \
+	$O/make_ellipticity.shared.o \
+	$O/model_prem.shared.o \
+	$O/model_topo_bathy.shared.o \
+	$O/recompute_jacobian.shared.o \
+	$O/reduce.shared.o \
+	$O/rthetaphi_xyz.shared.o \
+	$O/search_kdtree.shared.o \
+	$O/spline_routines.shared.o \
+	$O/param_reader.cc.o \
+	$O/read_parameter_file.shared.o \
+	$O/read_value_parameters.shared.o \
+	$(EMPTY_MACRO)
+
+# extra dependencies
+$O/create_cross_section.postprocess.o: $O/search_kdtree.shared.o
+
+${E}/xcreate_cross_section: $(xcreate_cross_section_OBJECTS) $(xcreate_cross_section_SHARED_OBJECTS)
+	${MPIFCCOMPILE_CHECK} -o $@ $+ $(MPILIBS)
+
+
 #######################################
 
 ###
@@ -280,7 +353,7 @@ $O/%.postprocess.o: $S/%.F90 $O/postprocess_par.postprocess_module.o $O/parallel
 
 
 $O/%.postprocess_adios.o: $S/%.F90 $O/postprocess_par.postprocess_module.o $O/parallel.sharedmpi.o $O/adios_helpers.shared_adios.o
-	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(FC_DEFINE)ADIOS_INPUT
+	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(ADIOS_DEF)
 
 $O/%.postprocess_adios.o: $S/%.f90 $O/postprocess_par.postprocess_module.o $O/parallel.sharedmpi.o $O/adios_helpers.shared_adios.o
 	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $<

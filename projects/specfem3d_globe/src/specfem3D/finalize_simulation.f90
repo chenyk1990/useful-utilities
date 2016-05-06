@@ -32,6 +32,9 @@
   use specfem_par_innercore
   use specfem_par_outercore
   use specfem_par_movie
+
+  use manager_adios
+
   implicit none
 
   ! synchronize all processes, waits until all processes have written their seismograms
@@ -116,8 +119,14 @@
   endif
 
   ! adios finalizes
-  if (ADIOS_ENABLED .or. OUTPUT_SEISMOS_ASDF) then
-    call adios_cleanup()
+  if (ADIOS_ENABLED) then
+    call finalize_adios()
+  endif
+
+  ! asdf finalizes
+  if (SIMULATION_TYPE == 2 .or. SIMULATION_TYPE == 3 &
+       .and. READ_ADJSRC_ASDF) then
+    call asdf_cleanup()
   endif
 
   ! frees dynamically allocated memory
@@ -147,43 +156,57 @@
   use specfem_par_crustmantle
   use specfem_par_innercore
   use specfem_par_outercore
+  use specfem_par_noise
   use specfem_par_movie
   implicit none
 
   ! mass matrices
   ! crust/mantle
   if ((NCHUNKS_VAL /= 6 .and. ABSORBING_CONDITIONS) .or. &
-      (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION)) then
+      (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL)) then
     deallocate(rmassx_crust_mantle,rmassy_crust_mantle)
   else
     nullify(rmassx_crust_mantle,rmassy_crust_mantle)
   endif
   if (SIMULATION_TYPE == 3) then
-    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
+    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
       deallocate(b_rmassx_crust_mantle,b_rmassy_crust_mantle)
     else
       nullify(b_rmassx_crust_mantle,b_rmassy_crust_mantle)
     endif
     nullify(b_rmassz_crust_mantle)
   endif
+  deallocate(rstore_crust_mantle)
+
+  ! optimized arrays
+  if (USE_DEVILLE_PRODUCTS_VAL) then
+    deallocate(deriv_mapping_crust_mantle)
+  endif
+  if (use_inversed_arrays) then
+    deallocate(ibool_inv_tbl_crust_mantle,ibool_inv_tbl_inner_core,ibool_inv_tbl_outer_core)
+    deallocate(ibool_inv_st_crust_mantle,ibool_inv_st_inner_core,ibool_inv_st_outer_core)
+    deallocate(phase_iglob_crust_mantle,phase_iglob_inner_core,phase_iglob_outer_core)
+  endif
 
   ! outer core
   if (SIMULATION_TYPE == 3 ) nullify(b_rmass_outer_core)
+  deallocate(rstore_outer_core)
 
   ! inner core
-  if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
+  if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
     deallocate(rmassx_inner_core,rmassy_inner_core)
   else
     nullify(rmassx_inner_core,rmassy_inner_core)
   endif
   if (SIMULATION_TYPE == 3) then
-    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
+    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
       deallocate(b_rmassx_inner_core,b_rmassy_inner_core)
     else
       nullify(b_rmassx_inner_core,b_rmassy_inner_core)
     endif
     nullify(b_rmassz_inner_core)
   endif
+  deallocate(rstore_inner_core)
 
   ! MPI buffers
   deallocate(buffer_send_vector_crust_mantle,buffer_recv_vector_crust_mantle, &
@@ -276,6 +299,8 @@
     deallocate(noise_sourcearray, &
                normal_x_noise,normal_y_noise,normal_z_noise, &
                mask_noise,noise_surface_movie)
+    ! file i/o buffer
+    deallocate(noise_buffer)
   endif
 
   ! VTK visualization

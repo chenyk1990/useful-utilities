@@ -99,7 +99,7 @@ contains
     write_time_begin = wtime()
 
     ! checks if anything to do
-    ! note: ASDF uses adios that defines the MPI communicator group that the solver is
+    ! note: ASDF uses parallel hdf5 that defines the MPI communicator group that the solver is
     !       run with. this means every processor in the group is needed for write_seismograms
     if (nrec_local > 0 .or. ( WRITE_SEISMOGRAMS_BY_MASTER .and. myrank == 0 ) .or. OUTPUT_SEISMOS_ASDF) then
       ! writes out seismogram files
@@ -168,14 +168,13 @@ contains
   ! local parameters
   real(kind=CUSTOM_REAL), dimension(:,:), allocatable :: one_seismogram
 
-  integer :: iproc,sender,irec_local,iorientation,irec,ier,receiver
+  integer :: iproc,sender,irec_local,irec,ier,receiver
   integer :: nrec_local_received
   integer :: total_seismos
   integer,dimension(:),allocatable:: islice_num_rec_local
   character(len=MAX_STRING_LEN) :: sisname
   ! ASDF
   type(asdf_event) :: asdf_container
-  integer :: total_seismos_local
 
   ! allocates single station seismogram
   allocate(one_seismogram(NDIM,NTSTEP_BETWEEN_OUTPUT_SEISMOS),stat=ier)
@@ -206,15 +205,7 @@ contains
     endif
 
     ! initializes the ASDF data structure by allocating arrays
-    if (OUTPUT_SEISMOS_ASDF) then
-      total_seismos_local = 0
-      do irec_local = 1, nrec_local
-        do iorientation = 1, 3
-          total_seismos_local = total_seismos_local + 1
-        enddo
-      enddo
-      call init_asdf_data(asdf_container, total_seismos_local)
-    endif
+    if (OUTPUT_SEISMOS_ASDF) call init_asdf_data(asdf_container, nrec_local)
 
     ! loop on all the local receivers
     do irec_local = 1,nrec_local
@@ -237,9 +228,8 @@ contains
     ! writes out ASDF container to the file
     if (OUTPUT_SEISMOS_ASDF) then
       call write_asdf(asdf_container)
-
       ! deallocate the container
-      call close_asdf_data(asdf_container, total_seismos_local)
+      call close_asdf_data(asdf_container, nrec_local)
     endif
 
     ! create one large file instead of one small file per station to avoid file system overload
@@ -447,16 +437,22 @@ contains
 
       ! BS BS calculate backazimuth needed to rotate East and North
       ! components to Radial and Transverse components
-      !  call get_backazimuth(elat,elon,stlat(irec),stlon(irec),backaz)
+      ! (back-azimuth returned in degrees between [0,360])
       call get_backazimuth(cmt_lat,cmt_lon,stlat(irec),stlon(irec),backaz)
 
       phi = backaz
+
+      ! back azimuth is the incoming direction of a raypath to a receiving station, i.e. the angle of
+      ! the incoming wave front arriving at the station measured between north and the direction to the epicenter in degrees.
+      ! (north corresponds to zero degrees)
+
+      ! rotation angle phi takes opposite direction; to have radial direction pointing in outgoing direction
       if (phi>180.d0) then
          phi = phi-180.d0
       else if (phi<180.d0) then
          phi = phi+180.d0
       else if (phi==180.d0) then
-         phi = backaz
+         phi = 0.d0
       endif
 
       cphi=cos(phi*DEGREES_TO_RADIANS)
@@ -514,7 +510,7 @@ contains
 
     ! ASDF output format
     if (OUTPUT_SEISMOS_ASDF) &
-      call store_asdf_data(asdf_container,seismogram_tmp,irec_local,irec,chn,iorientation,phi)
+      call store_asdf_data(asdf_container,seismogram_tmp,irec_local,irec,chn,iorientation)
 
   enddo ! do iorientation
 

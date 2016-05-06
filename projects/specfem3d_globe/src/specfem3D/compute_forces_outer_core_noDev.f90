@@ -25,12 +25,12 @@
 !
 !=====================================================================
 
-  subroutine compute_forces_outer_core(timeval,deltat,two_omega_earth, &
-                                       NSPEC,NGLOB, &
-                                       A_array_rotation,B_array_rotation, &
-                                       A_array_rotation_lddrk,B_array_rotation_lddrk, &
-                                       displfluid,accelfluid, &
-                                       div_displfluid,phase_is_inner)
+  subroutine compute_forces_outer_core_noDev(timeval,deltat,two_omega_earth, &
+                                             NSPEC,NGLOB, &
+                                             A_array_rotation,B_array_rotation, &
+                                             A_array_rotation_lddrk,B_array_rotation_lddrk, &
+                                             displfluid,accelfluid, &
+                                             div_displfluid,phase_is_inner)
 
   use constants_solver
 
@@ -42,7 +42,7 @@
     USE_LDDRK,istage
 
   use specfem_par_outercore,only: &
-    xstore => xstore_outer_core,ystore => ystore_outer_core,zstore => zstore_outer_core, &
+    rstore => rstore_outer_core, &
     xix => xix_outer_core,xiy => xiy_outer_core,xiz => xiz_outer_core, &
     etax => etax_outer_core,etay => etay_outer_core,etaz => etaz_outer_core, &
     gammax => gammax_outer_core,gammay => gammay_outer_core,gammaz => gammaz_outer_core, &
@@ -53,27 +53,27 @@
 
   implicit none
 
-  integer :: NSPEC,NGLOB
+  integer,intent(in) :: NSPEC,NGLOB
 
   ! for the Euler scheme for rotation
-  real(kind=CUSTOM_REAL) timeval,deltat,two_omega_earth
+  real(kind=CUSTOM_REAL),intent(in) :: timeval,deltat,two_omega_earth
 
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     A_array_rotation,B_array_rotation
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     A_array_rotation_lddrk,B_array_rotation_lddrk
 
   ! displacement and acceleration
-  real(kind=CUSTOM_REAL), dimension(NGLOB) :: displfluid,accelfluid
+  real(kind=CUSTOM_REAL), dimension(NGLOB),intent(in) :: displfluid
+  real(kind=CUSTOM_REAL), dimension(NGLOB),intent(inout) :: accelfluid
 
   ! divergence of displacement
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_OUTER_CORE_3DMOVIE) :: div_displfluid
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_OUTER_CORE_3DMOVIE),intent(out) :: div_displfluid
 
   ! inner/outer element run flag
-  logical :: phase_is_inner
+  logical,intent(in) :: phase_is_inner
 
   ! local parameters
-
   real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ) :: tempx1,tempx2,tempx3
   ! for gravity
   integer int_radius
@@ -224,9 +224,9 @@
             ! x y z contain r theta phi
             iglob = ibool(i,j,k,ispec)
 
-            radius = dble(xstore(iglob))
-            theta = dble(ystore(iglob))
-            phi = dble(zstore(iglob))
+            radius = dble(rstore(1,iglob))
+            theta = dble(rstore(2,iglob))
+            phi = dble(rstore(3,iglob))
 
             cos_theta = dcos(theta)
             sin_theta = dsin(theta)
@@ -256,9 +256,9 @@
             ! x y z contain r theta phi
             iglob = ibool(i,j,k,ispec)
 
-            radius = dble(xstore(iglob))
-            theta = dble(ystore(iglob))
-            phi = dble(zstore(iglob))
+            radius = dble(rstore(1,iglob))
+            theta = dble(rstore(2,iglob))
+            phi = dble(rstore(3,iglob))
 
             cos_theta = dcos(theta)
             sin_theta = dsin(theta)
@@ -347,5 +347,5 @@
 
   enddo   ! spectral element loop
 
-  end subroutine compute_forces_outer_core
+  end subroutine compute_forces_outer_core_noDev
 

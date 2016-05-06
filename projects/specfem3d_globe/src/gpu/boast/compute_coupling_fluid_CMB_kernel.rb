@@ -2,7 +2,7 @@ module BOAST
   def BOAST::compute_coupling_fluid_CMB_kernel(ref = true, n_dim = 3, n_gllx = 5)
     BOAST::compute_coupling_kernel(ref, :fluid_CMB, n_dim, n_gllx)
   end
- 
+
   def BOAST::compute_coupling_kernel(ref = true, type = :fluid_CMB, n_dim = 3, n_gllx = 5)
     push_env( :array_start => 0 )
     kernel = CKernel::new
@@ -126,9 +126,9 @@ module BOAST
         elsif type == :fluid_ICB then
           print atomicAdd(accel_out+iglob_2, -weight*displ_n)
         else
-          print If(gravity, lambda {
+          print If(gravity => lambda {
             print pressure === rho_oc * ( minus_g * ( displ[iglob_2*3]*n[0] + displ[iglob_2*3+1]*n[1] + displ[iglob_2*3+2]*n[2] ) - accel_in[iglob_1] )
-          } , nil, lambda {
+          } , :else => lambda {
             print pressure === -rho_oc * accel_in[iglob_1]
           } )
           if type == :CMB_fluid then

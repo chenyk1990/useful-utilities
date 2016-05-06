@@ -40,7 +40,7 @@
   use specfem_par,only: &
     NSOURCES,myrank, &
     tshift_cmt,theta_source,phi_source, &
-    DT,hdur,Mxx,Myy,Mzz,Mxy,Mxz,Myz, &
+    DT,hdur,Mxx,Myy,Mzz,Mxy,Mxz,Myz,Mw,M0, &
     rspl,espl,espl2,nspl,ibathy_topo, &
     LOCAL_TMP_PATH,SIMULATION_TYPE,TOPOGRAPHY, &
     xigll,yigll,zigll, &
@@ -72,7 +72,7 @@
   double precision :: elevation
   double precision :: r0,dcost,p20
   double precision :: theta,phi
-  double precision :: dist,typical_size
+  double precision :: dist_squared,typical_size_squared
   double precision :: xi,eta,gamma,dx,dy,dz,dxi,deta
 
   ! topology of the control points of the surface element
@@ -114,7 +114,7 @@
   double precision :: st,ct,sp,cp
   double precision :: Mrr,Mtt,Mpp,Mrt,Mrp,Mtp
   double precision :: colat_source
-  double precision :: distmin
+  double precision :: distmin_squared,distmin_not_squared
 
   integer :: ix_initial_guess_source,iy_initial_guess_source,iz_initial_guess_source
   integer :: NSOURCES_SUBSET_current_size
@@ -133,7 +133,7 @@
   real(kind=CUSTOM_REAL), dimension(:,:,:,:),allocatable :: mask_source
 
   ! event time
-  integer :: yr,jda,ho,mi
+  integer :: yr,jda,mo,da,ho,mi
   double precision :: sec
 
   ! timer MPI
@@ -150,7 +150,7 @@
   ! read all the sources
   if (myrank == 0) then
     ! only master process reads in CMTSOLUTION file
-    call get_cmt(yr,jda,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
+    call get_cmt(yr,jda,mo,da,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
                  DT,NSOURCES,min_tshift_cmt_original)
   endif
 
@@ -162,16 +162,17 @@
   call bcast_all_dp(depth,NSOURCES)
 
   call bcast_all_dp(moment_tensor,6*NSOURCES)
+
   call bcast_all_singledp(min_tshift_cmt_original)
 
   ! define topology of the control element
   call hex_nodes(iaddx,iaddy,iaddr)
 
   ! compute typical size of elements at the surface
-  typical_size = TWO_PI * R_UNIT_SPHERE / (4.0 * NEX_XI_VAL)
+  typical_size_squared = TWO_PI * R_UNIT_SPHERE / (4.0 * NEX_XI_VAL)
 
   ! use 10 times the distance as a criterion for source detection
-  typical_size = 10.0 * typical_size
+  typical_size_squared = (10. * typical_size_squared)**2
 
   ! initializes source mask
   if (SAVE_SOURCE_MASK .and. SIMULATION_TYPE == 3) then
@@ -344,7 +345,7 @@
       z_target_source = r_target_source*dcos(theta)
 
       ! set distance to huge initial value
-      distmin = HUGEVAL
+      distmin_squared = HUGEVAL
 
       ! flag to check that we located at least one target element
       located_target = .false.
@@ -357,10 +358,11 @@
         ! exclude elements that are too far from target
         if (USE_DISTANCE_CRITERION) then
           iglob = ibool(MIDX,MIDY,MIDZ,ispec)
-          dist = dsqrt((x_target_source - dble(xstore(iglob)))**2 &
-                     + (y_target_source - dble(ystore(iglob)))**2 &
-                     + (z_target_source - dble(zstore(iglob)))**2)
-          if (dist > typical_size) cycle
+          dist_squared = (x_target_source - dble(xstore(iglob)))**2 &
+                       + (y_target_source - dble(ystore(iglob)))**2 &
+                       + (z_target_source - dble(zstore(iglob)))**2
+          !  we compare squared distances instead of distances themselves to significantly speed up calculations
+          if (dist_squared > typical_size_squared) cycle
         endif
 
         ! define the interval in which we look for points
@@ -395,11 +397,12 @@
 
               ! keep this point if it is closer to the receiver
               iglob = ibool(i,j,k,ispec)
-              dist = dsqrt((x_target_source - dble(xstore(iglob)))**2 &
-                          +(y_target_source - dble(ystore(iglob)))**2 &
-                          +(z_target_source - dble(zstore(iglob)))**2)
-              if (dist < distmin) then
-                distmin = dist
+              dist_squared = (x_target_source - dble(xstore(iglob)))**2 &
+                           + (y_target_source - dble(ystore(iglob)))**2 &
+                           + (z_target_source - dble(zstore(iglob)))**2
+              !  we compare squared distances instead of distances themselves to significantly speed up calculations
+              if (dist_squared < distmin_squared) then
+                distmin_squared = dist_squared
                 ispec_selected_source_subset(isource_in_this_subset) = ispec
                 ix_initial_guess_source = i
                 iy_initial_guess_source = j
@@ -413,7 +416,7 @@
 
         ! calculates a Gaussian mask around source point
         if (SAVE_SOURCE_MASK .and. SIMULATION_TYPE == 3) then
-          call calc_mask_source(mask_source,ispec,NSPEC,typical_size, &
+          call calc_mask_source(mask_source,ispec,NSPEC,typical_size_squared, &
                                 x_target_source,y_target_source,z_target_source, &
                                 ibool,xstore,ystore,zstore,NGLOB)
         endif
@@ -610,11 +613,11 @@
         isource = isources_already_done + isource_in_this_subset
 
         ! loop on all the results to determine the best slice
-        distmin = HUGEVAL
+        distmin_not_squared = HUGEVAL
         do iprocloop = 0,NPROCTOT_VAL-1
-          if (final_distance_source_all(isource_in_this_subset,iprocloop) < distmin) then
+          if (final_distance_source_all(isource_in_this_subset,iprocloop) < distmin_not_squared) then
             ! stores this slice's info
-            distmin = final_distance_source_all(isource_in_this_subset,iprocloop)
+            distmin_not_squared = final_distance_source_all(isource_in_this_subset,iprocloop)
             islice_selected_source(isource) = iprocloop
             ispec_selected_source(isource) = ispec_selected_source_all(isource_in_this_subset,iprocloop)
             xi_source(isource) = xi_source_all(isource_in_this_subset,iprocloop)
@@ -625,7 +628,7 @@
             z_found_source(isource_in_this_subset) = z_found_source_all(isource_in_this_subset,iprocloop)
           endif
         enddo
-        final_distance_source(isource) = distmin
+        final_distance_source(isource) = distmin_not_squared
 
         write(IMAIN,*)
         write(IMAIN,*) '*************************************'
@@ -675,11 +678,12 @@
         write(IMAIN,*) '    time shift: ',tshift_cmt(isource),' seconds'
         write(IMAIN,*)
         write(IMAIN,*) 'magnitude of the source:'
-        write(IMAIN,*) '     scalar moment M0 = ', &
-          get_cmt_scalar_moment(Mxx(isource),Myy(isource),Mzz(isource),Mxy(isource),Mxz(isource),Myz(isource)),' dyne-cm'
-        write(IMAIN,*) '  moment magnitude Mw = ', &
-          get_cmt_moment_magnitude(Mxx(isource),Myy(isource),Mzz(isource),Mxy(isource),Mxz(isource),Myz(isource))
+        M0 = get_cmt_scalar_moment(Mxx(isource),Myy(isource),Mzz(isource),Mxy(isource),Mxz(isource),Myz(isource))
+        write(IMAIN,*) '     scalar moment M0 = ', M0,' dyne-cm'
+        Mw =  get_cmt_moment_magnitude(Mxx(isource),Myy(isource),Mzz(isource),Mxy(isource),Mxz(isource),Myz(isource))
+        write(IMAIN,*) '  moment magnitude Mw = ', Mw
         write(IMAIN,*)
+
 
         ! writes out actual source position to VTK file
         write(IOUT_VTK,'(3e18.6)') sngl(x_found_source(isource_in_this_subset)), &
@@ -772,6 +776,10 @@
   call bcast_all_dp(eta_source,NSOURCES)
   call bcast_all_dp(gamma_source,NSOURCES)
 
+  ! Broadcast mantitude and scalar moment to all processers
+  call bcast_all_singledp(M0)
+  call bcast_all_singledp(Mw)
+
   ! stores source mask
   if (SAVE_SOURCE_MASK .and. SIMULATION_TYPE == 3) then
     call save_mask_source(myrank,mask_source,NSPEC,LOCAL_TMP_PATH)
@@ -796,7 +804,7 @@
 !-------------------------------------------------------------------------------------------------
 !
 
-  subroutine calc_mask_source(mask_source,ispec,NSPEC,typical_size, &
+  subroutine calc_mask_source(mask_source,ispec,NSPEC,typical_size_squared, &
                             x_target_source,y_target_source,z_target_source, &
                             ibool,xstore,ystore,zstore,NGLOB)
 
@@ -813,16 +821,16 @@
   real(kind=CUSTOM_REAL), dimension(NGLOB) :: xstore,ystore,zstore
   integer, dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: ibool
 
-  double precision :: typical_size
+  double precision :: typical_size_squared
   double precision :: x_target_source,y_target_source,z_target_source
 
   ! local parameters
   integer i,j,k,iglob
-  double precision dist_sq,sigma_sq
+  double precision dist_squared,sigma_squared
 
   ! standard deviation for Gaussian
-  ! (removes factor 10 added for search radius from typical_size)
-  sigma_sq = typical_size * typical_size / 100.0
+  ! (removes factor of 100 added for search radius from typical_size_squared)
+  sigma_squared = typical_size_squared / 100.
 
   ! loops over GLL points within this ispec element
   do k = 1,NGLLZ
@@ -831,14 +839,14 @@
 
         ! gets distance (squared) to source
         iglob = ibool(i,j,k,ispec)
-        dist_sq = (x_target_source - dble(xstore(iglob)))**2 &
-                  +(y_target_source - dble(ystore(iglob)))**2 &
-                  +(z_target_source - dble(zstore(iglob)))**2
+        dist_squared = (x_target_source - dble(xstore(iglob)))**2 &
+                     + (y_target_source - dble(ystore(iglob)))**2 &
+                     + (z_target_source - dble(zstore(iglob)))**2
 
         ! adds Gaussian function value to mask
         ! (mask value becomes 0 closer to source location, 1 everywhere else )
         mask_source(i,j,k,ispec) = mask_source(i,j,k,ispec) &
-                  * ( 1.0_CUSTOM_REAL - exp( - dist_sq / sigma_sq ) )
+                  * ( 1.0_CUSTOM_REAL - exp( - dist_squared / sigma_squared ) )
 
       enddo
     enddo

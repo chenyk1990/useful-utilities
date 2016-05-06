@@ -271,6 +271,8 @@
   use shared_parameters
 
   implicit none
+  ! local parameter
+  integer :: nex_minimum
 
 ! checks parameters
 
@@ -350,10 +352,19 @@
 
   ! check that sphere can be cut into slices without getting negative Jacobian
   if (NCHUNKS == 6) then
-    if (NEX_XI < 48) &
-      stop 'NEX_XI must be greater than 48 to cut the sphere into slices with positive Jacobian'
-    if (NEX_ETA < 48) &
-      stop 'NEX_ETA must be greater than 48 to cut the sphere into slices with positive Jacobian'
+    ! sets minimum NEX allowed for simulation
+    if (TOPOGRAPHY) then
+      ! mesh with topography leads to negative Jacobian for NEX < 48, regardless if 1D or 3D model
+      nex_minimum = 48
+    else
+      ! for flat topography, NEX = 32 setting still okay
+      nex_minimum = 32
+    endif
+    ! checks nex
+    if (NEX_XI < nex_minimum) &
+      stop 'NEX_XI must be greater to cut the sphere into slices with positive Jacobian'
+    if (NEX_ETA < nex_minimum) &
+      stop 'NEX_ETA must be greater to cut the sphere into slices with positive Jacobian'
   endif
 
   ! check that topology is correct if more than two chunks
@@ -391,7 +402,7 @@
       stop 'NUMBER_OF_RUNS and NUMBER_OF_THIS_RUN must be 1 for NOISE TOMOGRAPHY simulation'
     if (ROTATE_SEISMOGRAMS_RT) &
       stop 'Do NOT rotate seismograms in the code, change ROTATE_SEISMOGRAMS_RT in Par_file for noise simulation'
-    if (SAVE_ALL_SEISMOS_IN_ONE_FILE .OR. USE_BINARY_FOR_LARGE_FILE) &
+    if (SAVE_ALL_SEISMOS_IN_ONE_FILE .or. USE_BINARY_FOR_LARGE_FILE) &
       stop 'Please set SAVE_ALL_SEISMOS_IN_ONE_FILE and USE_BINARY_FOR_LARGE_FILE to be .false. for noise simulation'
   endif
 

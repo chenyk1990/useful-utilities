@@ -50,7 +50,7 @@
     USE_LDDRK,istage
 
   use specfem_par_outercore,only: &
-    xstore => xstore_outer_core,ystore => ystore_outer_core,zstore => zstore_outer_core, &
+    rstore => rstore_outer_core, &
     xix => xix_outer_core,xiy => xiy_outer_core,xiz => xiz_outer_core, &
     etax => etax_outer_core,etay => etay_outer_core,etaz => etaz_outer_core, &
     gammax => gammax_outer_core,gammay => gammay_outer_core,gammaz => gammaz_outer_core, &
@@ -61,29 +61,38 @@
 
   use specfem_par,only: wgllwgll_xy_3D,wgllwgll_xz_3D,wgllwgll_yz_3D
 
+#ifdef FORCE_VECTORIZATION
+  use specfem_par_outercore,only: &
+    ibool_inv_tbl => ibool_inv_tbl_outer_core, &
+    ibool_inv_st => ibool_inv_st_outer_core, &
+    num_globs => num_globs_outer_core, &
+    phase_iglob => phase_iglob_outer_core
+#endif
+
   implicit none
 
-  integer :: NSPEC,NGLOB
+  integer,intent(in) :: NSPEC,NGLOB
 
   ! for the Euler scheme for rotation
-  real(kind=CUSTOM_REAL) timeval,deltat,two_omega_earth
+  real(kind=CUSTOM_REAL),intent(in) :: timeval,deltat,two_omega_earth
 
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     A_array_rotation,B_array_rotation
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     A_array_rotation_lddrk,B_array_rotation_lddrk
 
   ! displacement and acceleration
-  real(kind=CUSTOM_REAL), dimension(NGLOB) :: displfluid,accelfluid
+  real(kind=CUSTOM_REAL), dimension(NGLOB),intent(in) :: displfluid
+  real(kind=CUSTOM_REAL), dimension(NGLOB),intent(inout) :: accelfluid
 
   ! divergence of displacement
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_OUTER_CORE_3DMOVIE) :: div_displfluid
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_OUTER_CORE_3DMOVIE),intent(out) :: div_displfluid
 
   ! inner/outer element run flag
-  logical :: phase_is_inner
+  logical,intent(in) :: phase_is_inner
 
   ! local parameters
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ) :: sum_terms
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_OUTER_CORE) :: sum_terms
 
   ! for gravity
   integer :: int_radius
@@ -116,6 +125,7 @@
 
 #ifdef FORCE_VECTORIZATION
   integer :: ijk
+  integer :: ijk_spec, ip, iglob_p
 #else
   integer :: i,j,k
 #endif
@@ -154,11 +164,15 @@
 
 !$OMP PARALLEL DEFAULT(NONE) &
 !$OMP SHARED( &
-!$OMP num_elements, phase_ispec_inner, iphase, ibool, displfluid, xstore, ystore, zstore, &
+!$OMP num_elements, phase_ispec_inner, iphase, ibool, displfluid, rstore, &
 !$OMP d_ln_density_dr_table, hprime_xx, hprime_xxT, xix, xiy, xiz,  etax, etay, etaz, &
 !$OMP gammax, gammay, gammaz, deltat, two_omega_earth, timeval, A_array_rotation, B_array_rotation, &
 !$OMP minus_rho_g_over_kappa_fluid, wgll_cube, MOVIE_VOLUME, hprimewgll_xxT, hprimewgll_xx, &
 !$OMP wgllwgll_yz_3D, wgllwgll_xz_3D, wgllwgll_xy_3D, accelfluid, USE_LDDRK, A_array_rotation_lddrk, &
+!$OMP sum_terms, &
+#ifdef FORCE_VECTORIZATION
+!$OMP ibool_inv_tbl, ibool_inv_st, num_globs, phase_iglob, &
+#endif
 !$OMP istage, B_array_rotation_lddrk, div_displfluid ) &
 !$OMP PRIVATE( &
 !$OMP ispec_p, ispec, iglob, dummyx_loc, radius, theta, phi, &
@@ -169,7 +183,11 @@
 !$OMP dpotentialdxl, tempx1, tempx3, dpotentialdyl, dpotentialdzl, two_omega_deltat, cos_two_omega_t, &
 !$OMP sin_two_omega_t, source_euler_A, source_euler_B, A_rotation, B_rotation, ux_rotation, uy_rotation, &
 !$OMP dpotentialdx_with_rot, dpotentialdy_with_rot, gxl, gyl, gzl, gravity_term, &
-!$OMP sum_terms, newtempx1, newtempx3, newtempx2 ) &
+#ifdef FORCE_VECTORIZATION
+!$OMP ijk, &
+!$OMP ijk_spec, ip, iglob_p, &
+#endif
+!$OMP newtempx1, newtempx3, newtempx2 ) &
 !$OMP FIRSTPRIVATE( MYALPHA_LDDRK,MYBETA_LDDRK )
 
 !$OMP DO SCHEDULE(GUIDED)
@@ -189,9 +207,9 @@
       ! pre-computes factors
       ! use mesh coordinates to get theta and phi
       ! x y z contain r theta phi
-      radius = dble(xstore(iglob))
-      theta = dble(ystore(iglob))
-      phi = dble(zstore(iglob))
+      radius = dble(rstore(1,iglob))
+      theta = dble(rstore(2,iglob))
+      phi = dble(rstore(3,iglob))
 
       cos_theta = dcos(theta)
       sin_theta = dsin(theta)
@@ -266,6 +284,7 @@
               * (cos_two_omega_t * dpotentialdyl + sin_two_omega_t * dpotentialdxl)
         source_euler_B(INDEX_IJK) = two_omega_deltat &
               * (sin_two_omega_t * dpotentialdyl - cos_two_omega_t * dpotentialdxl)
+
 
         A_rotation = A_array_rotation(INDEX_IJK,ispec)
         B_rotation = B_array_rotation(INDEX_IJK,ispec)
@@ -376,9 +395,9 @@
 
     DO_LOOP_IJK
 
-          sum_terms(INDEX_IJK) = - ( wgllwgll_yz_3D(INDEX_IJK)*newtempx1(INDEX_IJK) &
-                                   + wgllwgll_xz_3D(INDEX_IJK)*newtempx2(INDEX_IJK) &
-                                   + wgllwgll_xy_3D(INDEX_IJK)*newtempx3(INDEX_IJK))
+          sum_terms(INDEX_IJK,ispec) = - ( wgllwgll_yz_3D(INDEX_IJK)*newtempx1(INDEX_IJK) &
+                                         + wgllwgll_xz_3D(INDEX_IJK)*newtempx2(INDEX_IJK) &
+                                         + wgllwgll_xy_3D(INDEX_IJK)*newtempx3(INDEX_IJK))
 
     ENDDO_LOOP_IJK
 
@@ -387,50 +406,27 @@
 
       DO_LOOP_IJK
 
-        sum_terms(INDEX_IJK) = sum_terms(INDEX_IJK) + gravity_term(INDEX_IJK)
+        sum_terms(INDEX_IJK,ispec) = sum_terms(INDEX_IJK,ispec) + gravity_term(INDEX_IJK)
 
       ENDDO_LOOP_IJK
 
     endif
 
     ! updates acceleration
-
 #ifdef FORCE_VECTORIZATION
-#ifndef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
-!$OMP CRITICAL
-#endif
-! we can force vectorization using a compiler directive here because we know that there is no dependency
-! inside a given spectral element, since all the global points of a local elements are different by definition
-! (only common points between different elements can be the same)
-! IBM, Portland PGI, and Intel and Cray syntax (Intel and Cray are the same)
-!IBM* ASSERT (NODEPS)
-!pgi$ ivdep
-!DIR$ IVDEP
-    do ijk = 1,NGLLCUBE
+    ! update will be done later at the very end..
 #else
-    do k = 1,NGLLZ
-      do j = 1,NGLLY
-        do i = 1,NGLLX
-#endif
-          iglob = ibool(INDEX_IJK,ispec)
-#ifdef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
-!$OMP ATOMIC
-#endif
-          accelfluid(iglob) = accelfluid(iglob) + sum_terms(INDEX_IJK)
-
-#ifdef FORCE_VECTORIZATION
-    enddo
-#ifndef USE_OPENMP_ATOMIC_INSTEAD_OF_CRITICAL
-!$OMP END CRITICAL
-#endif
-#else
-        enddo
-      enddo
-    enddo
+    ! updates for non-vectorization case)
+    DO_LOOP_IJK
+      iglob = ibool(INDEX_IJK,ispec)
+      accelfluid(iglob) = accelfluid(iglob) + sum_terms(INDEX_IJK,ispec)
+    ENDDO_LOOP_IJK
 #endif
 
     ! update rotation term with Euler scheme
-
+    !
+    ! note: rotation with euler scheme is not exactly revertible;
+    !       backpropagation/reconstruction of wavefield will lead to small differences
     if (ROTATION_VAL) then
 
       if (USE_LDDRK) then
@@ -464,6 +460,19 @@
 
   enddo   ! spectral element loop
 !$OMP enddo
+
+#ifdef FORCE_VECTORIZATION
+  ! updates acceleration
+!$OMP DO
+  do iglob_p = 1,num_globs(iphase)
+    iglob = phase_iglob(iglob_p,iphase)
+    do ip = ibool_inv_st(iglob_p,iphase),ibool_inv_st(iglob_p+1,iphase)-1
+      ijk_spec = ibool_inv_tbl(ip,iphase)
+      accelfluid(iglob) = accelfluid(iglob) + sum_terms(ijk_spec,1,1,1)
+    enddo
+  enddo
+!OMP enddo
+#endif
 !$OMP END PARALLEL
 
   contains

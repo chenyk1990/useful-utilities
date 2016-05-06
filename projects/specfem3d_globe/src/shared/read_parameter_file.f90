@@ -122,6 +122,10 @@
   call read_value_double_precision(PERCENT_OF_MEM_TO_USE_PER_CORE, 'PERCENT_OF_MEM_TO_USE_PER_CORE', ier)
   if (ier /= 0) stop 'an error occurred while reading the parameter file: PERCENT_OF_MEM_TO_USE_PER_CORE'
 
+  ! sanity check
+  if((PARTIAL_PHYS_DISPERSION_ONLY .or. UNDO_ATTENUATION) .and. .not. ATTENUATION) &
+    stop 'please turn off both PARTIAL_PHYS_DISPERSION_ONLY and UNDO_ATTENUATION in the Par_file when ATTENUATION is off'
+
   ! mass matrix corrections
   call read_value_logical(EXACT_MASS_MATRIX_FOR_ROTATION, 'EXACT_MASS_MATRIX_FOR_ROTATION', ier)
   if (ier /= 0) stop 'an error occurred while reading the parameter file: EXACT_MASS_MATRIX_FOR_ROTATION'
@@ -209,6 +213,8 @@
   if (ier /= 0) stop 'an error occurred while reading the parameter file: PRINT_SOURCE_TIME_FUNCTION'
 
   ! adjoint kernels
+  call read_value_logical(READ_ADJSRC_ASDF, 'READ_ADJSRC_ASDF', ier)
+  if (ier /= 0) stop 'an error occured while reading the parameter file: READ_ADJSRC_ASDF'
   call read_value_logical(ANISOTROPIC_KL, 'ANISOTROPIC_KL', ier)
   if (ier /= 0) stop 'an error occurred while reading the parameter file: ANISOTROPIC_KL'
   call read_value_logical(SAVE_TRANSVERSE_KL_ONLY, 'SAVE_TRANSVERSE_KL_ONLY', ier)
@@ -340,8 +346,6 @@
   if (USE_LDDRK .and. GPU_MODE ) &
     stop 'USE_LDDRK support not implemented yet for GPU simulations'
 
-  if (UNDO_ATTENUATION .and. NOISE_TOMOGRAPHY > 0 ) &
-    stop 'UNDO_ATTENUATION support not implemented yet for noise simulations'
   if (UNDO_ATTENUATION .and. MOVIE_VOLUME .and. MOVIE_VOLUME_TYPE == 4 ) &
     stop 'UNDO_ATTENUATION support not implemented yet for MOVIE_VOLUME_TYPE == 4 simulations'
   if (UNDO_ATTENUATION .and. SIMULATION_TYPE == 3 .and. (MOVIE_VOLUME .or. MOVIE_SURFACE) ) &

@@ -223,6 +223,12 @@
            b_rmassy_crust_mantle(NGLOB_XY_CM),stat=ier)
   if (ier /= 0) stop 'Error allocating b_rmassx, b_rmassy in crust_mantle'
 
+  ! x/y/z locations
+  allocate(xstore_crust_mantle(NGLOB_CRUST_MANTLE), &
+           ystore_crust_mantle(NGLOB_CRUST_MANTLE), &
+           zstore_crust_mantle(NGLOB_CRUST_MANTLE),stat=ier)
+  if (ier /= 0) stop 'Error allocating x/y/zstore in crust_mantle'
+
   ! reads databases file
   if (I_should_read_the_database) then
     if (ADIOS_FOR_ARRAYS_SOLVER) then
@@ -285,9 +291,16 @@
 
   ! mass matrix corrections
   if ((NCHUNKS_VAL /= 6 .and. ABSORBING_CONDITIONS) .or. &
-      (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION)) then
-    ! mass matrices differ for rmassx,rmassy
-    ! continue
+      (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL)) then
+    ! mass matrices differ for rmassx,rmassy in case Newmark time scheme is used
+    if (USE_LDDRK) then
+      ! uses single mass matrix without correction in case LDDRK time scheme is used
+      ! frees pointer memory
+      deallocate(rmassx_crust_mantle,rmassy_crust_mantle)
+      ! re-associates with corresponding rmassz
+      rmassx_crust_mantle => rmassz_crust_mantle(:)
+      rmassy_crust_mantle => rmassz_crust_mantle(:)
+    endif
   else
     ! uses single mass matrix without correction
     ! frees pointer memory
@@ -302,9 +315,16 @@
     ! associates mass matrix used for backward/reconstructed wavefields
     b_rmassz_crust_mantle => rmassz_crust_mantle
     ! checks if we can take rmassx and rmassy (only differs for rotation correction)
-    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
-      ! mass matrices differ for b_rmassx,b_rmassy
-      ! continue
+    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
+      ! mass matrices differ for b_rmassx,b_rmassy in case Newmark time scheme is used
+      if (USE_LDDRK) then
+        ! mass matrices correction is not needed in case LDDRK time scheme is used
+        ! frees pointer memory
+        deallocate(b_rmassx_crust_mantle,b_rmassy_crust_mantle)
+        ! re-associates with corresponding rmassx,rmassy
+        b_rmassx_crust_mantle => rmassx_crust_mantle(:)
+        b_rmassy_crust_mantle => rmassy_crust_mantle(:)
+      endif
     else
       ! frees pointer memory
       deallocate(b_rmassx_crust_mantle,b_rmassy_crust_mantle)
@@ -358,10 +378,16 @@
   NGLOB_XY_dummy = 1
 
   allocate(dummy_rmass(NGLOB_XY_dummy), &
-          dummy_ispec_is_tiso(NSPEC_OUTER_CORE), &
-          dummy_idoubling_outer_core(NSPEC_OUTER_CORE), &
-          stat=ier)
+           dummy_ispec_is_tiso(NSPEC_OUTER_CORE), &
+           dummy_idoubling_outer_core(NSPEC_OUTER_CORE), &
+           stat=ier)
   if (ier /= 0) stop 'Error allocating dummy rmass and dummy ispec/idoubling in outer core'
+
+  ! x/y/z locations
+  allocate(xstore_outer_core(NGLOB_OUTER_CORE), &
+           ystore_outer_core(NGLOB_OUTER_CORE), &
+           zstore_outer_core(NGLOB_OUTER_CORE),stat=ier)
+  if (ier /= 0) stop 'Error allocating x/y/zstore in outer core'
 
   ! reads in mesh arrays
   if (I_should_read_the_database) then
@@ -489,6 +515,12 @@
            b_rmassy_inner_core(NGLOB_XY_IC),stat=ier)
   if (ier /= 0) stop 'Error allocating b_rmassx, b_rmassy in inner_core'
 
+  ! x/y/z locations
+  allocate(xstore_inner_core(NGLOB_INNER_CORE), &
+           ystore_inner_core(NGLOB_INNER_CORE), &
+           zstore_inner_core(NGLOB_INNER_CORE),stat=ier)
+  if (ier /= 0) stop 'Error allocating x/y/zstore in inner core'
+
   ! reads in arrays
   if (I_should_read_the_database) then
     if (ADIOS_FOR_ARRAYS_SOLVER) then
@@ -548,9 +580,16 @@
     call exit_MPI(myrank,'incorrect global numbering: iboolmax does not equal nglob in inner core')
 
   ! mass matrix corrections
-  if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
-    ! uses corrected mass matrices
-    ! continue
+  if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
+    ! uses corrected mass matrices in case Newmark time scheme is used
+    if (USE_LDDRK)  then
+      ! uses single mass matrix without correction in case LDDRK time scheme is used
+      ! frees pointer memory
+      deallocate(rmassx_inner_core,rmassy_inner_core)
+      ! re-associates with corresponding rmassz
+      rmassx_inner_core => rmassz_inner_core(:)
+      rmassy_inner_core => rmassz_inner_core(:)
+    endif
   else
     ! uses single mass matrix without correction
     ! frees pointer memory
@@ -565,9 +604,16 @@
     ! associates mass matrix used for backward/reconstructed wavefields
     b_rmassz_inner_core => rmassz_inner_core
     ! checks if we can take rmassx and rmassy (only differs for rotation correction)
-    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION) then
-      ! uses corrected mass matrices
-      ! continue
+    if (ROTATION_VAL .and. EXACT_MASS_MATRIX_FOR_ROTATION_VAL) then
+      ! uses corrected mass matrices in case Newmark time scheme is used
+      if (USE_LDDRK) then
+        ! uses single mass matrix without correction in case LDDRK time scheme is used
+        ! frees pointer memory
+        deallocate(b_rmassx_inner_core,b_rmassy_inner_core)
+        ! re-associates with corresponding rmassx,rmassy
+        b_rmassx_inner_core => rmassx_inner_core
+        b_rmassy_inner_core => rmassy_inner_core
+      endif
     else
       ! frees pointer memory
       deallocate(b_rmassx_inner_core,b_rmassy_inner_core)
@@ -918,9 +964,6 @@
     else
       call read_mesh_databases_MPI_CM()
     endif
-    !call synchronize_all()
-    !print *, "read_mesh_databases_MPI_CM done"
-    !call flush()
   endif
   call bcast_mesh_databases_MPI_CM()
 

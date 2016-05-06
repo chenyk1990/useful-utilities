@@ -446,7 +446,7 @@
     ! regional mesh, variable chunk sizes
     num_elem_gc = int( 90.d0 / ANGULAR_WIDTH_XI_IN_DEGREES * 4 * NEX_XI )
     num_gll_gc = int( 90.d0 / ANGULAR_WIDTH_XI_IN_DEGREES * 4 * NEX_XI *(NGLLX-1) )
-    avg_dist_deg = max( ANGULAR_WIDTH_XI_RAD/NEX_XI,ANGULAR_WIDTH_ETA_RAD/NEX_ETA ) / dble(NGLLX-1)
+    avg_dist_deg = max( ANGULAR_WIDTH_XI_IN_DEGREES/NEX_XI,ANGULAR_WIDTH_ETA_IN_DEGREES/NEX_ETA ) / dble(NGLLX-1)
     avg_dist_km = max( ANGULAR_WIDTH_XI_RAD/NEX_XI,ANGULAR_WIDTH_ETA_RAD/NEX_ETA ) * R_EARTH_KM / dble(NGLLX-1)
     avg_element_size = max( ANGULAR_WIDTH_XI_RAD/NEX_XI,ANGULAR_WIDTH_ETA_RAD/NEX_ETA ) * R_EARTH_KM
   else
@@ -655,6 +655,12 @@
   else
     write(IOUT,*) 'logical, parameter :: ROTATION_VAL = .false.'
   endif
+  if (EXACT_MASS_MATRIX_FOR_ROTATION) then
+    write(IOUT,*) 'logical, parameter :: EXACT_MASS_MATRIX_FOR_ROTATION_VAL = .true.'
+  else
+    write(IOUT,*) 'logical, parameter :: EXACT_MASS_MATRIX_FOR_ROTATION_VAL = .false.'
+  endif
+  write(IOUT,*)
   write(IOUT,*) 'integer, parameter :: NSPEC_OUTER_CORE_ROTATION = ',NSPEC_OUTER_CORE_ROTATION
   write(IOUT,*)
 
@@ -763,7 +769,6 @@
     NGLOB_XY_CM = NGLOB(IREGION_CRUST_MANTLE)
     NGLOB_XY_IC = NGLOB(IREGION_INNER_CORE)
   endif
-
   write(IOUT,*) 'integer, parameter :: NGLOB_XY_CM = ',NGLOB_XY_CM
   write(IOUT,*) 'integer, parameter :: NGLOB_XY_IC = ',NGLOB_XY_IC
   write(IOUT,*)
@@ -783,7 +788,12 @@
 #endif
   write(IOUT,*)
 
-!! DK DK for UNDO_ATTENUATION
+  ! for UNDO_ATTENUATION
+  if (UNDO_ATTENUATION) then
+    write(IOUT,*) 'logical, parameter :: UNDO_ATTENUATION_VAL = .true.'
+  else
+    write(IOUT,*) 'logical, parameter :: UNDO_ATTENUATION_VAL = .false.'
+  endif
   write(IOUT,*) 'integer, parameter :: NT_DUMP_ATTENUATION = ',NT_DUMP_ATTENUATION_optimal
   write(IOUT,*)
 
@@ -808,11 +818,12 @@
 ! Dimitri Komatitsch and Zhinan Xie, CNRS Marseille, France, June 2013.
 
   subroutine compute_optimized_dumping(static_memory_size,NT_DUMP_ATTENUATION_optimal,number_of_dumpings_to_do, &
-                 static_memory_size_GB,size_to_store_at_each_time_step,disk_size_of_each_dumping)
+                                       static_memory_size_GB,size_to_store_at_each_time_step,disk_size_of_each_dumping)
 
   use shared_parameters,only: NGLOB,NSPEC,NSTEP, &
     ROTATION,ATTENUATION,GPU_MODE, &
-    MEMORY_INSTALLED_PER_CORE_IN_GB,PERCENT_OF_MEM_TO_USE_PER_CORE
+    MEMORY_INSTALLED_PER_CORE_IN_GB,PERCENT_OF_MEM_TO_USE_PER_CORE,NOISE_TOMOGRAPHY, &
+    NSPEC2D_TOP
 
   use constants,only: NGLLX,NGLLY,NGLLZ,NDIM,N_SLS,CUSTOM_REAL, &
     IREGION_CRUST_MANTLE,IREGION_INNER_CORE,IREGION_OUTER_CORE
@@ -874,6 +885,12 @@
 
 ! displ_outer_core and accel_outer_core (both being scalar arrays)
   size_to_store_at_each_time_step = size_to_store_at_each_time_step + 2.d0*NGLOB(IREGION_OUTER_CORE)*dble(CUSTOM_REAL)
+
+! noise_surface_movie
+  if (NOISE_TOMOGRAPHY == 3) then
+    size_to_store_at_each_time_step = size_to_store_at_each_time_step &
+      + dble(NDIM)*dble(NGLLX*NGLLY)*dble(NSPEC2D_TOP(IREGION_CRUST_MANTLE))*dble(CUSTOM_REAL)
+  endif
 
 ! convert to GB
   size_to_store_at_each_time_step = size_to_store_at_each_time_step / 1.d9

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#PBS -A GEO111
+##PBS -A GEO111
+#PBS -A CSC190SPECFEM
 #PBS -N SPECFEM3D_mesher
 #PBS -j oe
 #PBS -o job_mesher.$PBS_JOBID.o
@@ -8,8 +9,7 @@
 ###################################################
 
 ## USER PARAMETERS
-## chester: gpu compute nodes have 1 GPU card (K20x) and 16-core (interlagos) CP
-U
+## chester: gpu compute nodes have 1 GPU card (K20x) and 16-core (interlagos) CPU
 
 #PBS -l walltime=1:00:00
 #PBS -l nodes=6
@@ -54,3 +54,4 @@ echo "Job done: `date`"
 echo
 echo "see results in directory: OUTPUT_FILES/"
 echo
+

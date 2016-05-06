@@ -64,7 +64,7 @@
   logical USE_OPENDX
 
 ! for source location
-  integer yr,jda,ho,mi
+  integer yr,jda,mo,da,ho,mi
   double precision x_target_source,y_target_source,z_target_source
   double precision r_target_source
   double precision x_source_trgl1,y_source_trgl1,z_source_trgl1
@@ -105,7 +105,7 @@
   integer ioceans
   integer above_zero,below_zero
 
-! for stability condition
+! for CFL stability condition of the time scheme
   double precision, dimension (:), allocatable :: stability_value,gridpoints_per_wavelength,elevation_sphere
   double precision, dimension (:), allocatable :: dvp,dvs
   double precision, dimension (:), allocatable :: xcoord,ycoord,zcoord,vmincoord,vmaxcoord
@@ -180,7 +180,7 @@
   print *
   print *,'1 = color by doubling flag'
   print *,'2 = by slice number'
-  print *,'3 = by stability value'
+  print *,'3 = by CFL stability value of the time scheme'
   print *,'4 = by gridpoints per wavelength'
   print *,'5 = dvp/vp'
   print *,'6 = dvs/vs'
@@ -440,7 +440,7 @@
 
 ! get source information for frequency for number of points per lambda
   print *,'reading source duration from the CMTSOLUTION file'
-  call get_cmt(yr,jda,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
+  call get_cmt(yr,jda,mo,da,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
                DT,1,min_tshift_cmt_original)
 
 ! set global element and point offsets to zero
@@ -538,7 +538,7 @@
 ! check that the degree is not above the threshold for list of percentages
       if (NGLL_current_horiz > NGLL_MAX_STABILITY .or. &
          NGLL_current_vert > NGLL_MAX_STABILITY) &
-           stop 'degree too high to compute stability value'
+           stop 'degree too high to compute the CFL stability value of the time scheme'
 
 ! scaling factor to compute real value of stability condition
     scale_factor = dsqrt(PI*GRAV*RHOAV)
@@ -893,7 +893,7 @@
     gridpoints_per_wavelength_max = maxval(gridpoints_per_wavelength)
 
     print *
-    print *,'stability value min, max, ratio = ', &
+    print *,'CFL stability value of the time scheme min, max, ratio = ', &
       stability_value_min,stability_value_max,stability_value_max / stability_value_min
 
     print *
@@ -944,7 +944,7 @@
 
 !   get source information
     print *,'reading position of the source from the CMTSOLUTION file'
-    call get_cmt(yr,jda,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
+    call get_cmt(yr,jda,mo,da,ho,mi,sec,tshift_cmt,hdur,lat,long,depth,moment_tensor, &
                  DT,1,min_tshift_cmt_original)
 
 !   convert geographic latitude lat (degrees) to geocentric colatitude theta (radians)

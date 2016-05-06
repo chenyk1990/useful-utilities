@@ -65,31 +65,11 @@
 ! standard routine to setup model
 
   use constants
+  use meshfem3D_models_par,only: model_attenuation_variables
 
   implicit none
 
-! model_attenuation_variables
-  type model_attenuation_variables
-    sequence
-    double precision min_period, max_period
-    double precision                          :: QT_c_source        ! Source Frequency
-    double precision, dimension(:), pointer   :: Qtau_s             ! tau_sigma
-    double precision, dimension(:), pointer   :: QrDisc             ! Discontinuities Defined
-    double precision, dimension(:), pointer   :: Qr                 ! Radius
-    double precision, dimension(:), pointer   :: Qmu                ! Shear Attenuation
-    double precision, dimension(:,:), pointer :: Qtau_e             ! tau_epsilon
-    double precision, dimension(:), pointer   :: Qomsb, Qomsb2      ! one_minus_sum_beta
-    double precision, dimension(:,:), pointer :: Qfc, Qfc2          ! factor_common
-    double precision, dimension(:), pointer   :: Qsf, Qsf2          ! scale_factor
-    integer, dimension(:), pointer            :: Qrmin              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: Qrmax              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: interval_Q                 ! Steps
-    integer                                   :: Qn                 ! Number of points
-    integer dummy_pad ! padding 4 bytes to align the structure
-  end type model_attenuation_variables
-
-  type (model_attenuation_variables) AM_V
-! model_attenuation_variables
+  type (model_attenuation_variables) :: AM_V
 
   integer :: MIN_ATTENUATION_PERIOD,MAX_ATTENUATION_PERIOD
   integer :: myrank
@@ -116,31 +96,11 @@
   subroutine read_attenuation_model(min_att_period, max_att_period, AM_V)
 
   use constants
+  use meshfem3D_models_par,only: model_attenuation_variables
 
   implicit none
 
-! model_attenuation_variables
-  type model_attenuation_variables
-    sequence
-    double precision min_period, max_period
-    double precision                          :: QT_c_source        ! Source Frequency
-    double precision, dimension(:), pointer   :: Qtau_s             ! tau_sigma
-    double precision, dimension(:), pointer   :: QrDisc             ! Discontinuities Defined
-    double precision, dimension(:), pointer   :: Qr                 ! Radius
-    double precision, dimension(:), pointer   :: Qmu                ! Shear Attenuation
-    double precision, dimension(:,:), pointer :: Qtau_e             ! tau_epsilon
-    double precision, dimension(:), pointer   :: Qomsb, Qomsb2      ! one_minus_sum_beta
-    double precision, dimension(:,:), pointer :: Qfc, Qfc2          ! factor_common
-    double precision, dimension(:), pointer   :: Qsf, Qsf2          ! scale_factor
-    integer, dimension(:), pointer            :: Qrmin              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: Qrmax              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: interval_Q                 ! Steps
-    integer                                   :: Qn                 ! Number of points
-    integer dummy_pad ! padding 4 bytes to align the structure
-  end type model_attenuation_variables
-
-  type (model_attenuation_variables) AM_V
-! model_attenuation_variables
+  type (model_attenuation_variables) :: AM_V
 
   integer :: min_att_period, max_att_period
 
@@ -167,6 +127,8 @@
                                     R670,R220,R80,AM_V,AM_S,AS_V,CRUSTAL)
 
   use constants
+  use meshfem3D_models_par,only: model_attenuation_variables,model_attenuation_storage_var
+  use meshfem3D_models_par,only: attenuation_simplex_variables
 
   use model_1dref_par, only: &
     NR_REF,Mref_V_radius_ref,Mref_V_Qmu_ref
@@ -182,57 +144,9 @@
 
   implicit none
 
-! model_attenuation_variables
-  type model_attenuation_variables
-    sequence
-    double precision min_period, max_period
-    double precision                          :: QT_c_source        ! Source Frequency
-    double precision, dimension(:), pointer   :: Qtau_s             ! tau_sigma
-    double precision, dimension(:), pointer   :: QrDisc             ! Discontinuities Defined
-    double precision, dimension(:), pointer   :: Qr                 ! Radius
-    double precision, dimension(:), pointer   :: Qmu                ! Shear Attenuation
-    double precision, dimension(:,:), pointer :: Qtau_e             ! tau_epsilon
-    double precision, dimension(:), pointer   :: Qomsb, Qomsb2      ! one_minus_sum_beta
-    double precision, dimension(:,:), pointer :: Qfc, Qfc2          ! factor_common
-    double precision, dimension(:), pointer   :: Qsf, Qsf2          ! scale_factor
-    integer, dimension(:), pointer            :: Qrmin              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: Qrmax              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: interval_Q                 ! Steps
-    integer                                   :: Qn                 ! Number of points
-    integer dummy_pad ! padding 4 bytes to align the structure
-  end type model_attenuation_variables
-
-  type (model_attenuation_variables) AM_V
-! model_attenuation_variables
-
-! model_attenuation_storage_var
-  type model_attenuation_storage_var
-    sequence
-    double precision, dimension(:,:), pointer :: tau_e_storage
-    double precision, dimension(:), pointer :: Qmu_storage
-    integer Q_resolution
-    integer Q_max
-  end type model_attenuation_storage_var
-
-  type (model_attenuation_storage_var) AM_S
-! model_attenuation_storage_var
-
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (model_attenuation_variables) :: AM_V
+  type (model_attenuation_storage_var) :: AM_S
+  type (attenuation_simplex_variables) :: AS_V
 
   integer :: myrank,REFERENCE_1D_MODEL
   double precision :: RICB, RCMB, R670, R220, R80
@@ -253,21 +167,21 @@
     AM_V%Qn = 12
   else if (REFERENCE_1D_MODEL == REFERENCE_MODEL_AK135F_NO_MUD) then
     ! redefines "pure" 1D model without crustal modification
-    call define_model_ak135(.FALSE.)
+    call define_model_ak135(.false.)
     AM_V%Qn = NR_AK135F_NO_MUD
   else if (REFERENCE_1D_MODEL == REFERENCE_MODEL_1066A) then
     ! redefines "pure" 1D model without crustal modification
-    call define_model_1066a(.FALSE.)
+    call define_model_1066a(.false.)
     AM_V%Qn = NR_1066A
   else if (REFERENCE_1D_MODEL == REFERENCE_MODEL_1DREF) then
     ! redefines "pure" 1D model without crustal modification
-    call define_model_1dref(.FALSE.)
+    call define_model_1dref(.false.)
     AM_V%Qn = NR_REF
   else if (REFERENCE_1D_MODEL == REFERENCE_MODEL_JP1D) then
     AM_V%Qn = 12
   else if (REFERENCE_1D_MODEL == REFERENCE_MODEL_SEA1D) then
     ! redefines "pure" 1D model without crustal modification
-    call define_model_sea1d(.FALSE.)
+    call define_model_sea1d(.false.)
     AM_V%Qn = NR_SEA1D
   else
     call exit_MPI(myrank, 'Reference 1D Model Not recognized')
@@ -337,60 +251,14 @@
 ! includes min_period, max_period, and N_SLS
 
   use constants
+  use meshfem3D_models_par,only: model_attenuation_variables,model_attenuation_storage_var
+  use meshfem3D_models_par,only: attenuation_simplex_variables
 
   implicit none
 
-! model_attenuation_variables
-  type model_attenuation_variables
-    sequence
-    double precision min_period, max_period
-    double precision                          :: QT_c_source        ! Source Frequency
-    double precision, dimension(:), pointer   :: Qtau_s             ! tau_sigma
-    double precision, dimension(:), pointer   :: QrDisc             ! Discontinuities Defined
-    double precision, dimension(:), pointer   :: Qr                 ! Radius
-    double precision, dimension(:), pointer   :: Qmu                ! Shear Attenuation
-    double precision, dimension(:,:), pointer :: Qtau_e             ! tau_epsilon
-    double precision, dimension(:), pointer   :: Qomsb, Qomsb2      ! one_minus_sum_beta
-    double precision, dimension(:,:), pointer :: Qfc, Qfc2          ! factor_common
-    double precision, dimension(:), pointer   :: Qsf, Qsf2          ! scale_factor
-    integer, dimension(:), pointer            :: Qrmin              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: Qrmax              ! Max and Mins of idoubling
-    integer, dimension(:), pointer            :: interval_Q                 ! Steps
-    integer                                   :: Qn                 ! Number of points
-    integer dummy_pad ! padding 4 bytes to align the structure
-  end type model_attenuation_variables
-
-  type (model_attenuation_variables) AM_V
-! model_attenuation_variables
-
-! model_attenuation_storage_var
-  type model_attenuation_storage_var
-    sequence
-    double precision, dimension(:,:), pointer :: tau_e_storage
-    double precision, dimension(:), pointer :: Qmu_storage
-    integer Q_resolution
-    integer Q_max
-  end type model_attenuation_storage_var
-
-  type (model_attenuation_storage_var) AM_S
-! model_attenuation_storage_var
-
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (model_attenuation_variables) :: AM_V
+  type (model_attenuation_storage_var) :: AM_S
+  type (attenuation_simplex_variables) :: AS_V
 
   double precision :: Qmu_in, T_c_source
   double precision, dimension(N_SLS) :: tau_s, tau_e
@@ -418,20 +286,11 @@
   subroutine model_attenuation_storage(Qmu, tau_e, rw, AM_S)
 
   use constants
+  use meshfem3D_models_par,only: model_attenuation_storage_var
 
   implicit none
 
-! model_attenuation_storage_var
-  type model_attenuation_storage_var
-    sequence
-    double precision, dimension(:,:), pointer :: tau_e_storage
-    double precision, dimension(:), pointer :: Qmu_storage
-    integer Q_resolution
-    integer Q_max
-  end type model_attenuation_storage_var
-
   type (model_attenuation_storage_var) AM_S
-! model_attenuation_storage_var
 
   double precision :: Qmu
   double precision, dimension(N_SLS) :: tau_e
@@ -453,7 +312,7 @@
      AM_S%Qmu_storage(:) = -1
   endif
 
-  if (Qmu < 0.0d0 .OR. Qmu > AM_S%Q_max) then
+  if (Qmu < 0.0d0 .or. Qmu > AM_S%Q_max) then
     write(IMAIN,*) 'Error attenuation_storage()'
     write(IMAIN,*) 'Attenuation Value out of Range: ', Qmu
     write(IMAIN,*) 'Attenuation Value out of Range: Min, Max ', 0, AM_S%Q_max
@@ -463,7 +322,7 @@
     call exit_MPI(myrank, 'Attenuation Value out of Range')
   endif
 
-  if (rw > 0 .AND. Qmu == 0.0d0) then
+  if (rw > 0 .and. Qmu == 0.0d0) then
      Qmu = 0.0d0;
      tau_e(:) = 0.0d0;
      return
@@ -561,25 +420,11 @@
   subroutine attenuation_invert_by_simplex(t2, t1, n, Q_real, omega_not, tau_s, tau_e, AS_V)
 
   use constants
+  use meshfem3D_models_par,only: attenuation_simplex_variables
 
   implicit none
 
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (attenuation_simplex_variables) :: AS_V
 
   ! Input / Output
   integer myrank
@@ -611,7 +456,7 @@
   exp1 = log10(f1)
   exp2 = log10(f2)
 
-  if (f2 < f1 .OR. Q_real < 0.0d0 .OR. n < 1) then
+  if (f2 < f1 .or. Q_real < 0.0d0 .or. n < 1) then
     call world_rank(myrank)
     call exit_MPI(myrank, 'frequencies flipped or Q less than zero or N_SLS < 0')
   endif
@@ -664,24 +509,11 @@
 
   subroutine attenuation_simplex_finish(AS_V)
 
+  use meshfem3D_models_par,only: attenuation_simplex_variables
+
   implicit none
 
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (attenuation_simplex_variables) :: AS_V
 
   deallocate(AS_V%f)
   deallocate(AS_V%tau_s)
@@ -692,24 +524,11 @@ end subroutine attenuation_simplex_finish
 !   - See module for explanation
 subroutine attenuation_simplex_setup(nf_in,nsls_in,f_in,Q_in,tau_s_in,AS_V)
 
+  use meshfem3D_models_par,only: attenuation_simplex_variables
+
   implicit none
 
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (attenuation_simplex_variables) :: AS_V
 
   integer nf_in, nsls_in
   double precision Q_in
@@ -815,24 +634,11 @@ subroutine attenuation_simplex_setup(nf_in,nsls_in,f_in,Q_in,tau_s_in,AS_V)
 !
   double precision function attenuation_eval(Xin,AS_V)
 
+  use meshfem3D_models_par,only: attenuation_simplex_variables
+
   implicit none
 
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (attenuation_simplex_variables) :: AS_V
 
    ! Input
   double precision, dimension(AS_V%nsls) :: Xin
@@ -893,24 +699,11 @@ subroutine attenuation_simplex_setup(nf_in,nsls_in,f_in,Q_in,tau_s_in,AS_V)
 !     See Matlab fminsearch
   subroutine fminsearch(funk, x, n, itercount, tolf, prnt, err, AS_V)
 
+  use meshfem3D_models_par,only: attenuation_simplex_variables
+
   implicit none
 
-! attenuation_simplex_variables
-  type attenuation_simplex_variables
-    sequence
-    double precision Q  ! Q     = Desired Value of Attenuation or Q
-    double precision iQ ! iQ    = 1/Q
-    double precision, dimension(:), pointer ::  f
-    ! f = Frequencies at which to evaluate the solution
-    double precision, dimension(:), pointer :: tau_s
-    ! tau_s = Tau_sigma defined by the frequency range and
-    !             number of standard linear solids
-    integer nf          ! nf    = Number of Frequencies
-    integer nsls        ! nsls  = Number of Standard Linear Solids
-  end type attenuation_simplex_variables
-
-  type(attenuation_simplex_variables) AS_V
-! attenuation_simplex_variables
+  type (attenuation_simplex_variables) :: AS_V
 
   ! Input
   double precision, external :: funk
@@ -1011,9 +804,9 @@ subroutine attenuation_simplex_setup(nf_in,nsls_in,f_in,Q_in,tau_s_in,AS_V)
      write(*,*)'evals: ',func_evals
   endif
 
-  do while (func_evals < maxfun .AND. itercount < maxiter)
+  do while (func_evals < maxfun .and. itercount < maxiter)
 
-     if (max_size_simplex(v,n) <= tolx .AND. &
+     if (max_size_simplex(v,n) <= tolx .and. &
           max_value(fv,n+1) <= tolf) then
         goto 666
      endif

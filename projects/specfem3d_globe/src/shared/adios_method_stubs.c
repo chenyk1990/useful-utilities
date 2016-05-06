@@ -34,21 +34,6 @@
 
 typedef float realw;
 
-// placeholders for non-adios compilation
-
-void
-warn_no_adios(void)
-{
-  fprintf(stderr, "Error: ADIOS enabled without ADIOS Support. "
-                  "To enable ADIOS support, reconfigure with --with-adios flag.\n");
-  exit(1);
-}
-
-void FC_FUNC_(adios_setup,ADIOS_SETUP)(void) { warn_no_adios(); }
-
-void FC_FUNC_(adios_cleanup,ADIOS_CLEANUP)(void) {}
-
-
 
 // for xmeshfem3D compilation
 
@@ -102,8 +87,6 @@ void FC_FUNC_(save_forward_arrays_undoatt_adios,SAVE_FORWARD_ARRAYS_UNDOATT_ADIO
 
 void FC_FUNC_(save_intermediate_forward_arrays_adios,SAVE_INTERMEDIATE_FORWARD_ARRAYS_ADIOS)(void) {}
 
-void FC_FUNC_(perform_write_adios_kernels,PERFORM_WRITE_ADIOS_KERNELS)(void) {}
-
 void FC_FUNC_(define_kernel_adios_variables,DEFINE_KERNEL_ADIOS_VARIABLES)(void) {}
 
 void FC_FUNC_(write_kernels_cm_adios,WRITE_KERNELS_CM_ADIOS)(void) {}
@@ -119,20 +102,3 @@ void FC_FUNC_(write_kernels_source_derivatives_adios,WRITE_KERNELS_SOURCE_DERIVA
 void FC_FUNC_(write_kernels_hessian_adios,WRITE_KERNELS_HESSIAN_ADIOS)(void) {}
 
 void FC_FUNC_(write_kernels_strength_noise_adios,WRITE_KERNELS_STRENGTH_NOISE_ADIOS)(void) {}
-
-
-// For xspecfem3d -- "ASDF" -- seismograms in ADIOS
-
-void FC_FUNC_(init_asdf_data,INIT_ASDF_DATA)(void* asdf_event,
-                                             int* total_seismos_local) {}
-
-void FC_FUNC_(store_asdf_data,STORE_ASDF_DATA)
-    (void* my_asdf, realw* seismogram_tmp, int* irec_local, int *irec,
-     char* chn, int* iorientation) {}
-
-void FC_FUNC_(close_asdf_data,CLOSE_ASDF_DATA)(void *my_asdf,
-                                               int *total_seismos_local) {}
-
-void FC_FUNC_(write_asdf,WRITE_ASDF)(void* my_asdf) {}
-
-

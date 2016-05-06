@@ -38,7 +38,7 @@
   use specfem_par,only: &
     GPU_MODE,Mesh_pointer, &
     COMPUTE_AND_STORE_STRAIN, &
-    SIMULATION_TYPE,time_start,DT,t0, &
+    SIMULATION_TYPE,scale_displ,time_start,DT,t0, &
     NSTEP,it,it_begin,it_end,NUMBER_OF_RUNS,NUMBER_OF_THIS_RUN, &
     myrank,UNDO_ATTENUATION
 
@@ -81,8 +81,6 @@
   integer :: year,mon,day,hr,minutes,timestamp,julian_day_number,day_of_week, &
              timestamp_remote,year_remote,mon_remote,day_remote,hr_remote,minutes_remote,day_of_week_remote
   integer, external :: idaywk
-
-  double precision,parameter :: scale_displ = R_EARTH
 
   ! compute maximum of norm of displacement in each slice
   if (.not. GPU_MODE) then
@@ -346,26 +344,6 @@
 
   endif
 
-  ! debug output
-  !if (maxval(displ_crust_mantle(1,:)**2 + &
-  !                displ_crust_mantle(2,:)**2 + displ_crust_mantle(3,:)**2) > 1.e4) then
-  !  print *,'slice',myrank
-  !  print *,'  crust_mantle displ:', maxval(displ_crust_mantle(1,:)), &
-  !           maxval(displ_crust_mantle(2,:)),maxval(displ_crust_mantle(3,:))
-  !  print *,'  indxs: ',maxloc( displ_crust_mantle(1,:)),maxloc( displ_crust_mantle(2,:)),maxloc( displ_crust_mantle(3,:))
-  !  indx = maxloc( displ_crust_mantle(3,:) )
-  !  rval = xstore_crust_mantle(indx(1))
-  !  thetaval = ystore_crust_mantle(indx(1))
-  !  phival = zstore_crust_mantle(indx(1))
-  !
-  !  !call geocentric_2_geographic_cr(thetaval,thetaval)
-  !  print *,'r/lat/lon:',rval*R_EARTH_KM,90.0-thetaval*180./PI,phival*180./PI
-  !  call rthetaphi_2_xyz(rval,thetaval,phival,xstore_crust_mantle(indx(1)),&
-  !                     ystore_crust_mantle(indx(1)),zstore_crust_mantle(indx(1)))
-  !  print *,'x/y/z:',rval,thetaval,phival
-  !  call exit_MPI(myrank,'Error stability')
-  !endif
-
   end subroutine check_stability
 
 !
@@ -382,7 +360,7 @@
 
   use specfem_par,only: &
     GPU_MODE,Mesh_pointer, &
-    SIMULATION_TYPE,time_start,DT,t0, &
+    SIMULATION_TYPE,scale_displ,time_start,DT,t0, &
     NSTEP,it,it_begin,it_end,NUMBER_OF_RUNS,NUMBER_OF_THIS_RUN, &
     myrank
 
@@ -403,8 +381,6 @@
 
   integer :: it_run,nstep_run
   logical :: SHOW_SEPARATE_RUN_INFORMATION
-
-  double precision,parameter :: scale_displ = R_EARTH
 
   ! checks if anything to do
   if (SIMULATION_TYPE /= 3 ) return

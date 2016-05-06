@@ -349,8 +349,15 @@ ${E}/xcreate_movie_GMT_global: $(xcreate_movie_GMT_global_OBJECTS) $(xcreate_mov
 
 #######################################
 
-${E}/xextract_database: $(S_TOP)/utils/extract_database/extract_database.f90 ${OUTPUT}/values_from_mesher.h
-	${FCCOMPILE_CHECK} -o ${E}/xextract_database ${FCFLAGS_f90} $(S_TOP)/utils/extract_database/extract_database.f90
+xextract_database_OBJECTS = \
+	$O/extract_database.aux.o \
+	$(EMPTY_MACRO)
+
+xextract_database_SHARED_OBJECTS = \
+	$(EMPTY_MACRO)
+
+${E}/xextract_database: $(xextract_database_OBJECTS) $(xextract_database_SHARED_OBJECTS)
+	${FCCOMPILE_CHECK} -o $@ $+
 
 #######################################
 
@@ -381,7 +388,7 @@ $O/%.auxsolver_vtk.o: $S/%.F90 ${OUTPUT}/values_from_mesher.h $O/shared_par.shar
 	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(FC_DEFINE)USE_VTK_INSTEAD_OF_MESH
 
 $O/%.auxadios.o: $S/%.F90 ${OUTPUT}/values_from_mesher.h $O/shared_par.shared_module.o $O/parallel.sharedmpi.o
-	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(FC_DEFINE)ADIOS_INPUT
+	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(ADIOS_DEF)
 
 $O/%.auxadios_vtk.o: $S/%.F90 ${OUTPUT}/values_from_mesher.h $O/shared_par.shared_module.o $O/parallel.sharedmpi.o
-	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(FC_DEFINE)ADIOS_INPUT $(FC_DEFINE)USE_VTK_INSTEAD_OF_MESH
+	${FCCOMPILE_CHECK} ${FCFLAGS_f90} -c -o $@ $< $(ADIOS_DEF) $(FC_DEFINE)USE_VTK_INSTEAD_OF_MESH

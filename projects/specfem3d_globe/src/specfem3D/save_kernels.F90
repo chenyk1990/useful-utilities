@@ -30,20 +30,21 @@
   use constants_solver, only: SAVE_BOUNDARY_MESH
 
   use specfem_par, only: NOISE_TOMOGRAPHY,SIMULATION_TYPE,nrec_local, &
-    APPROXIMATE_HESS_KL,SAVE_REGULAR_KL, &
-    current_adios_handle,ADIOS_FOR_KERNELS
+    APPROXIMATE_HESS_KL,SAVE_REGULAR_KL,ADIOS_FOR_KERNELS
 
   use specfem_par_innercore, only: rhostore_inner_core,muvstore_inner_core,kappavstore_inner_core, &
     rho_kl_inner_core,alpha_kl_inner_core,beta_kl_inner_core
 
   use specfem_par_outercore, only: rhostore_outer_core,kappavstore_outer_core,rho_kl_outer_core,alpha_kl_outer_core
 
+  use manager_adios
+
   implicit none
 
   ! Open an handler to the ADIOS file in which kernel variables are written.
   if (ADIOS_FOR_KERNELS) then
     if ((SIMULATION_TYPE == 3) .or. (SIMULATION_TYPE == 2 .and. nrec_local > 0)) &
-      call define_kernel_adios_variables(current_adios_handle)
+      call define_kernel_adios_variables()
   endif
 
   ! dump kernel arrays
@@ -86,7 +87,7 @@
   ! Write ADIOS defined variables to disk.
   if (ADIOS_FOR_KERNELS) then
     if ((SIMULATION_TYPE == 3) .or. (SIMULATION_TYPE == 2 .and. nrec_local > 0)) &
-      call perform_write_adios_kernels(current_adios_handle)
+      call close_file_adios()
   endif
 
   end subroutine save_kernels
@@ -129,12 +130,12 @@
   !                  with the intent to dimensionalize kernel values to [ s km^(-3) ]
   !
   ! kernel unit [ s / km^3 ]
-  scale_kl = scale_t/scale_displ * 1.d9
+  scale_kl = scale_t * scale_displ_inv * 1.d9
   ! For anisotropic kernels
   ! final unit : [s km^(-3) GPa^(-1)]
   scale_kl_ani = scale_t**3 / (RHOAV*R_EARTH**3) * 1.d18
   ! final unit : [s km^(-3) (kg/m^3)^(-1)]
-  scale_kl_rho = scale_t / scale_displ / RHOAV * 1.d9
+  scale_kl_rho = scale_t * scale_displ_inv / RHOAV * 1.d9
 
   ! allocates temporary arrays
   if (SAVE_TRANSVERSE_KL_ONLY) then
@@ -401,8 +402,7 @@
 
   ! writes out kernels to files
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_cm_adios(current_adios_handle, &
-                                mu_kl_crust_mantle, kappa_kl_crust_mantle, rhonotprime_kl_crust_mantle, &
+    call write_kernels_cm_adios(mu_kl_crust_mantle, kappa_kl_crust_mantle, rhonotprime_kl_crust_mantle, &
                                 alphav_kl_crust_mantle,alphah_kl_crust_mantle, &
                                 betav_kl_crust_mantle,betah_kl_crust_mantle, &
                                 eta_kl_crust_mantle, &
@@ -557,7 +557,7 @@
   real(kind=CUSTOM_REAL) :: rhol,kappal,rho_kl,alpha_kl
   integer :: ispec,i,j,k
 
-  scale_kl = scale_t / scale_displ * 1.d9
+  scale_kl = scale_t * scale_displ_inv * 1.d9
 
   ! outer_core
   do ispec = 1, NSPEC_OUTER_CORE
@@ -578,7 +578,7 @@
 
   ! writes out kernels to file
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_oc_adios(current_adios_handle)
+    call write_kernels_oc_adios()
   else
     call create_name_database(prname,myrank,IREGION_OUTER_CORE,LOCAL_TMP_PATH)
 
@@ -621,7 +621,7 @@
   integer :: ispec,i,j,k
 
   ! scaling to units
-  scale_kl = scale_t / scale_displ * 1.d9
+  scale_kl = scale_t * scale_displ_inv * 1.d9
 
   ! inner_core
   do ispec = 1, NSPEC_INNER_CORE
@@ -646,7 +646,7 @@
 
   ! writes out kernels to file
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_ic_adios(current_adios_handle)
+    call write_kernels_ic_adios()
   else
     call create_name_database(prname,myrank,IREGION_INNER_CORE,LOCAL_TMP_PATH)
 
@@ -679,7 +679,7 @@
   real(kind=CUSTOM_REAL):: scale_kl
 
   ! kernel unit [ s / km^3 ]
-  scale_kl = scale_t/scale_displ * 1.d9
+  scale_kl = scale_t * scale_displ_inv * 1.d9
 
   ! scale the boundary kernels properly: *scale_kl gives s/km^3 and 1.d3 gives
   ! the relative boundary kernels (for every 1 km) in s/km^2
@@ -691,7 +691,7 @@
 
   ! writes out kernels to file
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_boundary_kl_adios(current_adios_handle)
+    call write_kernels_boundary_kl_adios()
   else
     call create_name_database(prname,myrank,IREGION_CRUST_MANTLE,LOCAL_TMP_PATH)
 
@@ -749,6 +749,22 @@
     moment_der(:,:,irec_local) = matmul(matmul(transpose(nu_source(:,:,irec_local)),moment_der(:,:,irec_local)),&
                nu_source(:,:,irec_local)) * scale_t ** 3 / scale_mass
 
+    ! *nu_source* is the rotation matrix from ECEF to local N-E-UP as defined in src/specfem3D/locate_sources.f90
+
+! From Qinya Liu, Toronto University, Canada:
+! these derivatives are basically derivatives of the misfit function phi with respect to
+! source parameters, which means, if the nu is the rotation matrix that
+! transforms coordinates from the global system (x,y,z) to the local
+! coordinate system (N,E,V), e.g., the moment tensor is transformed as
+!
+! M_L = \nu * M_g * \nu^T,
+!
+! then the derivative should be transformed as
+!
+! \partial{\phi}{M_L} = \nu^T \partial{\phi}{M_g} \nu
+!
+! which is in the opposite sense from the transformation of M.
+
     ! derivatives for time shift and hduration
     stshift_der(irec_local) = stshift_der(irec_local) * scale_displ**2
     shdur_der(irec_local) = shdur_der(irec_local) * scale_displ**2
@@ -756,7 +772,7 @@
 
   ! writes out kernels to file
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_source_derivatives_adios(current_adios_handle)
+    call write_kernels_source_derivatives_adios()
   else
     ! kernel file output
     do irec_local = 1, nrec_local
@@ -806,14 +822,14 @@
   real(kind=CUSTOM_REAL) :: scale_kl
 
   ! scaling factors
-  scale_kl = scale_t/scale_displ * 1.d9
+  scale_kl = scale_t * scale_displ_inv * 1.d9
 
   ! scales approximate Hessian
   hess_kl_crust_mantle(:,:,:,:) = 2._CUSTOM_REAL * hess_kl_crust_mantle(:,:,:,:) * scale_kl
 
   ! writes out kernels to file
   if (ADIOS_FOR_KERNELS) then
-    call write_kernels_hessian_adios(current_adios_handle)
+    call write_kernels_hessian_adios()
   else
     ! stores into file
     call create_name_database(prname,myrank,IREGION_CRUST_MANTLE,LOCAL_TMP_PATH)

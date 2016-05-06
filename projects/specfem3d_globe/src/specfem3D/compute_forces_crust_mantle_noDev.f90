@@ -25,18 +25,18 @@
 !
 !=====================================================================
 
-  subroutine compute_forces_crust_mantle(NSPEC,NGLOB,NSPEC_ATT, &
-                                        deltat, &
-                                        displ_crust_mantle, &
-                                        accel_crust_mantle, &
-                                        phase_is_inner, &
-                                        R_xx,R_yy,R_xy,R_xz,R_yz, &
-                                        R_xx_lddrk,R_yy_lddrk,R_xy_lddrk,R_xz_lddrk,R_yz_lddrk, &
-                                        epsilondev_xx,epsilondev_yy,epsilondev_xy, &
-                                        epsilondev_xz,epsilondev_yz, &
-                                        epsilon_trace_over_3, &
-                                        alphaval,betaval,gammaval, &
-                                        factor_common,vnspec)
+  subroutine compute_forces_crust_mantle_noDev(NSPEC,NGLOB,NSPEC_ATT, &
+                                               deltat, &
+                                               displ_crust_mantle, &
+                                               accel_crust_mantle, &
+                                               phase_is_inner, &
+                                               R_xx,R_yy,R_xy,R_xz,R_yz, &
+                                               R_xx_lddrk,R_yy_lddrk,R_xy_lddrk,R_xz_lddrk,R_yz_lddrk, &
+                                               epsilondev_xx,epsilondev_yy,epsilondev_xy, &
+                                               epsilondev_xz,epsilondev_yz, &
+                                               epsilon_trace_over_3, &
+                                               alphaval,betaval,gammaval, &
+                                               factor_common,vnspec)
 
   use constants_solver
 
@@ -47,7 +47,7 @@
     COMPUTE_AND_STORE_STRAIN,USE_LDDRK
 
   use specfem_par_crustmantle,only: &
-    xstore => xstore_crust_mantle,ystore => ystore_crust_mantle,zstore => zstore_crust_mantle, &
+    rstore => rstore_crust_mantle, &
     xix => xix_crust_mantle,xiy => xiy_crust_mantle,xiz => xiz_crust_mantle, &
     etax => etax_crust_mantle,etay => etay_crust_mantle,etaz => etaz_crust_mantle, &
     gammax => gammax_crust_mantle,gammay => gammay_crust_mantle,gammaz => gammaz_crust_mantle, &
@@ -70,35 +70,36 @@
 
   implicit none
 
-  integer :: NSPEC,NGLOB,NSPEC_ATT
+  integer,intent(in) :: NSPEC,NGLOB,NSPEC_ATT
 
   ! time step
-  real(kind=CUSTOM_REAL) :: deltat
+  real(kind=CUSTOM_REAL),intent(in) :: deltat
 
   ! displacement, velocity and acceleration
-  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB) :: displ_crust_mantle
-  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB) :: accel_crust_mantle
+  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB),intent(in) :: displ_crust_mantle
+  real(kind=CUSTOM_REAL), dimension(NDIM,NGLOB),intent(inout) :: accel_crust_mantle
 
   ! variable sized array variables
-  integer :: vnspec
+  integer,intent(in) :: vnspec
 
   ! memory variables for attenuation
   ! memory variables R_ij are stored at the local rather than global level
   ! to allow for optimization of cache access by compiler
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT) :: R_xx,R_yy,R_xy,R_xz,R_yz
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT),intent(inout) :: R_xx,R_yy,R_xy,R_xz,R_yz
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,N_SLS,NSPEC_ATT),intent(inout) :: &
     R_xx_lddrk,R_yy_lddrk,R_xy_lddrk,R_xz_lddrk,R_yz_lddrk
 
-  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: &
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC),intent(inout) :: &
     epsilondev_xx,epsilondev_yy,epsilondev_xy,epsilondev_xz,epsilondev_yz
-  real(kind=CUSTOM_REAL),dimension(NGLLX,NGLLY,NGLLZ,NSPEC) :: epsilon_trace_over_3
+
+  real(kind=CUSTOM_REAL), dimension(NGLLX,NGLLY,NGLLZ,NSPEC_CRUST_MANTLE_STRAIN_ONLY),intent(inout) :: epsilon_trace_over_3
 
   ! [alpha,beta,gamma]val reduced to N_SLS and factor_common to N_SLS*NUM_NODES
-  real(kind=CUSTOM_REAL), dimension(ATT1_VAL,ATT2_VAL,ATT3_VAL,N_SLS,vnspec) :: factor_common
-  real(kind=CUSTOM_REAL), dimension(N_SLS) :: alphaval,betaval,gammaval
+  real(kind=CUSTOM_REAL), dimension(ATT1_VAL,ATT2_VAL,ATT3_VAL,N_SLS,vnspec),intent(in) :: factor_common
+  real(kind=CUSTOM_REAL), dimension(N_SLS),intent(in) :: alphaval,betaval,gammaval
 
   ! inner/outer element run flag
-  logical :: phase_is_inner
+  logical,intent(in) :: phase_is_inner
 
   ! local parameters
 
@@ -398,11 +399,11 @@
               eta_aniso = eta_anisostore(i,j,k,ispec)  !!! that is  F / (A - 2 L)
 
               ! use mesh coordinates to get theta and phi
-              ! ystore and zstore contain theta and phi
+              ! rstore contains theta and phi
 
               iglob = ibool(i,j,k,ispec)
-              theta = ystore(iglob)
-              phi = zstore(iglob)
+              theta = rstore(2,iglob)
+              phi = rstore(3,iglob)
 
               costheta = cos(theta)
               sintheta = sin(theta)
@@ -608,9 +609,9 @@
             ! x y and z contain r theta and phi
 
             iglob = ibool(i,j,k,ispec)
-            radius = dble(xstore(iglob))
-            theta = ystore(iglob)
-            phi = zstore(iglob)
+            radius = dble(rstore(1,iglob))
+            theta = rstore(2,iglob)
+            phi = rstore(3,iglob)
 
             cos_theta = dcos(dble(theta))
             sin_theta = dsin(dble(theta))
@@ -814,5 +815,5 @@
 
   enddo   ! spectral element loop NSPEC_CRUST_MANTLE
 
-  end subroutine compute_forces_crust_mantle
+  end subroutine compute_forces_crust_mantle_noDev
 
