@@ -1,13 +1,13 @@
-PDE 1994  6  9  0 33 16.40 -13.8300  -67.5600 637.0 6.9 6.8 NORTHERN BOLIVIA                        
-event name:     060994A        
-time shift:     29.0000
-half duration:  20.0000
-latitude:      -13.8200
-longitude:     -67.2500
-depth:         647.1000
-Mrr:      -7.590000e+27
-Mtt:       7.750000e+27
-Mpp:      -1.600000e+26
-Mrt:      -2.503000e+28
-Mrp:       4.200000e+26
-Mtp:      -2.480000e+27
+ PDE 2010  4 11 22  8 12.80  36.9700   -3.5400 609.8 6.0 6.3 SPAIN
+event name:     C201004112208A
+time shift:      2.7000
+half duration:   3.6000
+latitude:       37.1000
+longitude:      -3.6900
+depth:         616.5000
+Mrr:      -2.160000e+25
+Mtt:       5.360000e+24
+Mpp:       1.620000e+25
+Mrt:       1.300000e+23
+Mrp:       3.230000e+25
+Mtp:       1.750000e+25
