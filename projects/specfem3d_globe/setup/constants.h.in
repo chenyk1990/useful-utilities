@@ -176,6 +176,10 @@
 ! minimum thickness in meters to include the effect of the oceans and topo
   double precision, parameter :: MINIMUM_THICKNESS_3D_OCEANS = 50.d0
 
+! plots pnm-image (showing used topography)
+! file can become fairly big for large topo-files, e.g. ETOPO1 creates a ~2.7 GB pnm-image
+  logical,parameter :: PLOT_PNM_IMAGE_TOPO_BATHY = .false.
+
 
 !!-----------------------------------------------------------
 !!
@@ -289,6 +293,18 @@
 
 !!-----------------------------------------------------------
 !!
+!! noise simulations
+!!
+!!-----------------------------------------------------------
+
+! noise buffer for file i/o
+! maximum noise buffer size in MB (will be used to evaluate number of steps for buffer, when UNDO_ATTENUATION == .false.)
+! good performance results obtained for buffer sizes ~ 150 MB
+  double precision,parameter :: MAXIMUM_NOISE_BUFFER_SIZE_IN_MB = 150.d0
+
+
+!!-----------------------------------------------------------
+!!
 !! mesh optimization
 !!
 !!-----------------------------------------------------------
@@ -348,7 +364,6 @@
 
   integer, parameter :: ADIOS_BUFFER_SIZE_IN_MB = 200
   character(len=*), parameter :: ADIOS_TRANSPORT_METHOD = "MPI"
-
   character(len=*), parameter :: ADIOS_TRANSPORT_METHOD_UNDO_ATT = "POSIX"
   character(len=*), parameter :: ADIOS_METHOD_PARAMS_UNDO_ATT =  ""
 
@@ -867,8 +882,20 @@
 !! for LDDRK high-order time scheme
 !!
 !!-----------------------------------------------------------
+
+! Low-dissipation and low-dispersion fourth-order Runge-Kutta algorithm
+!
+! reference:
+! J. Berland, C. Bogey, and C. Bailly.
+! Low-dissipation and low-dispersion fourth-order Runge-Kutta algorithm.
+! Computers and Fluids, 35:1459-1463, 2006
+!
+! see: http://www.sciencedirect.com/science/article/pii/S0045793005000575?np=y
+
+! number of stages
   integer, parameter :: NSTAGE = 6
 
+! coefficients from Table 1, Berland et al. (2006)
   real(kind=CUSTOM_REAL), dimension(NSTAGE), parameter :: ALPHA_LDDRK = &
     (/0.0_CUSTOM_REAL,-0.737101392796_CUSTOM_REAL, -1.634740794341_CUSTOM_REAL,&
       -0.744739003780_CUSTOM_REAL,-1.469897351522_CUSTOM_REAL,-2.813971388035_CUSTOM_REAL/)
