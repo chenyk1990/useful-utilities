@@ -19,7 +19,7 @@ cflags=""
 # 1. Make sure you download and compiled the asdf library(https://github.com/SeismicData/asdf-library).
 # 2. load adios and cuda library from titan system module
 
-./configure --with-asdf ASDF_LIBS="/ccs/home/lei/bin/asdf-library/build/lib/libasdf.a" --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include"
+./configure --with-asdf ASDF_LIBS="/ccs/home/chenyk/asdf-library/build/lib/libasdf.a" --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include"
 
 ##################################################
 # with adios and cuda
