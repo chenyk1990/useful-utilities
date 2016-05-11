@@ -25,95 +25,38 @@
 !
 !=====================================================================
 
-!-------------------------------------------------------------------------------
-!> \file write_output_ASDF.F90
-!! \brief Write subroutines for writing ASDF seismograms to file using
-!!        the ADIOS library
-!! \author JAS and Wenjie Lei
-!------------------------------------------------------------------------------
-
-#include "config.fh"
-
 !> Initializes the data structure for ASDF
 !! \param asdf_container The ASDF data structure
-!! \param total_seismos_local The number of records on the local processor
-subroutine init_asdf_data(asdf_container,total_seismos_local)
+!! \param nrec_local The number of receivers on the local processor
+subroutine init_asdf_data(asdf_container, nrec_local)
 
   use asdf_data
-  use specfem_par, only : event_name_SAC,myrank
+  use specfem_par, only : myrank
 
   ! Parameters
   type(asdf_event),intent(inout) :: asdf_container
-  integer,intent(in) :: total_seismos_local
+  integer,intent(in) :: nrec_local
 
   ! Variables
-  integer :: ier
+  integer :: total_seismos_local, ier
 
-  asdf_container%nrecords = total_seismos_local
-  asdf_container%event = trim(event_name_SAC)
+  total_seismos_local = nrec_local*3 ! 3 components
 
-  allocate (asdf_container%npoints(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%receiver_name_array(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_year(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%network_array(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_hour(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%component_array(total_seismos_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_day(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%receiver_lat(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_min(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%receiver_lo(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_sec(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%receiver_el(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%gmt_msec(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%receiver_dpt(nrec_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%event_lat(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%event_lo(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%event_dpt(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_lat(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_lo(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_el(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_dpt(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%begin_value(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%end_value(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%cmp_azimuth(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%cmp_incident_ang(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%sample_rate(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%scale_factor(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%ev_to_sta_AZ(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%sta_to_ev_AZ(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%great_circle_arc(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%dist(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%P_pick(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%S_pick(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%records(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_name_array(asdf_container%nrecords), &
-            STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%network_array(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%component_array(asdf_container%nrecords), STAT=ier)
-  if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
-  allocate (asdf_container%receiver_id_array(asdf_container%nrecords), STAT=ier)
+  allocate (asdf_container%records(total_seismos_local), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocate failed.')
 
 end subroutine init_asdf_data
@@ -123,26 +66,19 @@ end subroutine init_asdf_data
 !
 
 !> Stores the records into the ASDF structure
-!! \param asdf_container The ASDF data structure
+!! \param asdf_container The ASDF data container
 !! \param seismogram_tmp The current seismogram to store
-!! \param irec_local The local index of the receivers on the local processor
+!! \param irec_local The local index of the receiver
 !! \param irec The global index of the receiver
 !! \param chn The broadband channel simulated
 !! \param iorientation The recorded seismogram's orientation direction
-!! \param phi The angle used for calculating azimuth and incident angle
-subroutine store_asdf_data(asdf_container, seismogram_tmp, irec_local, &
-                           irec, chn, iorientation, phi)
+subroutine store_asdf_data(asdf_container, seismogram_tmp, irec_local, irec, chn, iorientation)
 
   use asdf_data
   use specfem_par,only: &
-    station_name,network_name,stlat,stlon,stele,stbur, &
-    DT,t0, seismo_offset,seismo_current, NTSTEP_BETWEEN_OUTPUT_SEISMOS, &
-    yr=>yr_SAC,jda=>jda_SAC,ho=>ho_SAC,mi=>mi_SAC,sec=>sec_SAC, &
-    tshift_cmt=>t_cmt_SAC, &
-    cmt_lat=>cmt_lat_SAC,cmt_lon=>cmt_lon_SAC, &
-    cmt_depth=>cmt_depth_SAC
-
-  use specfem_par, only: myrank
+    station_name,network_name, &
+    seismo_current, NTSTEP_BETWEEN_OUTPUT_SEISMOS, myrank, &
+    stlat, stlon, stele, stbur
   use constants
 
   implicit none
@@ -150,73 +86,26 @@ subroutine store_asdf_data(asdf_container, seismogram_tmp, irec_local, &
   ! Parameters
   type(asdf_event),intent(inout) :: asdf_container
   character(len=4),intent(in) :: chn
-  integer,intent(in) :: irec_local, irec
+  integer,intent(in) :: irec_local, irec, iorientation
   real(kind=CUSTOM_REAL),dimension(5,NTSTEP_BETWEEN_OUTPUT_SEISMOS),intent(in) :: seismogram_tmp
-  integer,intent(in) :: iorientation
-  double precision,intent(in) :: phi
   ! local Variables
   integer :: length_station_name, length_network_name
   integer :: ier, i
-
   ! trace index
   i = (irec_local-1)*(3) + (iorientation)
 
-  asdf_container%npoints(i) = seismo_current
-  asdf_container%gmt_year(i) = yr
-  asdf_container%gmt_day(i) = jda
-  asdf_container%gmt_hour(i) = ho
-  asdf_container%gmt_min(i) = mi
-  asdf_container%gmt_sec(i) = sec
-  asdf_container%gmt_msec(i) = 0
-  asdf_container%event_lat(i) = cmt_lat
-  asdf_container%event_lo(i) = cmt_lon
-  asdf_container%event_dpt(i) = cmt_depth
-  asdf_container%receiver_lat(i) = stlat(irec_local)
-  asdf_container%receiver_lo(i) = stlon(irec_local)
-  asdf_container%receiver_el(i) = stele(irec_local)
-  asdf_container%receiver_dpt(i) = stbur(irec_local)
-  asdf_container%begin_value(i) = seismo_offset*DT-t0+tshift_cmt
-  asdf_container%end_value(i) = -12345
-
-  ! instrument orientation
-  if (iorientation == 1) then !N
-    asdf_container%cmp_azimuth(i)  = 0.00
-    asdf_container%cmp_incident_ang(i) =90.00
-  else if (iorientation == 2) then !E
-    asdf_container%cmp_azimuth(i)  =90.00
-    asdf_container%cmp_incident_ang(i) =90.00
-  else if (iorientation == 3) then !Z
-    asdf_container%cmp_azimuth(i)  = 0.00
-    asdf_container%cmp_incident_ang(i) = 0.00
-  else if (iorientation == 4) then !R
-    asdf_container%cmp_azimuth(i) = sngl(modulo(phi,360.0d+0))
-    asdf_container%cmp_incident_ang(i) =90.00
-  else if (iorientation == 5) then !T
-    asdf_container%cmp_azimuth(i) = sngl(modulo(phi+90.0,360.0d+0))
-    asdf_container%cmp_incident_ang(i) =90.00
-  endif
-
-  asdf_container%sample_rate(i) = DT
-  asdf_container%scale_factor(i) = 1000000000
-  asdf_container%ev_to_sta_AZ(i) = -12345
-  asdf_container%sta_to_ev_AZ(i) = -12345
-  asdf_container%great_circle_arc(i) = -12345
-  asdf_container%dist(i) = -12345
-  asdf_container%P_pick(i) = -12345
-  asdf_container%S_pick(i) = -12345
-
   length_station_name = len_trim(station_name(irec))
   length_network_name = len_trim(network_name(irec))
-  asdf_container%receiver_name_array(i) = station_name(irec)(1:length_station_name)
-  asdf_container%network_array(i) = network_name(irec)(1:length_network_name)
-  asdf_container%component_array(i) = chn
-
-  ! note: this array of strings is not set with other new values yet...
-  asdf_container%receiver_id_array(i) = ""
+  asdf_container%receiver_name_array(irec_local) = station_name(irec)(1:length_station_name)
+  asdf_container%network_array(irec_local) = network_name(irec)(1:length_network_name)
+  asdf_container%component_array(i) = chn(1:3)
+  asdf_container%receiver_lat(irec_local) = stlat(irec)
+  asdf_container%receiver_lo(irec_local) = stlon(irec)
+  asdf_container%receiver_el(irec_local) = stele(irec)
+  asdf_container%receiver_dpt(irec_local) = stbur(irec)
 
   allocate (asdf_container%records(i)%record(seismo_current), STAT=ier)
   if (ier /= 0) call exit_MPI (myrank, 'Allocating ASDF container failed.')
-
   asdf_container%records(i)%record(1:seismo_current) = seismogram_tmp(iorientation, 1:seismo_current)
 
 end subroutine store_asdf_data
@@ -227,49 +116,22 @@ end subroutine store_asdf_data
 
 !> Closes the ASDF data structure by deallocating all arrays
 !! \param asdf_container The ASDF data structure
-!! \param total_seismos_local The number of seismograms on the local processor
-subroutine close_asdf_data(asdf_container, total_seismos_local)
+!! \param nrec_local The number of receivers on the local processor
+subroutine close_asdf_data(asdf_container, nrec_local)
 
   use asdf_data
   ! Parameters
   type(asdf_event),intent(inout) :: asdf_container
-  integer,intent(in) :: total_seismos_local
+  integer,intent(in) :: nrec_local
   !Variables
   integer :: i
 
-  deallocate (asdf_container%npoints)
-  deallocate (asdf_container%gmt_year)
-  deallocate (asdf_container%gmt_hour)
-  deallocate (asdf_container%gmt_day)
-  deallocate (asdf_container%gmt_min)
-  deallocate (asdf_container%gmt_sec)
-  deallocate (asdf_container%gmt_msec)
-  deallocate (asdf_container%event_lat)
-  deallocate (asdf_container%event_lo)
-  deallocate (asdf_container%event_dpt)
-  deallocate (asdf_container%receiver_lat)
-  deallocate (asdf_container%receiver_lo)
-  deallocate (asdf_container%receiver_el)
-  deallocate (asdf_container%receiver_dpt)
-  deallocate (asdf_container%begin_value)
-  deallocate (asdf_container%end_value)
-  deallocate (asdf_container%cmp_azimuth)
-  deallocate (asdf_container%cmp_incident_ang)
-  deallocate (asdf_container%sample_rate)
-  deallocate (asdf_container%scale_factor)
-  deallocate (asdf_container%ev_to_sta_AZ)
-  deallocate (asdf_container%sta_to_ev_AZ)
-  deallocate (asdf_container%great_circle_arc)
-  deallocate (asdf_container%dist)
-  deallocate (asdf_container%P_pick)
-  deallocate (asdf_container%S_pick)
-  do i = 1, total_seismos_local
+  do i = 1, nrec_local*3 ! 3 components
     deallocate(asdf_container%records(i)%record)
   enddo
   deallocate (asdf_container%receiver_name_array)
   deallocate (asdf_container%network_array)
   deallocate (asdf_container%component_array)
-  deallocate (asdf_container%receiver_id_array)
 
 end subroutine close_asdf_data
 
@@ -278,40 +140,345 @@ end subroutine close_asdf_data
 !
 
 !> Writes the ASDF data structure to the file
-!! \param asdf_container The ASDF data structure
+!! \param asdf_container The ASDF data container for the waveforms
 subroutine write_asdf(asdf_container)
 
-  use adios_write_mod,only: adios_declare_group,adios_select_method
-
-  use asdf_data,only: asdf_event
-
-  use specfem_par, only : event_name_SAC,myrank,ADIOS_TRANSPORT_METHOD, OUTPUT_FILES
+  use asdf_data
+  use iso_c_binding
+  use iso_fortran_env
+  use specfem_par
 
   implicit none
-  ! Parameters
   type(asdf_event),intent(inout) :: asdf_container
-  ! Variables
-  integer :: adios_err, comm, sizeprocs
-  integer(kind=8) :: adios_group
-  character(len=200) :: ASDF_FN
 
-  ! alias mpi communicator for ADIOS
+  ! Parameters
+  integer, parameter :: MAX_STRING_LENGTH = 1024
+  integer, parameter :: MAX_QUAKEML_LENGTH = 8096
+  integer, parameter :: MAX_STATIONXML_LENGTH = 16182
+  integer, parameter :: MAX_PARFILE_LENGTH = 20000
+  integer, parameter :: MAX_CONSTANTS_LENGTH = 45000
+  integer, parameter :: MAX_TIME_STRING_LENGTH = 22
+
+  !--- Character strings to be written to the ASDF file
+  character(len=MAX_QUAKEML_LENGTH) :: quakeml
+  character(len=MAX_STATIONXML_LENGTH) :: stationxml
+
+  integer :: num_stations !
+  integer :: stationxml_length
+  integer :: nsamples  ! constant, as in SPECFEM
+  double precision :: sampling_rate
+  double precision :: startTime
+  integer(kind=8) :: start_time
+
+  ! Network names and station names are two different beast, as in SPECFEM
+  ! network_names(i) is related to station_names(i)
+  character(len=MAX_LENGTH_NETWORK_NAME), dimension(:), allocatable :: networks_names
+  character(len=MAX_LENGTH_STATION_NAME), dimension(:), allocatable :: stations_names
+  character(len=3), dimension(:), allocatable :: component_names
+
+  ! data. dimension = nsamples * num_channels_per_station * num_stations
+  real, dimension(:, :, :), allocatable :: waveforms
+
+  !-- ASDF variables
+  !   These variables are used to know where further writes should be done.
+  !   They have to be cleaned as soon as they become useless
+  integer :: waveforms_grp  ! Group "/Waveforms/"
+  integer, dimension(:, :, :), allocatable :: data_ids
+
+  !--- MPI variables
+  integer :: mysize, comm
+  !--- Loop variables
+  integer :: i, j, k
+  !--- Error variable
+  integer :: ier
+
+  !--- 'allgather' arrays. Variables that needs to be known by everyone in
+  !    order to define ASDF groups and datasets or write them as attributes.
+  integer, dimension(:), allocatable :: num_stations_gather
+  integer :: max_num_stations_gather
+  character(len=MAX_LENGTH_STATION_NAME), dimension(:,:), allocatable :: &
+      station_names_gather
+  character(len=MAX_LENGTH_NETWORK_NAME), dimension(:,:), allocatable :: &
+      network_names_gather
+  character(len=3), dimension(:,:), allocatable :: &
+      component_names_gather
+  real, dimension(:,:), allocatable :: &
+      station_lats_gather, station_longs_gather, station_elevs_gather, &
+      station_depths_gather
+  integer, dimension(:,:), allocatable :: station_grps_gather
+  integer, dimension(:,:), allocatable :: stationxml_gather
+  integer, dimension(:), allocatable :: displs, rcounts
+
+  ! temporary name built from network, station and channel names.
+  character(len=MAX_STRING_LENGTH) :: waveform_name
+
+  ! C/Fortran interop for C-allocated strings
+  integer :: len_prov, len_constants, len_Parfile
+  type(c_ptr) :: cptr
+  character, pointer :: fptr(:)
+  character, dimension(:), allocatable, TARGET :: provenance
+  character(len=MAX_CONSTANTS_LENGTH) :: sf_constants
+  character(len=MAX_PARFILE_LENGTH) :: sf_parfile
+
+  ! Time variables
+  character(len=MAX_TIME_STRING_LENGTH) :: start_time_string, end_time_string, &
+                       cmt_start_time_string, pde_start_time_string
+
+  ! alias mpi communicator
   call world_duplicate(comm)
-  call world_size(sizeprocs)
+  call world_size(mysize)
 
-  ! declare new group that uses MPI
-  call adios_declare_group (adios_group, "EVENTS", "iter", 1, adios_err)
-  ! note: return codes for this function have been fixed for ADIOS versions >= 1.6
-  !call check_adios_err(myrank,adios_err)
+  num_stations = nrec_local
+  sampling_rate = 1.0/DT
+  nsamples = seismo_current * (NSTEP / NTSTEP_BETWEEN_OUTPUT_SEISMOS)
 
-  call adios_select_method (adios_group, ADIOS_TRANSPORT_METHOD, "", "", adios_err)
-  ! note: return codes for this function have been fixed for ADIOS versions >= 1.6
-  !call check_adios_err(myrank,adios_err)
+  ! Calculate start_time
+  call get_time(startTime, start_time_string, pde_start_time_string, cmt_start_time_string, end_time_string)
+  start_time = startTime*(int(1000000000,kind=8)) ! convert to nanoseconds
 
-  ! output file name
-  ASDF_FN=trim(OUTPUT_FILES)//"/"//trim(event_name_SAC)//"_sem.bp"
+  ! we only want to do these steps one time
+  if (seismo_offset == 0) then
+    !--------------------------------------------------------
+    ! Setup data on each process.
+    !--------------------------------------------------------
 
-  call write_asdf_data (ASDF_FN, asdf_container, adios_group, myrank, sizeprocs, comm)
+    ! Generate minimal QuakeML for SPECFEM3D_GLOBE
+    call cmt_to_quakeml(quakeml, pde_start_time_string, cmt_start_time_string)
+
+    ! Generate specfem provenance string
+    call ASDF_generate_sf_provenance_f(trim(start_time_string)//C_NULL_CHAR,&
+                                     trim(end_time_string)//C_NULL_CHAR, cptr, len_prov)
+    call c_f_pointer(cptr, fptr, [len_prov])
+    allocate(provenance(len_prov+1))
+    provenance(1:len_prov) = fptr(1:len_prov)
+    provenance(len_prov+1) = C_NULL_CHAR
+
+    allocate(networks_names(num_stations), stat=ier)
+    allocate(stations_names(num_stations), stat=ier)
+    allocate(component_names(num_stations*3), stat=ier)
+    allocate(waveforms(nsamples, 3, num_stations), &
+           stat=ier)
+
+    !--------------------------------------------------------
+    ! ASDF variables
+    !--------------------------------------------------------
+    ! Find how many stations are managed by each allgatheress
+    allocate(num_stations_gather(mysize))
+    call all_gather_all_i(num_stations, num_stations_gather, mysize)
+
+    ! find the largest number of stations per allgatheress
+    max_num_stations_gather = maxval(num_stations_gather)
+
+    allocate(displs(mysize))
+    allocate(rcounts(mysize))
+
+    ! Everyone should know about each and every station name and its coordinates
+    allocate(station_names_gather(max_num_stations_gather, mysize))
+    allocate(network_names_gather(max_num_stations_gather, mysize))
+    allocate(station_lats_gather(max_num_stations_gather,mysize))
+    allocate(station_longs_gather(max_num_stations_gather,mysize))
+    allocate(station_elevs_gather(max_num_stations_gather,mysize))
+    allocate(station_depths_gather(max_num_stations_gather,mysize))
+    allocate(component_names_gather(max_num_stations_gather*3, mysize))
+
+    ! This needs to be done because asdf_data is a pointer
+    do i = 1, num_stations
+      write(networks_names(i), '(a)') asdf_container%network_array(i)
+      write(stations_names(i), '(a)') asdf_container%receiver_name_array(i)
+    enddo
+
+    do i = 1, num_stations*3
+      write(component_names(i), '(a)') asdf_container%component_array(i)
+    enddo
+
+    ! The number of stations is not constant across processes
+    do i = 1, mysize
+      displs(i) = (i-1) * max_num_stations_gather * MAX_LENGTH_STATION_NAME
+      rcounts(i) = num_stations_gather(i) * MAX_LENGTH_STATION_NAME
+    enddo
+
+    call all_gather_all_ch(stations_names, &
+                         num_stations * MAX_LENGTH_STATION_NAME, &
+                         station_names_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         MAX_LENGTH_STATION_NAME, &
+                         mysize)
+
+
+    do i = 1, mysize
+      displs(i) = (i-1) * max_num_stations_gather * MAX_LENGTH_NETWORK_NAME
+      rcounts(i) = num_stations_gather(i) * MAX_LENGTH_NETWORK_NAME
+    enddo
+
+    call all_gather_all_ch(networks_names, &
+                         num_stations * MAX_LENGTH_NETWORK_NAME, &
+                         network_names_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         MAX_LENGTH_NETWORK_NAME, &
+                         mysize)
+
+    do i = 1, mysize
+      displs(i) = (i-1) * max_num_stations_gather * 3
+      rcounts(i) = num_stations_gather(i) * 3
+    enddo
+
+    call all_gather_all_ch(component_names, &
+                         num_stations*3*3, &
+                         component_names_gather, &
+                         rcounts*3, &
+                         displs*3, &
+                         max_num_stations_gather*3, &
+                         3, &
+                         mysize)
+
+
+    ! Now gather all the coordiante information for these stations
+    do i = 1, mysize
+      displs(i) = (i-1) * max_num_stations_gather
+      rcounts(i) = num_stations_gather(i)
+    enddo
+
+    call all_gather_all_r(asdf_container%receiver_lat, &
+                         num_stations, &
+                         station_lats_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         mysize)
+    call all_gather_all_r(asdf_container%receiver_lo, &
+                         num_stations, &
+                         station_longs_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         mysize)
+    call all_gather_all_r(asdf_container%receiver_el, &
+                         num_stations, &
+                         station_elevs_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         mysize)
+    call all_gather_all_r(asdf_container%receiver_dpt, &
+                         num_stations, &
+                         station_depths_gather, &
+                         rcounts, &
+                         displs, &
+                         max_num_stations_gather, &
+                         mysize)
+
+    deallocate(stations_names)
+    deallocate(networks_names)
+    deallocate(component_names)
+    deallocate(displs)
+    deallocate(rcounts)
+
+    allocate(station_grps_gather(max_num_stations_gather, mysize))
+    allocate(stationxml_gather(max_num_stations_gather, mysize))
+
+    allocate(data_ids(3, &
+                    max_num_stations_gather, &
+                    mysize))
+
+    !--------------------------------------------------------
+    ! write ASDF
+    !--------------------------------------------------------
+
+    call ASDF_initialize_hdf5_f(ier);
+    call ASDF_create_new_file_f(trim(OUTPUT_FILES) // "synthetic.h5" // C_NULL_CHAR, comm, current_asdf_handle)
+
+    call ASDF_write_string_attribute_f(current_asdf_handle, "file_format" // C_NULL_CHAR, &
+                                       "ASDF" // C_NULL_CHAR, ier)
+    call ASDF_write_string_attribute_f(current_asdf_handle, "file_format_version" // C_NULL_CHAR, &
+                                       "1.0.0" // C_NULL_CHAR, ier)
+
+    call ASDF_write_quakeml_f(current_asdf_handle, trim(quakeml) // C_NULL_CHAR, ier)
+    call ASDF_write_provenance_data_f(current_asdf_handle, provenance(1:len_prov+1), ier)
+    call read_file("setup/constants.h", sf_constants, len_constants)
+    call read_file("DATA/Par_file", sf_parfile, len_Parfile)
+    call ASDF_write_auxiliary_data_f(current_asdf_handle, trim(sf_constants) // C_NULL_CHAR,&
+                                   trim(sf_parfile(1:len_Parfile)) // C_NULL_CHAR, ier)
+
+    call ASDF_create_waveforms_group_f(current_asdf_handle, waveforms_grp)
+
+    do k = 1, mysize ! Need to set up ASDF container on all processers
+      do j = 1, num_stations_gather(k) ! loop over number of stations on that processer
+        call ASDF_create_stations_group_f(waveforms_grp,   &
+           trim(network_names_gather(j, k)) // "." //      &
+           trim(station_names_gather(j, k)) // C_NULL_CHAR, &
+           station_grps_gather(j, k))
+        stationxml_length = 1423 + len(trim(station_names_gather(j,k))) + len(trim(network_names_gather(j,k)))
+        call ASDF_define_station_xml_f(station_grps_gather(j,k), stationxml_length, &
+                                     stationxml_gather(j,k))
+        do  i = 1, 3 ! loop over each component
+          ! Generate unique waveform name
+          write(waveform_name, '(a)') &
+            trim(network_names_gather(j,k)) // "." // &
+            trim(station_names_gather(j,k)) // ".S3." //trim(component_names_gather(i+(3*(j-1)),k)) &
+              //"__"//trim(start_time_string(1:19))//"__"//trim(end_time_string(1:19))//"__synthetic"
+            call ASDF_define_waveform_f(station_grps_gather(j,k), &
+              nsamples, start_time, sampling_rate, &
+              trim(event_name_SAC) // C_NULL_CHAR, &
+              trim(waveform_name) // C_NULL_CHAR, &
+              data_ids(i, j, k))
+        enddo
+      enddo
+    enddo
+
+  endif ! end (seismo_offset == 0) steps
+
+  do j = 1, num_stations
+    call station_to_stationxml(station_names_gather(j,myrank+1), network_names_gather(j,myrank+1), &
+                               station_lats_gather(j,myrank+1), station_longs_gather(j,myrank+1), &
+                               station_elevs_gather(j,myrank+1), station_depths_gather(j,myrank+1), &
+                               start_time_string, stationxml)
+    call ASDF_write_station_xml_f(stationxml_gather(j, myrank+1), trim(stationxml)//C_NULL_CHAR, ier)
+    do i = 1, 3
+      call ASDF_write_partial_waveform_f(data_ids(i, j, myrank+1), &
+                                      seismograms(i,j,:), seismo_offset, NTSTEP_BETWEEN_OUTPUT_SEISMOS, ier)
+    enddo
+  enddo
+
+
+  !--------------------------------------------------------
+  ! Clean up
+  !--------------------------------------------------------
+
+  ! Only close if we are done outputting all seismograms
+  if (it == it_end) then
+    do k = 1, mysize
+      do j = 1, num_stations_gather(k)
+        call ASDF_close_group_f(station_grps_gather(j, k), ier)
+        call ASDF_close_dataset_f(stationxml_gather(j, k), ier)
+        do i = 1, 3
+          call ASDF_close_dataset_f(data_ids(i, j, k), ier)
+        enddo
+      enddo
+    enddo
+
+    call ASDF_close_group_f(waveforms_grp, ier)
+    call ASDF_close_file_f(current_asdf_handle, ier)
+    call ASDF_finalize_hdf5_f(ier)
+  endif
+
+  deallocate(data_ids)
+  deallocate(provenance)
+  deallocate(station_grps_gather)
+  deallocate(stationxml_gather)
+  deallocate(station_names_gather)
+  deallocate(network_names_gather)
+  deallocate(component_names_gather)
+  deallocate(station_lats_gather)
+  deallocate(station_longs_gather)
+  deallocate(station_elevs_gather)
+  deallocate(station_depths_gather)
+  deallocate(num_stations_gather)
+
+  deallocate(waveforms)
 
 end subroutine write_asdf
 
@@ -319,637 +486,357 @@ end subroutine write_asdf
 !-------------------------------------------------------------------------------------------------
 !
 
-!> Writes the ASDF data structure to asdf_fn using parallel write
-!! \param asdf_fn The file name for ASDF
-!! \param asdf_container The ASDF data structure
-!! \param adios_group The adios group for the file
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-!! \param comm The communication group of processors
-subroutine write_asdf_data(asdf_fn, asdf_container, adios_group, rank, nproc, comm)
+!> Converts the CMT source file read by SPECFEM to a QuakeML file for the ASDF container
+!! \param quakemlstring The QuakeML string to store in the ASDF file
+!! \start_time_string The start date stored as a character string
+subroutine cmt_to_quakeml(quakemlstring, pde_start_time_string, cmt_start_time_string)
 
-  use adios_write_mod, only: adios_open,adios_group_size
-
-  use adios_helpers_mod,only: check_adios_err
-
-  use asdf_data,only: asdf_event
+  use specfem_par,only:&
+    cmt_lat=>cmt_lat_SAC,cmt_lon=>cmt_lon_SAC,cmt_depth=>cmt_depth_SAC,&
+    hdur=>cmt_hdur_SAC,M0,Mrr,Mtt,Mpp,Mrt,Mrp,Mtp,event_name_SAC,&
+    pde_lat=>elat_SAC,pde_lon=>elon_SAC,pde_depth=>depth_SAC,&
+    mb=>mb_SAC,ms,Mw
 
   implicit none
-  ! Parameters
-  character(len=*),intent(inout) :: asdf_fn
-  type(asdf_event),intent(inout) :: asdf_container
-  integer(kind=8),intent(inout) :: adios_group
-  integer,intent(inout) :: rank, nproc, comm
-  ! Variables
-  integer         :: adios_err
-  integer(kind=8) :: adios_groupsize, adios_totalsize
-  integer(kind=8) :: adios_handle
+  character(len=*) :: quakemlstring
+  character(len=*) :: pde_start_time_string
+  character(len=*) :: cmt_start_time_string
+  character(len=13) :: cmt_lon_str, cmt_lat_str, cmt_depth_str, hdur_str
+  character(len=13) :: pde_lat_str, pde_lon_str, pde_depth_str
+  character(len=25) :: M0_str, mb_str, ms_str, Mw_str
+  character(len=25) :: Mrr_str, Mtt_str, Mpp_str, Mrt_str, Mrp_str, Mtp_str
 
-  !calculate size
-  adios_groupsize = 0
-  call define_asdf_data(adios_group, adios_groupsize, asdf_container,rank, nproc)
+  ! Convert the CMT values to strings for the QuakeML string
+  write(pde_lat_str, "(g12.5)") pde_lat
+  write(pde_lon_str, "(g12.5)") pde_lon
+  write(pde_depth_str, "(g12.5)") pde_depth*1000 ! km to m conversion
+  write(cmt_lat_str, "(g12.5)") cmt_lat
+  write(cmt_lon_str, "(g12.5)") cmt_lon
+  write(cmt_depth_str, "(g12.5)") cmt_depth*1000 ! km to m conversion
+  write(hdur_str, "(g12.5)") hdur
+  write(M0_str, "(g12.5)") M0*1e-7 ! dyn-cm to N-m conversion
+  write(mb_str, "(g12.5)") mb
+  write(ms_str, "(g12.5)") ms
+  write(Mw_str, "(g12.5)") Mw
+  write(Mrr_str, "(g12.5)") Mrr*1e-7
+  write(Mtt_str, "(g12.5)") Mtt*1e-7
+  write(Mpp_str, "(g12.5)") Mpp*1e-7
+  write(Mrt_str, "(g12.5)") Mrt*1e-7
+  write(Mrp_str, "(g12.5)") Mrp*1e-7
+  write(Mtp_str, "(g12.5)") Mtp*1e-7
 
-  ! Open the handle to file containing all the ADIOS variables
-  call adios_open(adios_handle, "EVENTS", asdf_fn, "w", comm, adios_err)
-  if (adios_err /= 0) then
-    print *,'Error: rank ',rank,' could not open adios file ',trim(asdf_fn)
-    stop 'Error calling adios_open() routine failed for EVENTS'
-  endif
+  quakemlstring = '<q:quakeml xmlns="http://quakeml.org/xmlns/bed/1.2"'//&
+                  ' xmlns:q="http://quakeml.org/xmlns/quakeml/1.2">'//&
+                  '<eventParameters publicID="smi:local/'//trim(event_name_SAC)//'#eventPrm">'//&
+                  '<event publicID="smi:local/'//trim(event_name_SAC)//'#eventID">'//&
+                  '<preferredOriginID>smi:local/'//trim(event_name_SAC)//'/origin#cmtorigin</preferredOriginID>'//&
+                  '<preferredMagnitudeID>smi:local/'//trim(event_name_SAC)//'/magnitude#moment_mag</preferredMagnitudeID>'//&
+                  '<preferredFocalMechanismID>smi:local/'//trim(event_name_SAC)//'/focal_mechanism</preferredFocalMechanismID>'//&
+                  '<type>earthquake</type>'//&
+                  '<typeCertainty>known</typeCertainty>'//&
+                  '<description>'//&
+                  '<text>'//trim(event_name_SAC)//'</text>'//&
+                  '<type>earthquake name</type>'//&
+                  '</description>'//&
+                  '<origin publicID="smi:local/'//trim(event_name_SAC)//'/origin#reforigin">'//&
+                  '<time>'//&
+                  '<value>'//trim(pde_start_time_string)//'</value>'//&
+                  '</time>'//&
+                  '<latitude>'//&
+                  '<value>'//trim(pde_lat_str)//'</value>'//&
+                  '</latitude>'//&
+                  '<longitude>'//&
+                  '<value>'//trim(pde_lon_str)//'</value>'//&
+                  '</longitude>'//&
+                  '<depth>'//&
+                  '<value>'//trim(pde_depth_str)//'</value>'//&
+                  '</depth>'//&
+                  '<type>hypocenter</type>'//&
+                  '<comment id="smi:local/'//trim(event_name_SAC)//'/comment#ref_origin">'//&
+                  '<text>Hypocenter catalog: PDE</text>'//&
+                  '</comment>'//&
+                  '</origin>'//&
+                  '<origin publicID="smi:local/'//trim(event_name_SAC)//'/origin#cmtorigin">'//&
+                  '<time>'//&
+                  '<value>'//trim(cmt_start_time_string)//'</value>'//&
+                  '</time>'//&
+                  '<latitude>'//&
+                  '<value>'//trim(cmt_lat_str)//'</value>'//&
+                  '</latitude>'//&
+                  '<longitude>'//&
+                  '<value>'//trim(cmt_lon_str)//'</value>'//&
+                  '</longitude>'//&
+                  '<depth>'//&
+                  '<value>'//trim(cmt_depth_str)//'</value>'//&
+                  '</depth>'//&
+                  '</origin>'//&
+                  '<focalMechanism publicID="smi:local/'//trim(event_name_SAC)//'/focal_mechanism">'//&
+                  '<momentTensor publicID="smi:local/'//trim(event_name_SAC)//'/momenttensor">'//&
+                  '<derivedOriginID>smi:local/'//trim(event_name_SAC)//'/origin#cmtorigin'//&
+                  '</derivedOriginID>'//&
+                  '<momentMagnitudeID>smi:local/'//trim(event_name_SAC)//'/magnitude#moment_mag'//&
+                  '</momentMagnitudeID>'//&
+                  '<scalarMoment>'//&
+                  '<value>'//trim(M0_str)//'</value>'//&
+                  '</scalarMoment>'//&
+                  '<tensor>'//&
+                  '<Mrr>'//&
+                  '<value>'//trim(Mrr_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mrr>'//&
+                  '<Mtt>'//&
+                  '<value>'//trim(Mtt_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mtt>'//&
+                  '<Mpp>'//&
+                  '<value>'//trim(Mpp_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mpp>'//&
+                  '<Mrt>'//&
+                  '<value>'//trim(Mrt_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mrt>'//&
+                  '<Mrp>'//&
+                  '<value>'//trim(Mrp_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mrp>'//&
+                  '<Mtp>'//&
+                  '<value>'//trim(Mtp_str)//'</value>'//&
+                  '<uncertainty>0</uncertainty>'//&
+                  '</Mtp>'//&
+                  '</tensor>'//&
+                  '<sourceTimeFunction>'//&
+                  '<type>triangle</type>'//&
+                  '<duration>'//trim(hdur_str)//'</duration>'//&
+                  '</sourceTimeFunction>'//&
+                  '</momentTensor>'//&
+                  '</focalMechanism>'//&
+                  '<magnitude publicID="smi:local/'//trim(event_name_SAC)//'/magnitude#moment_mag">'//&
+                  '<mag>'//&
+                  '<value>'//trim(Mw_str)//'</value>'//&
+                  '</mag>'//&
+                  '<type>Mwc</type>'//&
+                  '</magnitude>'//&
+                  '<magnitude publicID="smi:local/'//trim(event_name_SAC)//'/magnitude#mb">'//&
+                  '<mag>'//&
+                  '<value>'//trim(mb_str)//'</value>'//&
+                  '</mag>'//&
+                  '<type>mb</type>'//&
+                  '</magnitude>'//&
+                  '<magnitude publicID="smi:local/'//trim(event_name_SAC)//'/magnitude#MS">'//&
+                  '<mag>'//&
+                  '<value>'//trim(ms_str)//'</value>'//&
+                  '</mag>'//&
+                  '<type>MS</type>'//&
+                  '</magnitude>'//&
+                  '</event>'//&
+                  '</eventParameters>'//&
+                  '</q:quakeml>'
 
-  call adios_group_size(adios_handle, adios_groupsize, adios_totalsize,adios_err)
-  if (adios_err /= 0 ) stop 'Error calling adios_group_size() routine failed'
-
-  !call the write sub
-  call write_asdf_data_sub (asdf_container, adios_handle, rank, nproc)
-
-  !adios close
-  call adios_close(adios_handle, adios_err)
-  call check_adios_err(rank,adios_err)
-
-end subroutine write_asdf_data
+end subroutine cmt_to_quakeml
 
 !
 !-------------------------------------------------------------------------------------------------
 !
 
-!> Defines the ASDF structure using adios
-!! \param adios_group The adios group
-!! \param my_group_size The adios group size
-!! \param asdf_container The ASDF data structure
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-subroutine define_asdf_data (adios_group, my_group_size, asdf_container, rank, nproc)
+! Convert system time into a string
+!! \param time system time
+!! \param time_string a string representation of the input time
+subroutine convert_systime_to_string(time, time_string)
 
-  use adios_write_mod,only: adios_string
+  double precision, intent(in) :: time
+  character(len=*), intent(out) :: time_string
+  real :: fraction_sec
+  integer :: iatime(9)
+  character(len=4) :: yr
+  character(len=2) :: mo, da, hr, minute
+  character(len=15) :: second
+  real :: real_sec
 
-  use adios_helpers_mod,only: define_adios_scalar,define_adios_global_integer_1d_array, &
-    define_adios_global_real_1d_array,define_adios_local_string_1d_array !,check_adios_err
+  ! extract msec
+  fraction_sec = time - int(time)
 
-  use asdf_data,only: asdf_event
+  call gmtime(int(time), iatime)
+  write(yr, "(I4.4)") iatime(6) + 1900
+  write(mo, "(I2.2)") iatime(5) + 1
+  write(da, "(I2.2)") iatime(4)
+  write(hr, "(I2.2)") iatime(3)
+  write(minute, "(I2.2)") iatime(2)
 
-  implicit none
+  real_sec = iatime(1) + fraction_sec
+  write(second, "(I2.2, F0.4)") int(real_sec), real_sec-int(real_sec)
 
-  ! Parameters
-  integer(kind=8), intent(inout) :: adios_group, my_group_size
-  type(asdf_event), intent(inout) :: asdf_container
-  integer, intent(in) :: rank, nproc
+  time_string = trim(yr)//"-"//trim(mo)//"-"//trim(da)//"T"//&
+                  trim(hr)//':'//trim(minute)//':'//trim(second)
 
-  ! Variables
-  integer :: i,string_total_length
-  integer, parameter :: STRING_COMMON_LENGTH = 20
-  integer :: adios_err
-
-  integer :: nrecords
-
-  character(len=80)            :: str_record
-  character(len=10)            :: i_string
-  character(len=200)           :: dummy
-
-  integer :: dum_int, int_array(10)
-  real    :: dum_real, real_array(10)
-  character(len=10) :: dum_string
-
-  integer :: nrecords_total, offset
-
-  integer,parameter :: nparam_desc = 32
-  character(len=200),dimension(2,nparam_desc) :: description
-
-  !gather info. Here, we only need nrecords_total
-  nrecords=asdf_container%nrecords
-  call gather_offset_info(nrecords,nrecords_total,offset,rank,nproc)
-
-  call define_adios_local_string_1d_array (adios_group, my_group_size, &
-                                           13,"", "event", dummy)
-  !nrecords info
-  call define_adios_scalar (adios_group, my_group_size, "", "nreceivers", dum_int)
-  call define_adios_scalar (adios_group, my_group_size, "", "nrecords", dum_int)
-  !frequency(period) info
-  call define_adios_scalar (adios_group, my_group_size, "", "min_period", dum_real)
-  call define_adios_scalar (adios_group, my_group_size, "", "max_period", dum_real)
-
-  !string info
-  call define_adios_scalar (adios_group, my_group_size, "", "receiver_name_len", dum_int)
-  call define_adios_scalar (adios_group, my_group_size, "", "network_len", dum_int)
-  call define_adios_scalar (adios_group, my_group_size, "", "receiver_id_len", dum_int)
-  call define_adios_scalar (adios_group, my_group_size, "", "component_len", dum_int)
-
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "npoints", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_year", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_day", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_hour", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_min", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_sec", int_array)
-  call define_adios_global_integer_1d_array (adios_group, my_group_size, nrecords, "", "gmt_msec", int_array)
-
-  string_total_length = STRING_COMMON_LENGTH * nrecords_total
-
-  call define_adios_local_string_1d_array (adios_group, my_group_size, string_total_length, "", "receiver_name", dum_string)
-  call define_adios_local_string_1d_array (adios_group, my_group_size, string_total_length, "", "network", dum_string)
-  call define_adios_local_string_1d_array (adios_group, my_group_size, string_total_length, "", "component", dum_string)
-  call define_adios_local_string_1d_array (adios_group, my_group_size, string_total_length, "", "receiver_id", dum_string)
-
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "event_lat", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "event_lo", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "event_dpt", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "receiver_lat", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "receiver_lo", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "receiver_el", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "receiver_dpt", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "begin_value", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "end_value", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "cmp_azimuth", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "cmp_incident_ang", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "sample_rate", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "scale_factor", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "ev_to_sta_AZ", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "sta_to_ev_AZ", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "great_circle_arc", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "dist", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "P_pick", real_array)
-  call define_adios_global_real_1d_array (adios_group, my_group_size, nrecords, "", "S_pick", real_array)
-
-  !DISPLACEMENT
-  do i = 1, nrecords
-    write(i_string, '(I10)' ) i+offset
-    str_record = trim(asdf_container%receiver_name_array(i))//"."// &
-                 trim(asdf_container%network_array(i))//"."// &
-                 trim(asdf_container%component_array(i))//"."// &
-                 trim(asdf_container%receiver_id_array(i))
-
-    call define_adios_global_real_1d_array (adios_group, my_group_size,&
-                                            asdf_container%npoints(i), "", trim(str_record), real_array)
-  enddo
-
-  ! defines attributes descriptions
-
-  DATA description  / &
-    "nreceivers", "Number of receivers ", &
-    "nrecords"  , "Number of records ", &
-    "min_period", "Low pass filter in Hz (0 if none applied)  ", &
-    "max_period", "High pass filter in Hz (0 if none applied)  ", &
-    "event_lat" , "Event CMT latitude (degrees, north positive) ", &
-    "event_lo"  , "Event CMT longitude (degrees, east positive) ", &
-    "event_dpt" , "Event CMT depth (km) ", &
-    "event_dpt" , "Event CMT depth (km) ", &
-    "component" , "Record component ", &
-    "gmt_year"  , "GMT year corresponding to reference (zero) time in file. ", &
-    "gmt_day"   , "GMT julian day corresponding to reference (zero) time in file. ", &
-    "gmt_hour"  , "GMT hour corresponding to reference (zero) time in file. ", &
-    "gmt_min"   , "GMT minute corresponding to reference (zero) time in file. ", &
-    "gmt_sec"   , "GMT second corresponding to reference (zero) time in file. ", &
-    "gmt_msec"  , "GMT millisecond corresponding to reference (zero) time in file. ", &
-    "receiver_lat", "Receiver latitude (degrees, north positive)  ", &
-    "receiver_lo" , "Receiver longitude (degrees, east positive) ", &
-    "receiver_dpt", "Receiver depth below surface (meters) ", &
-    "receiver_el" , "Receiver elevation (meters) ", &
-    "begin_value" , "Beginning value of time array ", &
-    "end_value"   , "End value of time array ", &
-    "cmp_azimuth" , "Component azimuth (degrees clockwise from north) ", &
-    "cmp_incident_ang", "Component incident angle (degrees from vertical) ", &
-    "sample_rate"     , "Sampling rate (s) ", &
-    "scale_factor"    , "Scale factor to convert the unit of synthetics from meters to nanometer ", &
-    "ev_to_sta_AZ"    , "Event to station azimuth (degrees) ", &
-    "sta_to_ev_AZ"    , "Station to event azimuth (backazimuth, degrees) ", &
-    "great_circle_dist" , "Great circle distance between event and station (degrees) ", &
-    "receiver_name"     , "Receiver name ", &
-    "network"           , "Receiver network name ", &
-    "receiver_id"       , "Receiver number ", &
-    "component"         , "Receiver component name " &
-  /
-
-  do i = 1,nparam_desc
-    call adios_define_attribute(adios_group,trim(description(1,i)),"desc",adios_string,trim(description(2,i)),"",adios_err)
-    ! note: return codes for this function have been fixed for ADIOS versions >= 1.6
-    !call check_adios_err(rank,adios_err)
-  enddo
-
-end subroutine define_asdf_data
+end subroutine convert_systime_to_string
 
 !
 !-------------------------------------------------------------------------------------------------
 !
 
-!> Writes the ASDF data structure to the adios arrays
-!! \param asdf_container The ASDF data structure
-!! \param adios_handle The ASDF file name
-!! \param adios_group The adios group
-!! \param adios_groupsize The adios group size
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-subroutine write_asdf_data_sub(asdf_container, adios_handle, rank, nproc)
+!> Uses the time in the CMTSOLUTION file to calculate the number of seconds since the epoch
+!! \param starttime The start time of the simulation from the epoch
+!! \param start_time_string A string for defining the waveform name start time
+!! \param pde_start_time_string A string for defining the waveform name start time using PDE
+!! \param cmt_start_time_string A string for defining the waveform name start time using CMT
+!! \param end_time_string A string for defining the waveform name end time
+subroutine get_time(starttime, start_time_string, pde_start_time_string, cmt_start_time_string, end_time_string)
 
-  use adios_write_mod,only:adios_string,adios_write
-
-  use adios_helpers_mod,only: write_adios_global_1d_array_offset, &
-    write_adios_global_integer_1d_array_offset,write_adios_global_real_1d_array_offset
-
-  use asdf_data,only: asdf_event
+  use specfem_par,only:&
+    NSTEP,DT,t_shift_SAC,hdur,&
+    yr_SAC,ho_SAC,mi_SAC,sec_SAC,jda_SAC
 
   implicit none
+  character(len=*) :: start_time_string
+  character(len=*) :: end_time_string
+  character(len=*) :: cmt_start_time_string
+  character(len=*) :: pde_start_time_string
+  double precision, intent(inout) :: starttime
+  double precision :: trace_length_in_sec
+  integer :: year
+  double precision :: pdetime, cmttime, endtime
+  integer,dimension(8) :: values
 
-  type(asdf_event),intent(inout) :: asdf_container
-  integer(kind=8),intent(in)    :: adios_handle
-  integer,intent(in)            :: rank, nproc
+  ! Calculates the start time since the epoch in seconds
+  ! Reference:
+  ! http://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap04.html#tag_04_14
+  year = yr_SAC-1900
+  pdetime = (year-70)*31536000.0d0+((year-69)/4)*86400.0d0 -((year-1)/100)*86400.0d0+&
+              ((year+299)/400)*86400.0d0+(jda_SAC-1)*86400.0d0+ho_SAC*(3600.0d0)+&
+              mi_SAC*60.0d0+sec_SAC
+  call convert_systime_to_string(pdetime, pde_start_time_string)
 
-  ! local parameters
-  integer :: adios_err,i !,ierr
-  integer :: nrecords_total, offset, nreceivers
-  integer :: receiver_name_len, network_len, component_len, receiver_id_len
-  integer :: rn_len_total, nw_len_total, rid_len_total, comp_len_total
-  integer :: rn_offset, nw_offset, rid_offset, comp_offset
-  character(len=32) :: loc_string
+  ! cmt centroid time
+  cmttime = pdetime + t_shift_SAC
+  call convert_systime_to_string(cmttime, cmt_start_time_string)
 
-  ! note: this is fortran 2003 standard
-  !       and works e.g. by intel ifort compilers and newer gfortran versions;
-  !
-  !       gfortran 4.7 complains about the allocate statement later on (a gfortran bug which needs a constant at compile time)
-  !       which is needed on Titan, thus we provide an alternative way of a character array
-  ! way 1
-!  character(len=:), allocatable :: receiver_name, network, component, receiver_id
-!  character(len=:), allocatable :: receiver_name_total, network_total, &
-!                                  component_total, receiver_id_total
-  !
-  ! way 2: fortran 95 workaround, static buffers
-  integer,parameter :: BUFFER_LENGTH = 100000
-  integer,parameter :: BUFFER_LENGTH_TOTAL = 600000
-  character(len=BUFFER_LENGTH) :: receiver_name, network,component, receiver_id
-  character(len=BUFFER_LENGTH_TOTAL) :: receiver_name_total,network_total,component_total,receiver_id_total
+  ! trace start time
+  starttime = cmttime - 1.5*hdur(1)
+  call convert_systime_to_string(starttime, start_time_string)
 
-  !gather array offset info
-  call gather_offset_info(asdf_container%nrecords,nrecords_total,offset,rank, nproc)
+  ! Calculates the number of seconds to add to the start_time
+  trace_length_in_sec = DT*NSTEP
+  endtime = starttime + trace_length_in_sec
+  call convert_systime_to_string(endtime, end_time_string)
 
-  !ensemble the string for receiver_name, network, component and receiver_id
-  ! way 1: fortran 2003
-!  allocate(character(len=6*asdf_container%nrecords) :: receiver_name, STAT=ierr)
-!  if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!  allocate(character(len=6*asdf_container%nrecords) :: network, STAT=ierr)
-!  if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!  allocate(character(len=6*asdf_container%nrecords) :: component, STAT=ierr)
-!  if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!  allocate(character(len=6*asdf_container%nrecords) :: receiver_id, STAT=ierr)
-!  if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-  ! way 2: fortran 95
-  if (6*asdf_container%nrecords > BUFFER_LENGTH) then
-    print *,'Error: buffer length too small - minimum length is ',6*asdf_container%nrecords
-    stop 'Error in write_asdf_data_sub() routine, BUFFER_LENGTH too small'
-  endif
+  ! Calculates time in seconds since the epoch
+  call date_and_time(VALUES=values)
+  !time8()
 
-  ! initializes strings
-  receiver_name=''
-  network=''
-  component=''
-  receiver_id=''
+  !write(*,*) fmtdate(values,'The CPU time used by this program is now %c seconds')
 
-  ! appends all strings
-  do i = 1, asdf_container%nrecords
-    receiver_name = trim(receiver_name) // trim(asdf_container%receiver_name_array(i))  // '.'
-    network       = trim(network)       // trim(asdf_container%network_array(i))        // '.'
-    component     = trim(component)     // trim(asdf_container%component_array(i))      // '.'
-    receiver_id   = trim(receiver_id)   // trim(asdf_container%receiver_id_array(i))    // '.'
-  enddo
-
-  ! local string lengths
-  receiver_name_len = len_trim(receiver_name)
-  network_len = len_trim(network)
-  component_len = len_trim(component)
-  receiver_id_len = len_trim(receiver_id)
-
-  ! synchronize processes
-  call synchronize_all()
-
-  !get global dimensions for strings
-  call gather_string_total_length(receiver_name_len, rn_len_total,rank, nproc)
-  call gather_string_total_length(network_len, nw_len_total,rank, nproc)
-  call gather_string_total_length(receiver_id_len, rid_len_total,rank, nproc)
-  call gather_string_total_length(component_len, comp_len_total,rank, nproc)
-
-  if (rank == 0) then
-    ! way 1: fortran 2003
-!    allocate(character(len=rn_len_total) :: receiver_name_total, STAT=ierr)
-!    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!    allocate(character(len=nw_len_total) :: network_total, STAT=ierr)
-!    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!    allocate(character(len=rid_len_total) :: receiver_id_total, STAT=ierr)
-!    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-!    allocate(character(len=comp_len_total) :: component_total, STAT=ierr)
-!    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-
-    ! way 2: fortran 95
-    if (rn_len_total > BUFFER_LENGTH_TOTAL .or. nw_len_total > BUFFER_LENGTH_TOTAL .or. &
-        rid_len_total > BUFFER_LENGTH_TOTAL .or. comp_len_total > BUFFER_LENGTH_TOTAL) then
-      print *,'Error: buffer length total too small - lengths are ',rn_len_total,nw_len_total,rid_len_total,comp_len_total
-      stop 'Error in write_asdf_data_sub() routine, BUFFER_LENGTH_TOTAL too small'
-    endif
-  else
-    ! dummy allocation
-    ! way 1: fortran 2003
-!    allocate( character(len=1) :: receiver_name_total )
-!    allocate( character(len=1) :: network_total )
-!    allocate( character(len=1) :: receiver_id_total )
-!    allocate( character(len=1) :: component_total )
-  endif
-  call synchronize_all()
-
-  !write all local strings into global string
-  call gather_string_offset_info(receiver_name_len, rn_len_total,rn_offset, &
-                                 receiver_name, receiver_name_total, &
-                                 rank, nproc)
-  call gather_string_offset_info(network_len, nw_len_total, nw_offset, &
-                                 network, network_total, &
-                                 rank, nproc)
-  call gather_string_offset_info(component_len, comp_len_total, comp_offset, &
-                                 component, component_total, &
-                                 rank, nproc)
-  call gather_string_offset_info(receiver_id_len, rid_len_total,rid_offset, &
-                                 receiver_id, receiver_id_total, &
-                                 rank, nproc)
-  !==========================
-  !write out the string info
-  if (rank == 0) then
-    call adios_write(adios_handle, "receiver_name", trim(receiver_name_total),adios_err)
-    call adios_write(adios_handle, "network", trim(network_total), adios_err)
-    call adios_write(adios_handle, "component",trim(component_total), adios_err)
-    call adios_write(adios_handle, "receiver_id", trim(receiver_id_total), adios_err)
-  endif
-
-  ! way 1: fortran 2003
-!  deallocate(receiver_name_total)
-!  deallocate(network_total)
-!  deallocate(receiver_id_total)
-!  deallocate(component_total)
-
-  !===========================
-  ! write seismic records
-  do i = 1, asdf_container%nrecords
-    write( loc_string, '(I10)' ) i+offset
-    loc_string=trim(asdf_container%receiver_name_array(i))  // "." // &
-               trim(asdf_container%network_array(i))        // "." // &
-               trim(asdf_container%component_array(i))      // "." // &
-               trim(asdf_container%receiver_id_array(i))
-
-    call write_adios_global_1d_array_offset(adios_handle, rank, nproc, &
-                                            asdf_container%npoints(i), asdf_container%npoints(i), 0, &
-                                            loc_string, asdf_container%records(i)%record)
-  enddo
-
-  !===========================
-  !scalar
-  if (rank == 0) then
-    call adios_write(adios_handle, "nrecords", nrecords_total, adios_err)
-    call adios_write(adios_handle, "receiver_name_len", rn_len_total, adios_err)
-    call adios_write(adios_handle, "network_len", nw_len_total, adios_err)
-    call adios_write(adios_handle, "component_len", comp_len_total, adios_err)
-    call adios_write(adios_handle, "receiver_id_len", rid_len_total, adios_err)
-    call adios_write(adios_handle, "nreceivers", nreceivers, adios_err)
-    call adios_write(adios_handle, "min_period", 0, adios_err)
-    call adios_write(adios_handle, "max_period", 0, adios_err)
-    call adios_write(adios_handle, "event", asdf_container%event, adios_err)
-  endif
-
-  !===========================
-  !write out the array values
-  ! integer values
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,npoints) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_year) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_day) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_hour) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_min) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_sec) )
-  call write_adios_global_integer_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                                  STRINGIFY_VAR_TYPE(asdf_container,gmt_msec) )
-
-  ! real values
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,event_lat) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,event_lo) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,event_dpt) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,receiver_lat) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,receiver_lo) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,receiver_el) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,receiver_dpt) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,begin_value) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,end_value) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,cmp_azimuth) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,cmp_incident_ang) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,sample_rate) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,scale_factor) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,ev_to_sta_AZ) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,sta_to_ev_AZ) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,great_circle_arc) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,dist) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,P_pick) )
-  call write_adios_global_real_1d_array_offset(adios_handle, rank, nproc,asdf_container%nrecords,nrecords_total,offset, &
-                                               STRINGIFY_VAR_TYPE(asdf_container,S_pick) )
-
-  ! way 1: fortran 2003
-!  deallocate(receiver_name)
-!  deallocate(network)
-!  deallocate(receiver_id)
-!  deallocate(component)
-
-end subroutine write_asdf_data_sub
+end subroutine get_time
 
 !
 !-------------------------------------------------------------------------------------------------
 !
 
-!> Gets offset values for arrays
-!! \param local_dim The local dimension on the processor
-!! \param global_dim The global dimension of the array
-!! \param The offset for the processor
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-subroutine gather_offset_info(local_dim, global_dim, offset, rank, nproc)
+!> Converts the Station information to a StationXML string
+!! \param station_name The name of the station based on SEED
+!! \param network_name The name of the network based on SEED
+!! \param stationxmlstring The StationXML string that will be written to the ASDF file
+subroutine station_to_stationxml(station_name, network_name, latitude, longitude, elevation, &
+                                 burial_depth, start_time_string, stationxmlstring)
 
   implicit none
+  character(len=*) :: stationxmlstring
+  character(len=*) :: station_name
+  character(len=*) :: network_name
+  character(len=*) :: start_time_string
+  character(len=15) :: station_lat, station_lon, station_ele, station_depth
+  integer :: len_station_name, len_network_name, len_station_lat
+  integer :: len_station_lon, len_station_depth, len_station_ele
+  real, intent(in) :: latitude, longitude, elevation, burial_depth
 
-  integer,intent(inout) :: local_dim, global_dim, offset
-  integer,intent(in) :: rank, nproc
+  ! Convert double precision to character strings for the StationXML string
 
-  ! local parameters
-  integer, allocatable :: dim_all_proc(:)
-  integer, allocatable :: offset_proc(:)
-  integer :: i,ierr
+  write(station_lat, "(F11.4)") latitude
+  write(station_lon, "(F11.4)") longitude
+  write(station_ele, "(F8.1)") elevation
+  write(station_depth, "(F8.1)") burial_depth
 
-  if (rank == 0) then
-    allocate(dim_all_proc(nproc), STAT=ierr)
-    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-    allocate(offset_proc(nproc), STAT=ierr)
-    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-  else
-    ! dummy allocation
-    allocate(dim_all_proc(1))
-    allocate(offset_proc(1))
-  endif
+  ! print *, trim(station_lat), trim(station_lon), trim(station_depth), trim(station_ele)
 
-  call gather_all_singlei(local_dim,dim_all_proc,nproc)
+  len_network_name = len(network_name)
+  len_station_name = len(station_name)
+  len_station_lat = len(trim(station_lat))
+  len_station_lon = len(trim(station_lon))
+  len_station_depth = len(trim(station_depth))
+  len_station_ele = len(trim(station_ele))
 
-  if (rank == 0) then
-    offset_proc(1) = 0
-    do i=2, nproc
-      offset_proc(i)=sum(dim_all_proc(1:(i-1)))
-    enddo
-    global_dim=sum(dim_all_proc(1:nproc))
-  endif
+  stationxmlstring = '<FDSNStationXML schemaVersion="1.0" xmlns="http://www.fdsn.org/xml/station/1">'//&
+                     '<Source>SPECFEM3D_GLOBE</Source>'//&
+                     '<Module>SPECFEM3D_GLOBE/asdf-library</Module>'//&
+                     '<ModuleURI>http://seismic-data.org</ModuleURI>'//&
+                     '<Created>'//trim(start_time_string)//'</Created>'//&
+                     '<Network code="'//trim(network_name(1:len(network_name)))//'"'//&
+                     '><Station code="'//trim(station_name(1:len(station_name)))//'">'//&
+                     '<Latitude unit="DEGREES">'//trim(station_lat(1:len_station_lat))//'</Latitude>'//&
+                     '<Longitude unit="DEGREES">'//trim(station_lon(1:len_station_lon))//'</Longitude>'//&
+                     '<Elevation>'//trim(station_ele(1:len_station_ele))//'</Elevation>'//&
+                     '<Site>'//&
+                     '<Name>N/A</Name>'//&
+                     '</Site>'//&
+                     '<CreationDate>'//trim(start_time_string)//'</CreationDate>'//&
+                     '<TotalNumberChannels>3</TotalNumberChannels>'//&
+                     '<SelectedNumberChannels>3</SelectedNumberChannels>'//&
+                     '<Channel locationCode="S3" code="MXN"'//&
+                     ' startDate="'//trim(start_time_string)//'">'//&
+                     '<Latitude unit="DEGREES">'//trim(station_lat(1:len_station_lat))//'</Latitude>'//&
+                     '<Longitude unit="DEGREES">'//trim(station_lon(1:len_station_lon))//'</Longitude>'//&
+                     '<Elevation>'//trim(station_ele(1:len_station_ele))//'</Elevation>'//&
+                     '<Depth>'//trim(station_depth(1:len_station_depth))//'</Depth>'//&
+                     '<Azimuth>0.0</Azimuth>'//&
+                     '<Dip>0.0</Dip>'//&
+                     '</Channel>'//&
+                     '<Channel locationCode="S3" code="MXE"'//&
+                     ' startDate="'//trim(start_time_string)//'">'//&
+                     '<Latitude unit="DEGREES">'//trim(station_lat(1:len_station_lat))//'</Latitude>'//&
+                     '<Longitude unit="DEGREES">'//trim(station_lon(1:len_station_lon))//'</Longitude>'//&
+                     '<Elevation>'//trim(station_ele(1:len_station_ele))//'</Elevation>'//&
+                     '<Depth>'//trim(station_depth(1:len_station_depth))//'</Depth>'//&
+                     '<Azimuth>90.0</Azimuth>'//&
+                     '<Dip>0.0</Dip>'//&
+                     '</Channel>'//&
+                     '<Channel locationCode="S3" code="MXZ"'//&
+                     ' startDate="'//trim(start_time_string)//'">'//&
+                     '<Latitude unit="DEGREES">'//trim(station_lat(1:len_station_lat))//'</Latitude>'//&
+                     '<Longitude unit="DEGREES">'//trim(station_lon(1:len_station_lon))//'</Longitude>'//&
+                     '<Elevation>'//trim(station_ele(1:len_station_ele))//'</Elevation>'//&
+                     '<Depth>'//trim(station_depth(1:len_station_depth))//'</Depth>'//&
+                     '<Azimuth>0.0</Azimuth>'//&
+                     '<Dip>90.0</Dip>'//&
+                     '</Channel>'//&
+                     '</Station>'//&
+                     '</Network>'//&
+                     '</FDSNStationXML>'
 
-  call scatter_all_singlei(offset_proc,offset,nproc)
-
-  call bcast_all_singlei(global_dim)
-
-  deallocate(dim_all_proc)
-  deallocate(offset_proc)
-
-end subroutine gather_offset_info
+end subroutine station_to_stationxml
 
 !
 !-------------------------------------------------------------------------------------------------
 !
 
-!> Gets total length of strings from each processor
-!! \param local_dim The local dimension on the processor
-!! \param global_dim The global dimension of the array
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-subroutine gather_string_total_length(local_dim, global_dim, rank, nproc)
+!> Reads an external file and stores it in filestring
+!! \param filename The name of the file to read
+!! \param filestring The string that the file is stored
+subroutine read_file(filename, filestring, filesize)
 
   implicit none
+  character(len=*) :: filestring
+  character(len=*) :: filename
+  integer,intent(out) :: filesize
 
-  integer,intent(inout) :: local_dim, global_dim
-  integer,intent(in) :: rank, nproc
+  ! Get the size of the file using Fortran2003 feature
+  open(10, file=filename, status='old')
+  inquire(unit=10, size=filesize)
+  close(10)
 
-  ! local parameters
-  integer, allocatable :: local_dim_all_proc(:)
-  integer :: ierr
+  ! Read in the size of the file using direct access
+  open(10, file=filename, status='old', &
+         recl=filesize, form='unformatted', access='direct')
+  read (10, rec=1) filestring(1:filesize)
+  close(10)
 
-  if (rank == 0) then
-    allocate(local_dim_all_proc(nproc),STAT=ierr)
-    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-  else
-    ! dummy allocation
-    allocate(local_dim_all_proc(1))
-  endif
-
-  call gather_all_singlei(local_dim,local_dim_all_proc,nproc)
-
-  if (rank == 0) then
-    global_dim=sum(local_dim_all_proc(1:nproc))
-  endif
-
-  deallocate(local_dim_all_proc)
-
-end subroutine gather_string_total_length
-
-!
-!-------------------------------------------------------------------------------------------------
-!
-
-!> Gets offset values for strings
-!! \param local_dim The local dimension on the processor
-!! \param global_dim The global dimension of the array
-!! \param offset The offset for the string
-!! \param string_piece The local string
-!! \param string_total The combined string from all processors
-!! \param rank The rank of the processor
-!! \param nproc The number of processors
-subroutine gather_string_offset_info(local_dim, global_dim, offset, &
-                                     string_piece, string_total, &
-                                     rank, nproc)
-
-  use constants,only: itag
-
-  implicit none
-
-  integer,intent(inout) :: local_dim, global_dim, offset
-  character(len=*),intent(in) :: string_piece
-  character(len=*),intent(inout) :: string_total
-
-  integer,intent(in) :: rank, nproc
-
-  ! local parameters
-  integer,parameter :: BUFFER_LENGTH = 100000
-  character(len=BUFFER_LENGTH) :: buffer_string
-
-  integer,dimension(:),allocatable :: local_dim_all_proc,offset_all_proc
-  integer :: i,ierr
-
-  ! checks local string
-  if (len_trim(string_piece) /= local_dim ) stop 'Error local string and local dim have different lengths'
-
-  ! temporary arrays
-  if (rank == 0) then
-    allocate(local_dim_all_proc(nproc),STAT=ierr)
-    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-    allocate(offset_all_proc(nproc),STAT=ierr)
-    if (ierr /= 0) call exit_MPI (rank, 'Allocate failed.')
-  else
-    ! dummy allocation
-    allocate(local_dim_all_proc(1))
-    allocate(offset_all_proc(1))
-  endif
-  call synchronize_all()
-
-  ! master gets all local string lengths
-  call gather_all_singlei(local_dim,local_dim_all_proc,nproc)
-
-  if (rank == 0) then
-    offset_all_proc(1) = 0
-    do i=2, nproc
-      offset_all_proc(i)=sum(local_dim_all_proc(1:(i-1)))
-    enddo
-    ! adds strings from master process 0
-    string_total=''
-    string_total=trim(string_total)//trim(string_piece(1:local_dim))
-  endif
-
-  if (rank == 0) then
-    do i = 1,nproc-1
-      ! checks if buffer length is sufficient
-      if (local_dim_all_proc(i+1) > BUFFER_LENGTH) &
-        stop 'Error send/recv buffer length too small in gather_string_offset_info() routine'
-
-      ! receives string
-      buffer_string=''
-      call recv_ch(buffer_string,local_dim_all_proc(i+1),i,itag)
-
-      ! appends string
-      string_total = trim(string_total) // buffer_string(1:local_dim_all_proc(i+1))
-    enddo
-  else
-    ! sends string
-    call send_ch(string_piece, local_dim, 0, itag)
-  endif
-
-  ! master sends offset values to corresponding processes
-  call scatter_all_singlei(offset_all_proc,offset,nproc)
-
-  ! broadcasts global length
-  call bcast_all_singlei(global_dim)
-
-  ! frees temporary arrays
-  deallocate(local_dim_all_proc)
-  deallocate(offset_all_proc)
-
-end subroutine gather_string_offset_info
+end subroutine read_file
