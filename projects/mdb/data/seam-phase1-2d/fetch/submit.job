@@ -1,0 +1,4 @@
+# just submit the job using sbatch
+sbatch slurm.job
+ 
+

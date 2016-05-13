@@ -1,0 +1,23 @@
+in=temp.txt n2=1 n1=131072 data_format=ascii_float
+1.8-svn	sfdd	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sfput	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	o1=-16.4219999313
+	in="/Users/yc5/data/psu/ligo/test/datapathH1.rsf@"
+	d1=0.000244140625
+1.8-svn	sfwindow	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	o1=-0.100222
+	f1=66854
+	data_format="native_float"
+	esize=4
+	in="/Users/yc5/data/psu/ligo/test/datapathH1s.rsf@"
+	d1=0.000244141
+	n1=660

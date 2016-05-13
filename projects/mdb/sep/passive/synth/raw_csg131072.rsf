@@ -1,0 +1,95 @@
+1.8-svn	sfspike	sep/passive/synth:	yc5@mac104996	Tue May 10 16:37:51 2016
+
+	d2=10
+	o1=0
+	n2=50
+	d3=10
+	o2=0
+	label1="Time"
+	n3=1
+	data_format="native_float"
+	o3=0
+	label2="Distance"
+	label3="Distance"
+	esize=4
+	in="stdout"
+	unit1="s"
+	unit2="km"
+	unit3="km"
+	d1=0.004
+	n1=131072
+	in="stdin"
+
+1.8-svn	sffft1	sep/passive/synth:	yc5@mac104996	Tue May 10 16:37:51 2016
+
+	o1=0
+	label1="Frequency"
+	data_format="native_complex"
+	fft_n1=131072
+	esize=8
+	fft_o1=0
+	in="stdout"
+	fft_label1="Time"
+	unit1="Hz"
+	d1=0.00190735
+	n1=65537
+	in="stdin"
+
+1.8-svn	sfpmod	sep/passive/synth:	yc5@mac104996	Tue May 10 16:38:20 2016
+
+	data_format="native_complex"
+	esize=8
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sffft1	sep/passive/synth:	yc5@mac104996	Tue May 10 16:38:20 2016
+
+	o1=0
+	label1="Time"
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	unit1="s"
+	d1=0.004
+	n1=131072
+	in="stdin"
+
+1.8-svn	sfcorral	sep/passive/synth:	yc5@mac104996	Tue May 10 16:38:20 2016
+
+	n3=50
+	data_format="native_float"
+	esize=4
+	in="/Users/yc5/data/sep/passive/synth/datapathxcor131072.rsf@"
+	n1=100
+1.8-svn	sfwindow	sep/passive/synth:	yc5@mac104996	Tue May 10 16:38:25 2016
+
+	d2=10
+	n2=50
+	o1=0
+	d3=10
+	o2=0
+	label1="Time"
+	n3=1
+	data_format="native_float"
+	o3=290
+	label2="Distance"
+	label3="Distance"
+	f3=29
+	min1=0.
+	esize=4
+	max1=0.39
+	in="stdout"
+	unit1="s"
+	unit2="km"
+	unit3="km"
+	d1=0.004
+	n1=98
+	in="stdin"
+
+1.8-svn	sfput	sep/passive/synth:	yc5@mac104996	Tue May 10 16:38:25 2016
+
+	data_format="native_float"
+	in="/Users/yc5/data/sep/passive/synth/datapathraw_csg131072.rsf@"
+	unit2=m
+	label2=Offset
+	o2=-290

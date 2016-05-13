@@ -1,0 +1,88 @@
+in=temp.txt n2=1 n1=131072 data_format=ascii_float
+1.8-svn	sfdd	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sfput	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	o1=-16.4219999313
+	in="/Users/yc5/data/psu/ligo/test/datapathH1.rsf@"
+	d1=0.000244140625
+1.8-svn	sfrtoc	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_complex"
+	esize=8
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sffft3	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	o1=-2048
+	fft3_o1=-16.422
+	data_format="native_complex"
+	esize=8
+	in="/Users/yc5/data/psu/ligo/test/datapathfft.rsf@"
+	d1=0.015625
+	n1=262144
+	fft3_n1=131072
+1.8-svn	sfmul	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	data_format="native_complex"
+	esize=8
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sffft3	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	o1=-16.422
+	data_format="native_complex"
+	esize=8
+	in="stdout"
+	d1=0.000244141
+	n1=131072
+	in="stdin"
+
+1.8-svn	sfreal	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	data_format="native_float"
+	esize=4
+	in="/Users/yc5/data/psu/ligo/test/datapathwh.rsf@"
+1.8-svn	sfscale	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sfbandpass	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	data_format="native_float"
+	esize=4
+	in="/Users/yc5/data/psu/ligo/test/datapathbp.rsf@"
+1.8-svn	sfwindow	psu/ligo/test:	yc5@mac104996	Wed May 11 17:17:57 2016
+
+	o1=-0.308695
+	f1=66000
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	d1=0.000244141
+	n1=2260
+	in="stdin"
+
+1.8-svn	sfltft	psu/ligo/test:	yc5@mac104996	Wed May 11 17:17:58 2016
+
+	d2=2
+	n2=200
+	o2=0
+	n3=1
+	data_format="native_complex"
+	label2="Frequency"
+	n4=1
+	esize=8
+	in="/Users/yc5/data/psu/ligo/test/datapathtf.rsf@"
+	unit2="Hz"

@@ -1,0 +1,47 @@
+in=temp.txt n2=1 n1=131072 data_format=ascii_float
+1.8-svn	sfdd	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	esize=4
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sfput	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_float"
+	o1=-16.4219999313
+	in="/Users/yc5/data/psu/ligo/test/datapathH1.rsf@"
+	d1=0.000244140625
+1.8-svn	sfrtoc	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	data_format="native_complex"
+	esize=8
+	in="stdout"
+	in="stdin"
+
+1.8-svn	sffft3	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	o1=-2048
+	fft3_o1=-16.422
+	data_format="native_complex"
+	esize=8
+	in="/Users/yc5/data/psu/ligo/test/datapathfft.rsf@"
+	d1=0.015625
+	n1=262144
+	fft3_n1=131072
+1.8-svn	sfmath	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:19 2016
+
+	input=0
+	data_format="native_complex"
+	I=2
+	esize=8
+	in="/Users/yc5/data/psu/ligo/test/datapathpsd.rsf@"
+	x1=1
+1.8-svn	sfmath	psu/ligo/test:	yc5@mac104996	Wed May 11 17:16:20 2016
+
+	input=0
+	data_format="native_complex"
+	I=2
+	esize=8
+	in="/Users/yc5/data/psu/ligo/test/datapathasd.rsf@"
+	x1=1

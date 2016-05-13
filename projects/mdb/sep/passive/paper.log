@@ -1,0 +1,355 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  10 MAY 2016 16:39
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**paper.ltx
+(./paper.ltx
+LaTeX2e <2015/01/01>
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
+(/Users/yc5/Library/texmf/tex/latex/seg/geophysics.cls
+Document Class: geophysics 2007/02/14 v3.0 Geophysics paper
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/Users/yc5/Library/texmf/tex/latex/seg/seg.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 94.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks15
+\verbatim@line=\toks16
+\verbatim@in@stream=\read1
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/moreverb/moreverb.sty
+Package: moreverb 2008/06/03 v2.3a `more' verbatim facilities
+\tab@position=\count88
+\tab@size=\count89
+\listing@line=\count90
+))
+\c@@plots=\count91
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen105
+\captionmargin@=\dimen106
+\captionwidth=\dimen107
+\caption@tempdima=\dimen108
+\caption@indent=\dimen109
+\caption@parindent=\dimen110
+\caption@hangindent=\dimen111
+)
+\c@ContinuedFloat=\count92
+)
+\c@KVtest=\count93
+\sf@farskip=\skip43
+\sf@captopadj=\dimen112
+\sf@capskip=\skip44
+\sf@nearskip=\skip45
+\c@subfigure=\count94
+\c@subfigure@save=\count95
+\c@lofdepth=\count96
+\c@subtable=\count97
+\c@subtable@save=\count98
+\c@lotdepth=\count99
+\sf@top=\skip46
+\sf@bottom=\skip47
+)
+\c@sub@fig=\count100
+\c@@tabls=\count101
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip48
+\bibsep=\skip49
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count102
+)
+LaTeX Info: Redefining \refname on input line 306.
+\seg@abstract=\box26
+\c@@append=\count103
+) (./paper.aux)
+\openout1 = `paper.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count104
+\scratchdimen=\dimen113
+\scratchbox=\box27
+\nofMPsegments=\count105
+\nofMParguments=\count106
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count107
+\MPscratchDim=\dimen114
+\MPnumerator=\count108
+\makeMPintoPDFobject=\count109
+\everyMPtoPDFconversion=\toks18
+) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <17.28> on input line 21.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 21.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 21.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 21.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 21.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 21.
+
+[1
+
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+<./Fig/8-7.pdf, id=16, 543.02875pt x 290.08376pt>
+File: ./Fig/8-7.pdf Graphic file (type pdf)
+ <use ./Fig/8-7.pdf>
+Package pdftex.def Info: ./Fig/8-7.pdf used on input line 104.
+(pdftex.def)             Requested size: 216.80992pt x 180.67778pt.
+
+Overfull \hbox (3.91661pt too wide) in paragraph at lines 104--104
+[][] 
+ []
+
+<./Fig/8-8.pdf, id=17, 539.01375pt x 270.00874pt>
+File: ./Fig/8-8.pdf Graphic file (type pdf)
+ <use ./Fig/8-8.pdf>
+Package pdftex.def Info: ./Fig/8-8.pdf used on input line 124.
+(pdftex.def)             Requested size: 216.8107pt x 180.6783pt.
+
+Overfull \hbox (3.91661pt too wide) in paragraph at lines 124--124
+[][] 
+ []
+
+[2] [3 <./Fig/8-7.pdf> <./Fig/8-8.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 133--135
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 137
+.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 137.
+
+LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 137.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--149
+
+ []
+
+<synth/Fig/first.pdf, id=33, 948.18242pt x 622.24469pt>
+File: synth/Fig/first.pdf Graphic file (type pdf)
+
+<use synth/Fig/first.pdf>
+Package pdftex.def Info: synth/Fig/first.pdf used on input line 167.
+(pdftex.def)             Requested size: 433.62283pt x 216.81094pt.
+
+<synth/Fig/build.pdf, id=34, 920.71983pt x 626.58089pt>
+File: synth/Fig/build.pdf Graphic file (type pdf)
+
+<use synth/Fig/build.pdf>
+Package pdftex.def Info: synth/Fig/build.pdf used on input line 193.
+(pdftex.def)             Requested size: 289.08699pt x 216.80165pt.
+
+Overfull \hbox (28.91235pt too wide) in paragraph at lines 193--193
+ [][] 
+ []
+
+
+Overfull \hbox (3.91661pt too wide) in paragraph at lines 193--193
+[][] 
+ []
+
+[4] [5 <./synth/Fig/first.pdf> <./synth/Fig/build.pdf>]
+Underfull \hbox (badness 3039) in paragraph at lines 208--208
+[]\OT1/cmr/m/n/12 Figure 5: |Model with sin-gle
+ []
+
+
+Underfull \hbox (badness 1009) in paragraph at lines 208--208
+\OT1/cmr/m/n/12 common-shot gather, and right
+ []
+
+<synth/Fig/point.pdf, id=50, 913.49281pt x 626.58089pt>
+File: synth/Fig/point.pdf Graphic file (type pdf)
+
+<use synth/Fig/point.pdf>
+Package pdftex.def Info: synth/Fig/point.pdf used on input line 208.
+(pdftex.def)             Requested size: 289.07594pt x 216.80165pt.
+
+Overfull \hbox (28.9013pt too wide) in paragraph at lines 208--208
+ [][] 
+ []
+
+
+Overfull \hbox (3.91661pt too wide) in paragraph at lines 208--208
+[][] 
+ []
+
+<synth/Fig/two.pdf, id=51, 841.22282pt x 640.31218pt>
+File: synth/Fig/two.pdf Graphic file (type pdf)
+ <use synth/Fig/two.pdf>
+Package pdftex.def Info: synth/Fig/two.pdf used on input line 221.
+(pdftex.def)             Requested size: 144.53346pt x 216.81415pt.
+
+Overfull \hbox (3.91661pt too wide) in paragraph at lines 221--221
+[][] 
+ []
+
+<synth/Fig/many.pdf, id=52, 948.18242pt x 622.24469pt>
+File: synth/Fig/many.pdf Graphic file (type pdf)
+
+<use synth/Fig/many.pdf>
+Package pdftex.def Info: synth/Fig/many.pdf used on input line 239.
+(pdftex.def)             Requested size: 433.62283pt x 216.81094pt.
+ [6 <./synth/Fig/point.pdf>] [7 <./synth/Fig/two.pdf> <./synth/Fig/many.pdf>] (
+./paper.bbl) [8] (./paper.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 3339 strings out of 493089
+ 51065 string characters out of 6134842
+ 117640 words of memory out of 5000000
+ 6789 multiletter control sequences out of 15000+600000
+ 9682 words of font info for 34 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 53i,10n,46p,395b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
+cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on paper.pdf (8 pages, 253387 bytes).
+PDF statistics:
+ 120 PDF objects out of 1000 (max. 8388607)
+ 76 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+
