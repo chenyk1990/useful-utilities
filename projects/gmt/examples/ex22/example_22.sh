@@ -22,8 +22,8 @@ n=`expr $n - 1`
 
 # Pull out the first and last timestamp to use in legend title
 
-first=`sed -n 2p neic_quakes.d | $AWK -F, '{printf "%s %s\n", $1, $2}'`
-last=`sed -n '$p' neic_quakes.d | $AWK -F, '{printf "%s %s\n", $1, $2}'`
+first=`sed -n 2p neic_quakes.d | awk -F, '{printf "%s %s\n", $1, $2}'`
+last=`sed -n '$p' neic_quakes.d | awk -F, '{printf "%s %s\n", $1, $2}'`
 
 # Assign a string that contains the current user @ the current computer node.
 # Note that two @@ is needed to print a single @ in gmt pstext:
@@ -43,7 +43,7 @@ END
 
 gmt pscoast -Rg -JK180/9i -B45g30 -B+t"World-wide earthquake activity" -Gbrown -Slightblue \
 	-Dc -A1000 -K -Y2.75i > $ps
-$AWK -F, '{ print $4, $3, $6, $5*0.02}' neic_quakes.d \
+awk -F, '{ print $4, $3, $6, $5*0.02}' neic_quakes.d \
 	| gmt psxy -R -JK -O -K -Cneis.cpt -Sci -Wthin -h >> $ps
 # Create legend input file for NEIS quake plot
 

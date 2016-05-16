@@ -2,7 +2,6 @@ M       DATA/CMTSOLUTION
 M       DATA/Par_file
 M       DATA/STATIONS
 M       Makefile.in
-?       changes_in_specfem3d_globe.txt
 M       configure
 M       configure.ac
 M       flags.guess

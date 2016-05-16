@@ -42,7 +42,7 @@ done < cities.d
 
 # Plot red squares at cities and plot names:
 gmt psxy -R -J -O -K -Ss0.2 -Gred -Wthinnest cities.d >> $ps
-$AWK '{print $1, $2, $4, $3}' cities.d | gmt pstext -R -J -O -K -Dj0.15/0 \
+awk '{print $1, $2, $4, $3}' cities.d | gmt pstext -R -J -O -K -Dj0.15/0 \
 	-F+f12p,Courier-Bold,red+j -N >> $ps
 # Place a yellow star at Rome
 echo "$lon $lat" | gmt psxy -R -J -O -K -Sa0.2i -Gyellow -Wthin >> $ps
@@ -50,7 +50,7 @@ echo "$lon $lat" | gmt psxy -R -J -O -K -Sa0.2i -Gyellow -Wthin >> $ps
 # Sample the distance grid at the cities and use the distance in km for labels
 
 gmt grdtrack -Gdist.nc cities.d \
-	| $AWK '{printf "%s %s %d\n", $1, $2, int($NF+0.5)}' \
+	| awk '{printf "%s %s %d\n", $1, $2, int($NF+0.5)}' \
 	| gmt pstext -R -J -O -D0/-0.2i -N -Gwhite -W -C0.02i -F+f12p,Helvetica-Bold+jCT >> $ps
 
 # Clean up after ourselves:

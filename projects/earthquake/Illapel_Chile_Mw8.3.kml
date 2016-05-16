@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.0"><Document><name id="eventid">USGS Event (us20003k7a)</name><LookAt><longitude>-71.6744</longitude><latitude>-31.5729</latitude><range>500000</range></LookAt><NetworkLink><name>Details</name><refreshVisibility>0</refreshVisibility><Link><href>http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us20003k7a&amp;format=kmlraw</href><refreshMode>onInterval</refreshMode><refreshInterval>300</refreshInterval></Link></NetworkLink></Document></kml>

@@ -20,7 +20,7 @@ gmt psxy -R -J -O -K oz_quakes.d -Sc0.05i -Gred >> $ps
 gmt gmtselect oz_quakes.d -L1000k/dateline.d -Nk/s -C3000k/point.d -fg -R -Il \
 	| gmt psxy -R -JM -O -K -Sc0.05i -Ggreen >> $ps
 gmt psxy point.d -R -J -O -K -SE- -Wfat,white >> $ps
-$AWK '{print $1, $2, $4}' point.d | gmt pstext -R -J -O -K -F+f14p,Helvetica-Bold,white+jLT \
+awk '{print $1, $2, $4}' point.d | gmt pstext -R -J -O -K -F+f14p,Helvetica-Bold,white+jLT \
 	-D0.1i/-0.1i >> $ps
 gmt psxy -R -J -O -K point.d -Wfat,white -S+0.2i >> $ps
 gmt psxy -R -J -O dateline.d -Wfat,white -A >> $ps
