@@ -40,3 +40,5 @@ rsf_read(din,infile)
 %% from Matlab to Madagascar
 rsf_create(outfile,size(dout)');
 rsf_write(dout,outfile);
+
+
