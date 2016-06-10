@@ -29,7 +29,7 @@ for lon in $(seq $lon1 $ilon $lon2)
 do
 echo "Extracting Lat=$lat Lon=$lon" 
 ./getCN1point << ! > mod.txt
-$lat $lon
+$lon $lat
 q
 !
 topo=($(grep topography mod.txt | awk '{print $2}'))
