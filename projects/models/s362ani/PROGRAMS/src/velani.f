@@ -213,7 +213,7 @@ c --- check arrays
 
 c --- select if absolute or relative vsh and vsv should be plotted
 
-	write(6,"('evaluate absolute (=0), or relative (=1) ',$)") 
+	write(6,"('evaluate absolute (=0), or relative (=1) ',$)")
 	read(5,*),irel
 	if(irel.eq.0) then
 	  print*,'selected absolute velocity v'
@@ -227,7 +227,8 @@ c --- read reference model
 
 	write(6,"('select reference model:',$)")
 	read(5,"(a)") refmdl
-	write(6,"('reading reference model: ',a)") refmdl(1:lnblnk(refmdl))
+	write(6,"('reading reference model: ',a)")
+     #refmdl(1:lnblnk(refmdl))
 	call read_deck (ndeck,nic,noc,nmoho,nsl,r,rho,vph,vpv,vsh,vsv,eta,
      #		qro,qmiu,qkap,vphspl,vpvspl,vshspl,vsvspl,etaspl,
      #		qmiuspl,qkapspl,refmdl,iin,iout)
@@ -248,12 +249,14 @@ c	xmaxlo=360.0
 
 c --- remove the average?
 
-	write(6,"('remove average in region of interest? (y or n) ',$)") 
+	write(6,"('remove average in region of interest? (y or n) ',$)")
 	read(5,"(a)") remav
-	if(remav(1:1).eq.'y'.or.remav(1:3).eq.'yes'.or.remav(1:1).eq.'Y') then
+	if(remav(1:1).eq.'y'.or.remav(1:3).eq.'yes'
+     #.or.remav(1:1).eq.'Y') then
 	  ifremav=1
 c	  print*,'will remove the average'
-	else if(remav(1:1).eq.'n'.or.remav(1:3).eq.'no'.or.remav(1:1).eq.'N') then
+	else if(remav(1:1).eq.'n'.or.remav(1:3).eq.
+     #'no'.or.remav(1:1).eq.'N') then
 	  ifremav=0
 c	  print*,'will not remove the average'
 	else
@@ -285,7 +288,8 @@ c --- find areas used to calculate the spherical average
 	  do ipx=1,npx
 	    xlat=xlatarr(ipx)
 	    xlon=xlonarr(ipx)
-	    arealatzone=sin(xrad*(xlat+size/2.0))-sin(xrad*(xlat-size/2.0))
+	    arealatzone=sin(xrad*(xlat+size/2.0))-
+     #sin(xrad*(xlat-size/2.0))
    	    area=twopi*arealatzone*size/360.0
 	    areaarr(ipx)=area
 	    totarea=totarea+area

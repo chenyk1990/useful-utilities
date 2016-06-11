@@ -1,5 +1,7 @@
-	subroutine read_deck (n,nic,noc,nmoho,nsl,r,rho,vph,vpv,vsh,vsv,eta,
-     #		qro,qshear,qkappa,vphspl,vpvspl,vshspl,vsvspl,etaspl,
+	subroutine read_deck (n,nic,noc,nmoho,nsl,r,rho,
+     #      vph,vpv,vsh,vsv,eta,
+     #		qro,qshear,qkappa,vphspl,
+     #      vpvspl,vshspl,vsvspl,etaspl,
      #		qmiuspl,qkapspl,refstr,iin,iout)
 
 	implicit none
@@ -142,8 +144,10 @@ c --- ityp=1-rho,2-vpv,3-vsv,4-qk,5-qm,
 c --- 6-vph,7-vsh,8-eta,9-isoP,10-isoS
 c --- in the output velocities will be in km/s
 
-	subroutine eval_deck (ityp,dep,n,nic,noc,r,rho,vph,vpv,vsh,vsv,eta,
-     #		qro,qmiu,qkap,vphspl,vpvspl,vshspl,vsvspl,etaspl,
+	subroutine eval_deck (ityp,dep,n,nic,noc,r,rho,
+     #      vph,vpv,vsh,vsv,eta,
+     #		qro,qmiu,qkap,vphspl,
+     #      vpvspl,vshspl,vsvspl,etaspl,
      # 		qmiuspl,qkapspl,velout)
 
 	implicit none
