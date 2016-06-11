@@ -1,7 +1,7 @@
 
 
 
-PSNAME="H_crust1.ps"
+PSNAME="H_vel.ps"
 
 #gmtset ELLIPSOID Clarke-1866
 #gmtset PAPER_MEDIA A4
@@ -14,7 +14,7 @@ range="-180/180/-90/90"
 #range="-131/-99/48/58"
 
 # awk '{print $1, $2, $3}' crust1.0.model | surface -Gtemp.grd -I0.05/0.05 -R$range -T0 -Lld -Lud
-awk '{print $1, $2, $4}' crust1_whole.xyz | surface -Gtemp.grd -I0.5/0.5 -R$range -T0 -Lld -Lud
+surface< S362ANI.vsh.1000.txt  -Gtemp.grd -I0.5/0.5 -R$range -T0 -Lld -Lud
 #makecpt -T34/54/0.2 -Crainbow -I -D  > my_crust1.cpt
 #psbasemap -JL-111/10/48/58/5i -R$range -B2/2:."Crustal 1.0":WSne -K -V -P > $PSNAME
 
@@ -32,9 +32,6 @@ awk '{print $1, $2, $4}' crust1_whole.xyz | surface -Gtemp.grd -I0.5/0.5 -R$rang
 
 # ps2raster $PSNAME -A -Tef -V 
 #gv $PSNAME
-
-
-
 
 grdimage temp.grd -JN0/4.5i -P -K -Xc -Yc > $PSNAME
 
