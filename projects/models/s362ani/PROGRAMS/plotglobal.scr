@@ -1,0 +1,43 @@
+#! /bin/csh
+gmtset LABEL_FONT_SIZE 20 BASEMAP_TYPE PLAIN PAGE_ORIENTATION landscape
+#
+rm image.bin
+xyz2grd voigt.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
+grdimage image.bin -Bwsne -JH180/5.0 -X0.4 -Y5 -R -K -V -Cbk6_0.cpt >! global.ps
+pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
+psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
+#
+rm image.bin
+xyz2grd ani.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
+grdimage image.bin -Bwsne -JH180/5.0 -X0.0 -Y-4 -R -O -K -V -Cbk6_0.cpt >> global.ps
+pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
+psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
+#
+rm image.bin
+xyz2grd vsh.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
+grdimage image.bin -Bwsne -JH180/5.0 -X5.3 -Y4 -R -O -K -V -Cbk6_0.cpt >> global.ps
+pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
+psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
+#
+rm image.bin
+xyz2grd vsv.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
+grdimage image.bin -Bwsne -JH180/5.0 -X0.0 -Y-4 -R -O -K -V -Cbk6_0.cpt >> global.ps
+pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
+psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
+#
+psscale -Cbk6_0.cpt_ -O -K -D-0.15/-0.1/2/.15h -V -B2:"[%]": -L >> global.ps
+#
+pstext -Jx1 -R0/11/0/8.5 -P /dev/null -O -K >> global.ps
+pstext -Jx1 -X-5.7 -Y-1 -R -O -K << ! >> global.ps
+2.2 7.8 24 0 0 1 @~d@~v@-S@-@+Voigt@+/v@-S@-@+Voigt@+
+!
+pstext -Jx1 -R -O -K << ! >> global.ps
+2.1 3.8 24 0 0 1 (v@-SH@--v@-SV@-)/v@-S@-@+Voigt@+
+!
+pstext -Jx1 -R -O -K << ! >> global.ps
+7.6 7.8 24 0 0 1 @~d@~v@-SH@-/v@-SH@-
+!
+pstext -Jx1 -R -O << ! >> global.ps
+7.6 3.8 24 0 0 1 @~d@~v@-SV@-/v@-SV@-
+!
+
