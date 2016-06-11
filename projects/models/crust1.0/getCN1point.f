@@ -8,7 +8,7 @@
       open(53,file='crust1.rho')
       open(54,file='crust1.bnds')
 
-      print*,' .... reading all maps ... ' 
+      print*,' .... reading all maps ... '
 
       do j=1,nla
          do i=1,nlo
