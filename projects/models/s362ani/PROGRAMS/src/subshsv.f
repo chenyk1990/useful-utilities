@@ -51,7 +51,8 @@ c --- read the model if necessary
      #        numvar,ivarkern,varstr,
      #        refmdl,kerstr,hsplfl,dskker,ierror) 
 	  else
-	    write(6,"('the model ',a,' does not exits')")modeldef(1:lnblnk(modeldef))
+	    write(6,"('the model ',a,' does not exits')")
+     #modeldef(1:lnblnk(modeldef))
 	  endif
 	  ifknowmodel=1
 

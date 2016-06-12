@@ -306,12 +306,14 @@ c --- write out everything
       filmap=19
       open(filmap,file='topo410.txt')
       do ipx=1,npx
-	write(filmap,"(2f9.3,f11.4)")xlonarr(ipx),xlatarr(ipx),xvalarr410(ipx)
+	write(filmap,"(2f9.3,f11.4)")xlonarr(ipx),
+     #xlatarr(ipx),xvalarr410(ipx)
       enddo
       close(filmap)
       open(filmap,file='topo650.txt')
       do ipx=1,npx
-	write(filmap,"(2f9.3,f11.4)")xlonarr(ipx),xlatarr(ipx),xvalarr650(ipx)
+	write(filmap,"(2f9.3,f11.4)")xlonarr(ipx),
+     #xlatarr(ipx),xvalarr650(ipx)
       enddo
       close(filmap)
       end

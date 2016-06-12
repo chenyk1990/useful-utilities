@@ -1,4 +1,4 @@
-#! /bin/csh
+#! /bin/bash
 gmtset LABEL_FONT_SIZE 20 BASEMAP_TYPE PLAIN PAGE_ORIENTATION landscape
 #
 rm image.bin
