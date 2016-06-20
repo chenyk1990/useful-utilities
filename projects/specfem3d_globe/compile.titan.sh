@@ -51,6 +51,7 @@ echo
 echo "compiling forward simulations..."
 echo
 make clean
+sed -i "s/.*READ_ADJSRC_ASDF                =.*/READ_ADJSRC_ASDF                =.true./" DATA/Par_file
 
 rm -rf OUTPUT_FILES/*
 rm -rf bin.forward

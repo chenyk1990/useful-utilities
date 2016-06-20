@@ -43,7 +43,7 @@ echo
 echo "running solver..."
 echo `date`
 aprun -n $numproc -N1 ./bin/xspecfem3D
-
+#aprun -n $numproc  ./bin/xspecfem3D
 echo
 echo "see results in directory: OUTPUT_FILES/"
 echo
