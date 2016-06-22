@@ -10,9 +10,11 @@ sed -i "s/nodes=.*/nodes=$nodes/" job_solver_multishots.bash
 
 stationlist=`ls /lustre/atlas/proj-shared/geo111/rawdata/stations/ | head -$Nrun`
 #eventlist=`ls /lustre/atlas/proj-shared/geo111/rawdata/cmt/cmt.GCMT/ |head -$Nrun`
-eventlist=`ls /lustre/atlas/proj-shared/csc190/specfem/chenyk/asdf_raw | head -$(($Nrun+1)) |cut -c-14|sed  "s/.*//"`
+eventlist=`ls /lustre/atlas/proj-shared/csc190/specfem/chenyk/asdf_raw | head -$(($Nrun+3)) |cut -c-20|sed  "s/.ob//"|sed "s/ed.h5//" | sed "s/d.h5//" | sed  "s/serv//" | sed "s/A.er/A/" | sed "5d" | sed "11d" | sed "35d"`
+#command line
+#ls /lustre/atlas/proj-shared/csc190/specfem/chenyk/asdf_raw | head -$(($Nrun+1)) |cut -c-20|sed  "s/.ob//" | sed  "s/serv//" | sed "s/A./A/" >cmtlist
 
-ls /lustre/atlas/proj-shared/csc190/specfem/chenyk/asdf_raw | head -$(($Nrun+1)) |cut -c-14|sed  "s/.*//" >cmtlist
+ls /lustre/atlas/proj-shared/csc190/specfem/chenyk/asdf_raw | head -$(($Nrun+3)) |cut -c-20|sed  "s/.ob//"|sed "s/ed.h5//" | sed "s/d.h5//" | sed  "s/serv//" | sed "s/A.er/A/" | sed "5d" | sed "11d" | sed "35d" >cmtlist
 
 sed -i "s/.*SIMULATION_TYPE                 =.*#/SIMULATION_TYPE                 = 1 #/" DATA/Par_file
 sed -i "s/.*SAVE_FORWARD                    =.*#/SAVE_FORWARD                    =.True. #/" DATA/Par_file
@@ -38,7 +40,11 @@ do
     rundir=run`printf "%04i\n" $id`
     cp -f /lustre/atlas/proj-shared/geo111/rawdata/stations/$ievent.STATIONS $rundir/DATA/STATIONS
 done
+echo $id
+echo $Nrun
+echo $ievent
+
 rundir=run0001
-cp -rf DATABASES_MPI/* $rundir/DATABASES_MPI/
-cp -rf OUTPUT_FILES/* $rundir/OUTPUT_FILES/ 
+#cp -rf DATABASES_MPI/* $rundir/DATABASES_MPI/
+#cp -rf OUTPUT_FILES/* $rundir/OUTPUT_FILES/ 
 
