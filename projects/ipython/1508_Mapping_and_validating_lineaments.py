@@ -19,7 +19,7 @@ from skimage import color
 
 # open colormap file, import raw RGB values
 with open("cube1_0-1.csv", "r") as g:
-  raw_data = g.read()
+	raw_data = g.read()
 
 # split the raw data to get a list of strings
 list_o_strings = raw_data.split() 
