@@ -1,0 +1,11 @@
+from rsf.tex import*
+
+
+
+
+
+Paper('ieee_groll_one',lclass='IEEEtran',options='12pt,coneference,onecolumn',use='amsmath,float,graphicx,subfigure,cite')
+
+
+Paper('ieee_groll_two',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath')
+End()
