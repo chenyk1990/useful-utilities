@@ -6,7 +6,7 @@ def Grey3(data,other):
        byte clip=0.0024 |
        transp plane=23 |window min2=0 max2=8 |
        grey3 flat=y frame1=750 frame2=100 frame3=10 
-       title=Data point1=0.8 point2=0.8 %s title=
+       title=Data point1=0.8 point2=0.8 %s title= screenratio=1.3 
        '''%other)
 
 def Greycmg(data,other):
