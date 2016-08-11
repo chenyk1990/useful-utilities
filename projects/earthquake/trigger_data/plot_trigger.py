@@ -1,8 +1,11 @@
+### Modified by Yangkang Chen, Aug, 2016
+
 import matplotlib.pylab as plt
 import numpy as np
 from obspy.signal.trigger import triggerOnset
+from obspy.signal.trigger import classic_sta_lta
 import threading
-
+from obspy.core import Stream, read
 
 def plot_trigger(tr, cft, thr1, thr2):
     df, npts = tr.stats.sampling_rate, tr.stats.npts
@@ -30,3 +33,11 @@ def plot_threaded(tr, cft, thr1, thr2):
     thread = threading.Thread(target=plot_trigger, args=(tr, cft, thr1, thr2))
     thread.start()
 
+
+st=read("data/ev0_6.a04.gse2")[0]
+#st=read("data/ev0_6.a04.gse2") is a stream object
+#st=read("data/ev0_6.a04.gse2")[0] is a trace object
+df = st.stats.sampling_rate
+
+cft = classic_sta_lta(st, int(5 * df), int(10 * df))
+plot_trigger(st, cft, 1.5, 0.5)
