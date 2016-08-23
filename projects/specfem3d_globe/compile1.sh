@@ -1,14 +1,7 @@
 #!/bin/bash
 
-#see: ~/.bashrc
-source /etc/profile
-
 module list
 
-## cross-compiling:
-
-## compilation for xcreate_header_file
-## to run on login node
 echo
 echo "compiling xcreate_header_file..."
 echo
@@ -22,46 +15,41 @@ else
   sed -i "s:(cd ../create_header_file; make):#(cd ../create_header_file; make):g" src/specfem3D/Makefile
   sed -i "s:(cd ../create_header_file; make):#(cd ../create_header_file; make):g" src/auxiliaries/Makefile
 fi
+#sed -i "s:(cd ../create_header_file; make):#(cd ../create_header_file; make):g" src/specfem3D/Makefile
+#sed -i "s:(cd ../create_header_file; make):#(cd ../create_header_file; make):g" src/auxiliaries/Makefile
 
 ##
 ## compiles xcreate_header_file
 ## (for static compilation)
-#module switch craype-interlagos craype-target-native
+#module switch xtpe-interlagos xtpe-istanbul
 module switch craype-interlagos craype-istanbul
+#module switch craype-interlagos craype-target-native
 echo
 module list
 echo
 
 make clean
 make xcreate_header_file
-#if [ ! -e bin/xcreate_header_file ]; then exit; fi
 rm -rf bin.header_file
 cp -rp bin bin.header_file
 
-#module switch craype-target-native craype-interlagos
 module switch craype-istanbul craype-interlagos
 echo
 module list
 echo
 
-
-# forward simulations
-#
-# only needed to produce synthetics for flexwin/measurements
-#
-echo
-echo "compiling forward simulations..."
-echo
 make clean
-#sed -i "s/.*READ_ADJSRC_ASDF                =.*/READ_ADJSRC_ASDF                =.true./" DATA/Par_file
 
 rm -rf OUTPUT_FILES/*
 rm -rf bin.forward
 
+./change_simulation_type.pl -f
+
 mkdir -p bin
 cp bin.header_file/xcreate_header_file bin/
 make -j 8 xmeshfem3D
-make -j 8 xspecfem3D
+make -j 8 xspecfem3D 
+make -j 8 xcombine_vol_data_vtk_adios
 
-cp -rp bin bin.forward
-cp OUTPUT_FILES/* bin.forward/
+#if [ ! -e bin.forward/xspecfem3D ]; then exit; fi
+
