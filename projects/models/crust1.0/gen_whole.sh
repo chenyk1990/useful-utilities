@@ -23,8 +23,8 @@ lon1=-180
 lon2=180
 
 # interval
-ilat=5
-ilon=5
+ilat=2
+ilon=2
 currdir="/home/yunfeng/20_30/research/crust1.0"
 for lat in $(seq $lat1 $ilat $lat2)
 do
