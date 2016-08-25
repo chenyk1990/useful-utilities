@@ -31,14 +31,14 @@ do
 for lon in $(seq $lon1 $ilon $lon2)
 do
 echo "Extracting Lat=$lat Lon=$lon" 
-./getCN1point << ! > mod_whole.txt
+./getCN1point << ! > mod.txt
 $lon $lat
 q
 !
 topo=($(grep topography mod.txt | awk '{print $2}'))
 #moho=($(more +13 mod.txt | head -1 | awk '{print -$4}')) #Yunfeng's
 moho=($(tail -n 3 mod.txt | head -1 | awk '{print -$4}'))
-echo $lon $lat $topo $moho | awk '{printf "%8.2f %8.2f %5.2f %5.2f\n",$1,$2,$3,$4}' >> crust1_whole.xyz
+echo $lon $lat $topo $moho | awk '{printf "%8.2f %8.2f %5.2f %5.2f\n",$1,$2,$3,$4}' >> crust1_whole_d2.txt
 done
 done
 
