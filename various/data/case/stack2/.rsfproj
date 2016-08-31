@@ -1,0 +1,3 @@
+uses=['sfdd', 'sfgraph', 'sfsegyread', 'sfwindow', 'sfput', 'sfgrey']
+data=[]
+size=    7200000
