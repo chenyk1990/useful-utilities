@@ -8,7 +8,6 @@ if sys.platform == 'darwin':
     env['ENV']['PATH'] = ':'.join(['/opt/local/bin',env['ENV']['PATH']])
 
 Paper('ieee_groll',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath')
-
 Paper('ieee_groll_r1',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath')
 
 
