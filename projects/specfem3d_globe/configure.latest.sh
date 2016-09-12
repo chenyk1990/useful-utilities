@@ -53,7 +53,7 @@ adios_c_inc=`adios_config -c`
 
 # w/ asdf 
 #./configure --with-asdf ASDF_LIBS="./libasdf.a" --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include" 
-./configure --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include" 
+./configure --with-asdf ASDF_LIBS="/ccs/home/chenyk/asdf-library/build/lib/libasdf.a" --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include" 
 #./configure --with-adios --with-cuda=cuda5 --host=x86_64-unknown-linux-gnu MPIF90=$mpif90 F90=$f90 CC=$cc FLAGS_CHECK="$flags" FCFLAGS="" CFLAGS="$cflags" CUDA_INC="$CUDATOOLKIT_HOME/include" CUDA_LIB="$CUDATOOLKIT_HOME/lib64" MPI_INC="$CRAY_MPICH2_DIR/include" 
 
 # w/ asdf 
