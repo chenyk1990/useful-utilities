@@ -1,3 +1,0 @@
-uses=['sfbin2rsf', 'sfput', 'sfwindow', 'sfgrey']
-data=[]
-size= 1927471104
