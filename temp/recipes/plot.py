@@ -92,5 +92,19 @@ Plot('labelb',None,
 	box x0=7 y0=4.6 label="B" xt=-0.5 yt=0.5 length=0.75
 	''')
 
+## Creating framebox
+x=2   #spatial
+y=2.5 #vertical
+w=99  #spatial
+w1=0.3#vertical
 
+Flow('frame.asc',None,'echo %s n1=10 data_format=ascii_float in=$TARGET'% \
+	string.join(map(str,(x,y,x+w,y,x+w,y+w1,x,y+w1,x,y))))
+Plot('frame','frame.asc',
+	'''
+	dd type=complex form=native |
+	graph min1=0 max1=179 min2=1.9 max2=3.896 pad=n plotfat=15 plotcol=2 screenratio=1.4
+	wantaxis=n wanttitle=n yreverse=y 
+	''')
+	
 
