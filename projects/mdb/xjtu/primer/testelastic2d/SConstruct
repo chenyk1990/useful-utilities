@@ -20,8 +20,9 @@ Flow('rho',None,
 Flow('wavz wavx','vp vs rho',
 	'''
 	Testelastic2d  vs=${SOURCES[1]} rho=${SOURCES[2]} wavx=${TARGETS[1]} 
-	nb=30 fm=25 nt=300 kt=270 dt=0.001
+	nb=30 fm=25 nt=500 kt=400 dt=0.001
 	''')
+
 
 Plot('wavx',
      '''
