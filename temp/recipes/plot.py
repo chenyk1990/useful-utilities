@@ -106,5 +106,20 @@ Plot('frame','frame.asc',
 	graph min1=0 max1=179 min2=1.9 max2=3.896 pad=n plotfat=15 plotcol=2 screenratio=1.4
 	wantaxis=n wanttitle=n yreverse=y 
 	''')
-	
 
+## Latex usage	
+\bibliographystyle{seg}
+\bibliography{bibname}
+\newpage
+\listoffigures
+\newpage
+\AtEndDocument{
+\begin{figure}
+	\centering
+	\subfloat[]{\includegraphics[width=0.55\textwidth]{Fig/p1}}
+    \subfloat[]{\includegraphics[width=0.55\textwidth]{Fig/p2}}
+    \subfloat[]{\includegraphics[width=0.55\textwidth]{Fig/p3}}
+	\caption{This is caption.}
+	\label{fig:p1,p2,p3}
+\end{figure}
+}
