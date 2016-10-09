@@ -123,3 +123,16 @@ Plot('frame','frame.asc',
 	\label{fig:p1,p2,p3}
 \end{figure}
 }
+
+\begin{table}[h]
+\caption{Comparison of computational cost of both the MSSA and the proposed HRSC framework for different data sizes.}
+\begin{center}
+     \begin{tabular}{|c|c|c|c|} 
+	  \hline Test & 300$\ast$20$\ast$20  &  300$\ast$40$\ast$20  &  300$\ast$80$\ast$20\\ 
+	  \hline MSSA (sec) & 207.46 & 597.60 & 2473.50 \\
+      	  \hline Proposed HRSC (sec)& 	131.78 & 396.89 & 1706.31		       		 \\ 
+          \hline
+    \end{tabular} 
+\end{center}
+\label{tbl:compucost}
+\end{table}
