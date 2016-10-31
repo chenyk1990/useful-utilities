@@ -34,5 +34,11 @@ Paper('slides',lclass='beamer',use='subfigure,amsmath,amsbsy,listings,overpic,co
       \mode<presentation>{\usecolortheme{beaver}}
       \newcommand{\TEXMF}{%s/texmf}
       ''' % os.environ.get('HOME'))
+
+## The following is used to automatically cp IEEE files
+## scons ieee & scons paper.pdf 
+env.Command(['ieee','IEEEtran.bst','IEEEtran.cls'],[os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.bst',os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.cls'],'cp  ${SOURCES[0]}  ${TARGETS[1]} && cp  ${SOURCES[1]}  ${TARGETS[2]} ')
+Paper('ieee_filename',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath')
+      
 # For default paper.tex
 End(options='manuscript',use='amsmath,subfigure,listing)
