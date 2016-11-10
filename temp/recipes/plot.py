@@ -136,3 +136,32 @@ Plot('frame','frame.asc',
 \end{center}
 \label{tbl:compucost}
 \end{table}
+
+##basemap
+from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8,8)) 
+# make sure the value of resolution is a lowercase L,
+#  for 'low', not a numeral 1
+m = Basemap(projection='merc', lat_0=38, lon_0=138,
+    resolution = 'h', area_thresh = 1000.0,
+    llcrnrlon=125, llcrnrlat=30,
+    urcrnrlon=146, urcrnrlat=47)
+ 
+m.drawcoastlines()
+m.drawcountries()
+m.drawstates()
+m.fillcontinents()
+m.drawparallels(np.arange(-90., 120.,10.),labels=[1,1,0,0])
+m.drawmeridians(np.arange(0., 420., 10.),labels=[0,0,1,1])
+m.drawmapboundary()
+
+lon = 135
+lat = 37
+xm,ym = m(lon, lat)
+m.plot(xm, ym, 'bo', markersize=12)
+plt.text(xm,ym,'AM',fontsize=20,fontweight='bold',
+                    ha='center',va='center',color='r')
+plt.show()
+
+
