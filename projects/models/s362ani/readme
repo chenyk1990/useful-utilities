@@ -1,0 +1,137 @@
+PROGRAMS.tar.gz - programs for obtaining model values at specific locations
+                  and some GMT (http://gmt.soest.hawaii.edu) plotting tools.
+
+GRD.tar.gz - longitude-latitude-velocity files with vsh, vsv, and voigt
+             average in km/s evaluated on a grid of points at many depths
+             in the mantle
+
+---------------
+
+1-D MODELS:
+
+STW105 - our new reference model, also known as REF
+
+PREM750_CARDS - the PREM model
+
+---------------
+
+3-D MODELS:
+
+S362ANI - our preferred global model of shear-wave velocity. In this model,
+          radial anisotropy is confined to the uppermost mantle (that is,
+          since the anisotropy is parameterized with only the four uppermost 
+          splines, it becomes very small below a depth of 250 km,
+          and vanishes at 410 km). The 1-D reference model is STW105.
+
+S362WMANI - a version of S362ANI with anisotropy allowed throughout the mantle.
+
+S362ANI_PREM - a version of S362ANI calculated using PREM as the 
+               1-D reference model.
+
+S362ANI_OLDCRCOR - a version of S362ANI calculated using linear Woodhouse & Dziewonski (1984)
+                   crustal corrections and STW105.
+
+S2.9EA - a global model with higher resolution in the upper mantle beneath 
+         Eurasia calculated using STW105 as the 1-D reference model.
+
+S2.9EA_OLDCRCOR - a version of S2.9EA calculated using linear Woodhouse & Dziewonski (1984)
+                  crustal corrections and STW105.
+
+---------------
+
+REFERENCES:
+
+The reference for STW105 (REF) and for the global 3D models S362ANI, S362WMANI, and
+S362ANI_PREM is:
+
+Kustowski, B, Ekstrom, G., and A. M. Dziewonski, 2008, 
+Anisotropic shear-wave velocity structure of the Earth's mantle: A global model,
+J. Geophys. Res., 113, B06306, doi:10.1029/2007JB005169.
+
+
+The reference for the model of Eurasia S2.9EA is:
+
+Kustowski, B., Ekstrom, G., and A. M. Dziewonski, 2008,
+The shear-wave velocity structure in the upper mantle beneath Eurasia,
+Geophys. J. Int, 174, 978-992, doi:10.1111/j.1365-246X.2008.03865.x.
+ 
+
+Models S362ANI_OLDCRCOR and S2.9EA_OLDCRCOR are discussed and shown in:
+
+Kustowski, B., Dziewonski, A. M., and G. Ekstrom, 2007,
+Nonlinear Crustal Corrections for Normal-Mode Seismograms,
+Bull. Seismol. Soc. Am., Vol. 97, No. 5, 1756-1762, doi: 10.1785/0120070041
+
+---------------
+
+COMPILATION
+
+Use the Makefile in the 'src' directory. All programs are
+written in Fortran 77 and have been tested on Solaris, Mac OS,
+and Cygwin (GNU). Note, that, in order to make the compilation
+on Mac OS and GNU easy, in the 'Makefile', I used a single
+precision version of a subroutine 'splcon' (defined in
+'splconsngl.f'). It is sufficiently accurate for most
+applications, such as plotting the model etc. However,
+the models have been derived using a double precision version
+of 'splcon' (defined in 'splcondble.f') on Solaris, which is
+compiler dependent. This subroutine is also included in 'src'. 
+If you have any questions/comments/suggestions regarding
+compilation, please let me know.
+
+---------------
+
+PLOTTING VELOCITY and ANISOTROPY USING A REGULAR GRID OF POINTS
+
+The 'velani_global.e' script shows how to evaluate global models
+at a given depth and plot them using GMT plotting tools.
+
+The 'velani_eurasia.e' script shows how to evaluate the model
+of Eurasia at a given depth and plot it using GMT.
+The boundary of the high-resolution part of the model is defined 
+in 'BEURA.bound', which is embedded on the figure.
+
+Both scripts use the program 'velani', 
+which evaluates vsh, vsv, Voigt average, and vsh-vsv. 
+The output is in km/s, if 'absolute' is selected, 
+or in per cent, if 'relative' is selected.
+(The vsh and vsv evaluations are relative to vsh and vsv
+in the reference model, respectively.
+Both the Voigt-average and vsh-vsv evaluations are relative
+to the Voigt average in the reference model.)
+
+'velani' evaluates the velocity and anisotropy only within a selected
+rectangular region of interest at points separated by the specified 
+'pixel size'.
+
+If requested, the average calculated within the entire region of interest
+is removed.
+
+---------------
+
+PLOTTING TOPOGRAPHY
+
+The script 'topo.e' shows how to plot the topography of the 410-km and 650-km 
+discontinuities. The script uses the program 'topo'. 
+The topography is defined in the model as depressions in km.
+
+---------------
+
+SUBROUTINES EVALUATING ALL PARAMETERS AT A GIVEN POINT
+
+The program 'bin/test_subshsv.exe' demonstrates how to call a subroutine 'subshsv',
+which returns perturbations in vsh,vsv,vph,vpv,eta, and density
+w.r.t. STW105 at a given colatitude, longitude, and radius; 
+and a subroutine 'subtopo', which returns depth perturbations of
+the transition zone discontinuities. 
+
+---------------
+
+CONTACT
+
+If you have any questions, do not hesitate to contact me at 
+
+kustowski [at] post (dot) harvard (dot) edu
+
+
+Bogdan Kustowski
