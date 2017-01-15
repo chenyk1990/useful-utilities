@@ -31,9 +31,10 @@ function [ D1 ] = fxymssa_recon(D,MASK,flow,fhigh,dt,N,Niter,eps,verb,mode,a)
 %  GNU General Public License for more details: http://www.gnu.org/licenses/
 %
 %  Reference:   
-%  [1] Oropeza, V., and M. Sacchi, 2011, Simultaneous seismic data denoising and reconstruction via multichannel singular spectrum analysis, Geophysics, 76, V25-V32.
-%  [2] Huang, W., R. Wang, M. Zhang, and Y. Chen, 2015, Damped multichannel singular spectrum analysis for 3D random noise attenuation: SEG expanded abstracts: 85th Annual international meeting, 4714–4719.
-%  [3] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, XX, XX-XX.
+%
+%  [1] Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
+%  [2] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
+%  [3] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
 
 if nargin==0
     error('Input data must be provided!');
