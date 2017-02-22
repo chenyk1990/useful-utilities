@@ -54,11 +54,25 @@
   double precision, external :: lagrange_deriv_GLL
 
   integer i1,i2,k1,k2
+! xigll: size 5
+! zigll: size 5
+! wxgll: size 5
+! wzgll: size 5
+! hprime_xx: size 5*5
+! hprime_zz: size 5*5
+! hprimegll_xx: size 5*5
+! hprimegll_zz: size 5*5
 
 ! set up coordinates of the Gauss-Lobatto-Legendre points
   call zwgljd(xigll,wxgll,NGLLX,alphaGLL,betaGLL)
   call zwgljd(zigll,wzgll,NGLLZ,alphaGLL,betaGLL)
 
+  write(6,FMT=*) "GLL points X",xigll
+  write(6,FMT=*) "GLL points Z",zigll
+  write(*,*) "GLL Weight X",wxgll
+  write(*,*) "GLL Weight Z",wzgll
+  print *, "GLL points X",xigll
+    
 ! if number of points is odd, the middle abscissa is exactly zero
   if(mod(NGLLX,2) /= 0) xigll((NGLLX-1)/2+1) = ZERO
   if(mod(NGLLZ,2) /= 0) zigll((NGLLZ-1)/2+1) = ZERO
@@ -72,7 +86,12 @@
       hprimewgll_xx(i2,i1) = wxgll(i2) * hprime_xx(i2,i1)
     enddo
   enddo
-
+  
+  write(*,*) "Derivatives of the Lagrange polynomials",hprime_xx
+  write(*,*) "Derivatives",hprimewgll_xx
+  write(*,*) "Derivatives of the Lagrange polynomials",hprime_zz
+  write(*,*) "Derivatives",hprimewgll_zz
+    
   do k1=1,NGLLZ
     do k2=1,NGLLZ
       hprime_zz(k2,k1) = lagrange_deriv_GLL(k1-1,k2-1,zigll,NGLLZ)
