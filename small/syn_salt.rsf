@@ -1,0 +1,21 @@
+in=f00.dat n1=501 n2=501 o1=0 o2=0 d1=1 d2=1 data_format=xdr_float
+1.8-svn	sfdd	jianyong/noise/synth:	yc5@mac104996	Sun Feb 26 14:10:11 2017
+
+	data_format="native_float"
+	esize=4
+	in="/Users/yc5/data/datapath/jianyong/noise/synth/f00.rsf@"
+1.8-svn	sfwindow	jianyong/noise/synth:	yc5@mac104996	Sun Feb 26 14:13:22 2017
+
+	d2=1
+	n2=211
+	o1=300
+	o2=280
+	data_format="native_float"
+	min1=300
+	min2=280
+	esize=4
+	max1=450
+	in="/Users/yc5/data/datapath/test.rsf@"
+	max2=490
+	d1=1
+	n1=151
