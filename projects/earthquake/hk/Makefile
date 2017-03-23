@@ -1,3 +1,6 @@
+GMT_INC = -I/opt/local/lib/gmt4/include -I/opt/local/include
+GMT_LIBS = -L/opt/local/lib/gmt4/lib -lgmt -lpsl -L/opt/local/lib -lnetcdf -lm -s
+
 CFLAGS=-O ${GMT_INC}
 
 SUBS = sacio.o fft.o Complex.o

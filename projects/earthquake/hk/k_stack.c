@@ -26,7 +26,7 @@
 int main(int argc, char **argv) {
   int	i,j,k,n,num_of_traces,npts,nFiles=0,fg;
   char	outf[128], line[128], inf[128];
-  BOOLEAN	error = FALSE, addmore=FALSE;
+  GMT_LONG	error = FALSE, addmore=FALSE;
   SACHEAD	hd;
   float	*r,*ss, *var, *data, *fpt, *buff[NS];
   float	p, vp=6.3, vs, eta_p, eta_s, t0, dt, w1, w2, w3, temp, am_cor;

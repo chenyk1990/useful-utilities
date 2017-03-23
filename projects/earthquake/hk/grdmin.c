@@ -15,7 +15,7 @@
 int main(int argc, char **argv) {
   int	i,j,n,fg;
   char	temp[128];
-  BOOLEAN	error = FALSE, deviation = FALSE;
+  GMT_LONG	error = FALSE, deviation = FALSE;
   float	x,vx,y,vy,vxy,p,dev,*a;
   struct GRD_HEADER grd;
 

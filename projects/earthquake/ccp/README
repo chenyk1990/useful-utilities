@@ -1,0 +1,91 @@
+# 	Information for using receiver function stacking package
+#               @(#)README      1.0 11/30/2006
+
+        Copyright (c) 1996-2006, L. Zhu (lupei@eas.slu.edu)
+
+Permission to use, copy, modify, and distribute this package and supporting
+documentation for any purpose without fee is hereby granted, provided
+that the above copyright notice appear in all copies, that both that
+copyright notice and this permission notice appear in supporting
+documentation.
+
+In case that you modify any codes in this package, you have to
+change the name of the modified code. You are welcome to send me a note
+about your modification and any suggestion.
+
+In case that you redistribute this package to others, please send me
+the contacting info (email addr. preferred) so that future updates
+of this package can be sent to them.
+
+
+1. Content of the Package
+
+The package contains following main codes (some might be in a separate package):
+
+  decon.c	time and frequency domain deconvolution.
+  iter_decon.c	time-domain iterative deconvolution.
+  rcvFn.c	Forward computation of receiver functions.
+
+  k_stack.c	H-K stacking.
+  hk_plt.pl     a Perl script to plot results of H-k stacking.
+  grdmin.c	find the minimum on a 2D grid.
+
+  ccpStack3D.c	CCP stacking.
+  3DSlice.c	Slice a 2D cross-section in a 3D CCP volume.
+
+
+2. Installation
+
+To compile the codes see Makefile. Note that you need to have GMT installed
+to be able to compile some programs. Two related environment variables, GMT_INC and
+GMT_LIBS, are needed. On my computer running Suss 10.1, they are set to:
+GMT_INC = -I/opt/GMT4.0/include -I/opt/netcdf-3.5.0/Linux/include
+GMT_LIBS = -L/opt/GMT4.0/Linux/lib -lgmt -lpsl -L/opt/netcdf-3.5.0/Linux/lib -lnetcdf -lm -s
+
+
+3. Usage
+
+run the command with -help to show the usage of the command.
+
+In general, your waveform data should be organized by events
+in the form of event_ID/sta.[r,t,z]. The ray parameter p
+needs to be stored in SAC header USER0. It is recommended that
+the first P arrival be picked and stored in SAC header A
+For the time window, I normally chose 10 sec before the P arrival
+and 80 sec after, with a sampling rate of 10 sample/sec.
+
+3.1 Deconvolution
+Subdirectory example/ contains a three-component waveform record
+(KUL.[r,t,z]).  You can use the following command
+./iter_decon -F1/3/-5 -N100 -C-2/-10/80 -T0.1 example/KUL.z example/KUL.[r,t]
+to obtain receiver functions KUL.ri and KUL.ti.
+
+3.2 H-K stacking
+The subdirectory also has several averaged receiver functions of
+different incidence angle (pp.*.ri) that you can use
+./k_stack -R20/60/1.5/2.0 -I0.5/0.01 -Gexample/hk.grd example/pp.*.ri
+to produce H-k stack grd file "example/hk.grd" and the variance file
+"example/hk.grd.var". You can then use the following command to find
+the stacking maximum:
+./grdmin -D example/hk.grd
+and plot the result by using
+./grdmin -D example/hk.grd | ./hk_plt.pl > junk.ps
+
+3.2 CCP stacking
+The following three commands produce the CCP image in Zhu et al (2006) GJI paper:
+ccpStack3D -R-50/50/-25/25/0/50 -C28.030/38.161 -A3 -I1/5/0.5 -S1/4/1 -E1 -Vwa.vs -Htop.layer -Gccp.3d *.ri
+3DSlice ccp.3d -Gjunk.grd -R-50/50/1 -C28.030/38.161 -A3
+grdimage ccp.grd -Cccp.cpt -JX5/2.5 -R-50/50/-50/0 -Ba10f2/a10g30f2:"Depth (km)":WSe -K -Y2 > ccp.ps
+
+4. Reference
+
+   Zhu and Kanamori (2000), JGR.
+   Zhu (2000), EPSL.
+   Zhu et al (2006), GJI.
+
+5. Revision History
+
+   Dec  1, 2006		put the first release of deconvolution and H-k stacking codes on line.
+   Nov. 19, 2013	put the CCP stacking codes on line.
+
+6 FAQs

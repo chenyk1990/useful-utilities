@@ -1,11 +1,7 @@
 # GMT common arguments shelf
--Bxa2
--JPa15c/70z
--JX10c/6c
--R0/10/0/10
--jX10c/6c
-EOF
-EOF
-F
-0
+-Ba10f2/a10g30f2:Depth (km):WSe
+-JX5/2.5
+-R-50/50/-50/0
+-Y2
+-jX5/2.5
 EOF
