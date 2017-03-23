@@ -1,9 +1,10 @@
 #! /bin/bash
+#modified a bit by YC
 gmtset LABEL_FONT_SIZE 20 BASEMAP_TYPE PLAIN PAGE_ORIENTATION landscape
 #
 rm image.bin
 xyz2grd voigt.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
-grdimage image.bin -Bwsne -JH180/5.0 -X0.4 -Y5 -R -K -V -Cbk6_0.cpt >! global.ps
+grdimage image.bin -Bwsne -JH180/5.0 -X8 -Y12 -R -K -V -Cbk6_0.cpt > global.ps
 pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
 psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
 #
@@ -25,7 +26,7 @@ grdimage image.bin -Bwsne -JH180/5.0 -X0.0 -Y-4 -R -O -K -V -Cbk6_0.cpt >> globa
 pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> global.ps
 psxy -R -JH -O -K -W8/255/255/255 -V -M platebound.gmt >> global.ps
 #
-psscale -Cbk6_0.cpt_ -O -K -D-0.15/-0.1/2/.15h -V -B2:"[%]": -L >> global.ps
+psscale -Cbk6_0.cpt_ -O -K -D-0.15/-0.1/2/.15h -V -B6:"[%]":  >> global.ps
 #
 pstext -Jx1 -R0/11/0/8.5 -P /dev/null -O -K >> global.ps
 pstext -Jx1 -X-5.7 -Y-1 -R -O -K << ! >> global.ps

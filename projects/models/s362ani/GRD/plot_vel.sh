@@ -15,7 +15,7 @@ range="-180/180/-90/90"
 
 # awk '{print $1, $2, $3}' crust1.0.model | surface -Gtemp.grd -I0.05/0.05 -R$range -T0 -Lld -Lud
 surface< S362ANI.vsh.1000.txt  -Gtemp.grd -I0.5/0.5 -R$range -T0 -Lld -Lud
-#makecpt -T34/54/0.2 -Crainbow -I -D  > my_crust1.cpt
+makecpt -T34/54/0.2 -Crainbow -I -D  > my_crust1.cpt
 #psbasemap -JL-111/10/48/58/5i -R$range -B2/2:."Crustal 1.0":WSne -K -V -P > $PSNAME
 
 ######grdimage temp.grd -JN0/4.5i -R  -K -V > $PSNAME
@@ -33,10 +33,10 @@ surface< S362ANI.vsh.1000.txt  -Gtemp.grd -I0.5/0.5 -R$range -T0 -Lld -Lud
 # ps2raster $PSNAME -A -Tef -V 
 #gv $PSNAME
 
-grdimage temp.grd -JN0/4.5i -P -K -Xc -Yc > $PSNAME
+grdimage temp.grd -JN0/4.5i -P -K -Xc -Yc -Cmy_crust1.cpt > $PSNAME
 
 #gmt grdcontour tt.nc -J -O -K -C500 -A1000+f10p,Helvetica,white -L500 -GL0/90/203/-10,175/60/170/-30,-50/30/220/-5 -Wa0.75p,white -Wc0.25p,white >> $ps
 #gmt psxy -R -J -O -K tt.pol -W0.25p,green,. >> $ps
-pscoast -R -J -O -W1p -Gsteelblue -A0/1/1 -B30g30 -B+t"CRUST 1.0" >> $PSNAME
+#pscoast -R -J -O -W1p -Gsteelblue -A0/1/1 -B30g30 -B+t"CRUST 1.0" >> $PSNAME
 
 open $PSNAME

@@ -1,9 +1,13 @@
 #! /bin/bash
+#changed a bit by YC
 gmtset LABEL_FONT_SIZE 20 BASEMAP_TYPE PLAIN PAGE_ORIENTATION portrait
+
+#20 control the "depression" size
+
 #
 rm image.bin
 xyz2grd topo410.txt -V -Gimage.bin -I2/2 -R-180/180/-90/90 -N0.0
-grdimage image.bin -Bwsne -JH180/5.0 -X1.75 -Y7 -R -K -V -Cbk15_0.cpt >! topo.ps
+grdimage image.bin -Bwsne -JH180/5.0 -X1.75 -Y15 -R -K -V -Cbk15_0.cpt > topo.ps
 pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> topo.ps
 psxy -R -JH -O -K -W4/255/255/255 -V -M platebound.gmt >> topo.ps
 #
@@ -13,13 +17,18 @@ grdimage image.bin -Bwsne -JH180/5.0 -X0 -Y-4 -R -O -K -V -Cbk15_0.cpt >> topo.p
 pscoast -V -R -O -K -JH -W1 -Dc -A1000 >> topo.ps
 psxy -R -JH -O -K -W4/255/255/255 -V -M platebound.gmt >> topo.ps
 #
-psscale -Cbk15_0.cpt_ -O -K -D2.5/-0.5/2/.15h -V -B5:"depression [km]": -L >> topo.ps
+#psscale -Cbk15_0.cpt_ -O -K -D2.5/-0.5/2/.15h -V -B5:"depression [km]": -L >> topo.ps
+psscale -Cbk15_0.cpt_ -O -K -D2.5/-0.5/2/.15h -V -B10:"depression [km]": >> topo.ps
+#-B10-> maxval=10 minval=-10
+
 #
 pstext -Jx1 -R0/8.5/0/11 -P /dev/null -O -K >> topo.ps
 pstext -Jx1 -X-1.75 -Y-3 -R -O -K << ! >> topo.ps
-3.0 9.8 20 0 0 1 410-km discontinuity
+3.0 9.8 15 0 0 1 410-km discontinuity
 !
 pstext -Jx1 -R -O  << ! >> topo.ps
-3.0 5.8 20 0 0 1 650-km discontinuity
+3.0 5.8 15 0 0 1 650-km discontinuity
 !
 rm image.bin
+
+#15-> size of "410-km discontinuity"
