@@ -54,3 +54,63 @@
 
 %\newpage
 %\listoffigures
+
+
+
+
+#two columns
+Paper('ieee',lclass='IEEEtran',options='10pt',use='ulem,cite,ifthen,seg,color,graphicx,subfigure,amsmath')
+
+#one column
+Paper('ieee_one',lclass='IEEEtran',options='12pt,journal,draftclsnofoot,onecolumn',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath,epstopdf')
+
+#revision 1
+#two columns
+Paper('ieee_r1',lclass='IEEEtran',options='10pt',use='ulem,cite,ifthen,seg,color,graphicx,subfigure,amsmath',include=r'''
+\DeclareRobustCommand{\old}[1]{\color{blue}{\sout{#1}}\color{black}{}}
+\DeclareRobustCommand{\new}[1]{\color{red}{\textit{#1}}\color{black}{}} 
+''')
+
+Command('ieee_p1.tex','ieee_r1.tex','cp $SOURCE $TARGET')
+Paper('ieee_p1',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath',include=r'''
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+''')
+
+#one column
+Paper('ieee_one_p1',lclass='IEEEtran',options='12pt,journal,draftclsnofoot,onecolumn',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath,epstopdf',include=r'''
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+''')
+
+
+#revision 2
+#two columns
+Paper('ieee_r2',lclass='IEEEtran',options='10pt',use='ulem,cite,ifthen,seg,color,graphicx,subfigure,amsmath',include=r'''
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+\DeclareRobustCommand{\old}[1]{\color{blue}{\sout{#1}}\color{black}{}}
+\DeclareRobustCommand{\new}[1]{\color{red}{\textit{#1}}\color{black}{}} 
+''')
+
+Command('ieee_p2.tex','ieee_r2.tex','cp $SOURCE $TARGET')
+Paper('ieee_p2',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath',include=r'''
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+''')
+
+#one column
+Paper('ieee_one_p1',lclass='IEEEtran',options='12pt,journal,draftclsnofoot,onecolumn',use='cite,ifthen,seg,color,graphicx,subfigure,amsmath,epstopdf',include=r'''
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+''')
+
+env=Environment()
+env.Command(['ieee','IEEEtran.bst','IEEEtran.cls'],[os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.bst',os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.cls'],'cp  ${SOURCES[0]}  ${TARGETS[1]} && cp  ${SOURCES[1]}  ${TARGETS[2]} ')
+
