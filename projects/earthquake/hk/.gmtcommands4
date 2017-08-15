@@ -1,7 +1,10 @@
 # GMT common arguments shelf
--Ba10f2/a10g30f2:Depth (km):WSe
--JX5/2.5
--R-50/50/-50/0
+-Ba5f1:H (km):/a0.1f0.02:k:WSne
+-JX4/2
+-R0/1/0/1
 -Y2
--jX5/2.5
+-jX4/2
 EOF
+2
+EOF
+OF
