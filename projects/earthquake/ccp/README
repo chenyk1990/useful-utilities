@@ -59,6 +59,8 @@ Subdirectory example/ contains a three-component waveform record
 (KUL.[r,t,z]).  You can use the following command
 ./iter_decon -F1/3/-5 -N100 -C-2/-10/80 -T0.1 example/KUL.z example/KUL.[r,t]
 to obtain receiver functions KUL.ri and KUL.ti.
+#SAC> r ./example/KUL.* ./example/pp.*
+#SAC> w over
 
 3.2 H-K stacking
 The subdirectory also has several averaged receiver functions of
