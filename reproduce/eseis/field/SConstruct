@@ -132,8 +132,8 @@ Flow('real-femdi-seis',seis,'cat axis=2 ${SOURCES[1:%d]}'%len(seis))
 Flow('real-femdr-seis0-3d','real-femdr-seis','math output="abs(input)"|real |put %s | transp'%put2)	
 Flow('real-femdi-seis0-3d','real-femdi-seis','math output="abs(input)"|real | put %s | transp'%put2)
 
-#Flow('real-femdr-seis0','real-femdr-seis0-3d','put %s '%put3)	
-#Flow('real-femdi-seis0','real-femdi-seis0-3d','put %s '%put3)	
+Flow('real-femdr-seis0','real-femdr-seis0-3d','put %s '%put3)	
+Flow('real-femdi-seis0','real-femdi-seis0-3d','put %s '%put3)	
 
 Grey('real-femdr-seis0','clip=6')
 Grey('real-femdi-seis0','clip=6')
