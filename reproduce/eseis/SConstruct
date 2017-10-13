@@ -7,5 +7,4 @@ if sys.platform == 'darwin':
     env['ENV']['PATH'] = ':'.join(['/opt/local/bin',env['ENV']['PATH']])
 
 
-
-End(options='manuscript',use='amsmath,listings')
+End(lclass='geophysics',use='amsmath')

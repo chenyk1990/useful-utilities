@@ -195,8 +195,8 @@ Flow('real-femdi-seis-thr-3d','real-femdi-seis-thr',' math output="abs(input)"|r
 Grey3('real-femdr-seis-thr-3d',10,'label1=Frequency unit1=Hz frame1=30 frame2=125 frame3=0 color=j screenratio=1.3 movie=3')
 Grey3('real-femdi-seis-thr-3d',10,'label1=Frequency unit1=Hz frame1=30 frame2=125 frame3=0 color=j screenratio=1.3 movie=3')
 
-#Flow('real-femdr-seis-inv-3d','real-femdr-seis-inv','put %s'%put)
-#Flow('real-femdi-seis-inv-3d','real-femdi-seis-inv','put %s'%put)
+Flow('real-femdr-seis-inv-3d','real-femdr-seis-inv','put %s'%put)
+Flow('real-femdi-seis-inv-3d','real-femdi-seis-inv','put %s'%put)
 
 Grey3('real-femdr-seis-inv-3d',10,'label1=Frequency unit1=Hz frame1=30 frame2=125 frame3=0 color=j screenratio=1.3 movie=3')
 Grey3('real-femdi-seis-inv-3d',10,'label1=Frequency unit1=Hz frame1=30 frame2=125 frame3=0 color=j screenratio=1.3 movie=3')
