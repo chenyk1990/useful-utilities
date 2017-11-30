@@ -29,7 +29,7 @@ add_Bielak_conditions           = .false.        # add Bielak conditions or not 
 #   binary: read model from binary databse file
 #   external: define model using define_external_model subroutine
 #   legacy: read model from model_velocity.dat_input
-MODEL                           = default
+MODEL                           = ascii
 
 # Output the model with the requested type, does not save if turn to default
 SAVE_MODEL                      = default
