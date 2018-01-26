@@ -1,5 +1,5 @@
 function [ D1 ] = fxymssa_recon(D,MASK,flow,fhigh,dt,N,Niter,eps,verb,mode,a)
-%  FXY_MSSA: F-XY domain multichannel singular spectrum analysis (MSSA) for
+%  FXYMSSA_RECON: F-XY domain multichannel singular spectrum analysis (MSSA) for
 %  simultaneous denoising and reconstruction
 %
 %  IN   D:   	intput 3D data

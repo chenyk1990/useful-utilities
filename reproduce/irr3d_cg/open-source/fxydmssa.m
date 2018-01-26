@@ -1,5 +1,5 @@
 function [ D1 ] = fxydmssa(D,flow,fhigh,dt,N,K,verb)
-%  FXY_MSSA: F-XY domain damped multichannel singular spectrum analysis (DMSSA)
+%  FXYDMSSA: F-XY domain damped multichannel singular spectrum analysis (DMSSA)
 %
 %  IN   D:   	 intput 3D data
 %       flow:   processing frequency range (lower)

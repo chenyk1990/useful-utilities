@@ -1,5 +1,5 @@
 function [ D1 ] = fxydmssa_recon(D,MASK,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a)
-%  FXY_MSSA: F-XY domain damped multichannel singular spectrum analysis (DMSSA) for
+%  FXYDMSSA_RECON: F-XY domain damped multichannel singular spectrum analysis (DMSSA) for
 %  simultaneous denoising and reconstruction
 %
 %  IN   D:   	 intput 3D data

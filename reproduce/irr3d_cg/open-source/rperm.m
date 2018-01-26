@@ -1,5 +1,7 @@
 function p = rperm(n,seed)
-%RPERM: Random permutation of my version.
+%RPERM: Random permutation with seeds.
+%   
+%   See also RANDPERM
 %   RANDPERM(n) is a random permutation of the integers from 1 to n.
 %   For example, RANDPERM(6) might be [2 4 5 6 1 3].
 %
