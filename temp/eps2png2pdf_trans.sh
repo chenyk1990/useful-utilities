@@ -3,8 +3,10 @@
 epslist=`ls *.eps`
 
 for i in ${epslist[@]}
+name=${i%.png}
 do
-epstopdf $i
+convert $name.eps $name.png
+convert $name.png $name.pdf
 done
 
 
