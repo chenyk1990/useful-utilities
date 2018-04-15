@@ -14,12 +14,12 @@ env.Command('seg_projname_final.pdf','seg_projname_final.tex','pdflatex $SOURCE'
 Paper('eage_projname',lclass='cph18',use='listings, amsmath')
 
 # GEO first submission
-Paper('projname',use='amsmath,listings',options='manuscript')
+Paper('projname',options='manuscript',use='amsmath,listings')
 
 # GEO first revision
-Paper('projname_r1',use='amsmath,listings',options='manuscript,revised')
+Paper('projname_r1',options='manuscript,revised',use='amsmath,listings')
 Command('projname_p1.tex','projname_r1.tex','cp $SOURCE $TARGET')
-Paper('projname_p1',use='amsmath,listings',options='manuscript')
+Paper('projname_p1',options='manuscript',use='amsmath,listings')
 
 #for beamer
 Paper('slides',lclass='beamer',use='subfigure,amsmath,amsbsy,listings,overpic,color,multicol,amssymb,comment,verbatim', include=r'''
