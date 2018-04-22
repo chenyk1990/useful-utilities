@@ -16,6 +16,21 @@ Paper('eage_projname',lclass='cph18',use='listings, amsmath')
 # GEO first submission
 Paper('projname',options='manuscript',use='amsmath,listings')
 
+#C&G
+Paper('projname_cg',lclass='elsarticle',options='preprint,amsmath,authoryear,12pt,manuscript',use='lineno,graphicx,subfigure,setspace,color,ulem,amsmath',
+    include=r'''
+\journal{Computers and Geosciences}
+\linenumbers
+\doublespacing
+''')
+
+#C&G2
+Paper('projname_cg',options='manuscript',use='amsmath,listings,lineno,graphicx,subfigure,setspace,color,ulem',
+    include=r'''
+\linenumbers
+\doublespacing
+''')
+
 # GEO first revision
 Paper('projname_r1',options='manuscript,revised',use='amsmath,listings')
 Command('projname_p1.tex','projname_r1.tex','cp $SOURCE $TARGET')
