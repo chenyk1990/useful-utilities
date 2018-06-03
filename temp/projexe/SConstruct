@@ -25,11 +25,11 @@ Paper('projname_cg',lclass='elsarticle',options='preprint,amsmath,authoryear,12p
 ''')
 
 #C&G2
-Paper('projname_cg',options='manuscript',use='amsmath,listings,lineno,graphicx,subfigure,setspace,color,ulem',
-    include=r'''
-\linenumbers
-\doublespacing
-''')
+#Paper('projname_cg',options='manuscript',use='amsmath,listings,lineno,graphicx,subfigure,setspace,color,ulem',
+#    include=r'''
+#\linenumbers
+#\doublespacing
+#''')
 
 # GEO first revision
 Paper('projname_r1',options='manuscript,revised',use='amsmath,listings')
