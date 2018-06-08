@@ -1,0 +1,4 @@
+Mallat, S., 2008. A wavelet tour of signal processing: the sparse way. Academic press.
+
+Fomel, S., 2002. Applications of plane-wave destruction filters. Geophysics, 67(6), pp.1946-1960.
+
