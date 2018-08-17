@@ -164,11 +164,9 @@ plt.text(xm,ym,'AM',fontsize=20,fontweight='bold',
                     ha='center',va='center',color='r')
 plt.show()
 
-
-
-
 #matlab plot
-  ylabel('Time(s)','Fontsize',16,'fontweight','bold');xlabel('Trace','Fontsize',16,'fontweight','bold');
+  ylabel('Time(s)','Fontsize',16,'fontweight','bold');
+  xlabel('Trace','Fontsize',16,'fontweight','bold');
   title('Noise','Fontsize',16,'fontweight','bold');
   set(gca,'Linewidth',2,'Fontsize',16,'Fontweight','bold'); 
   print(gcf,'-depsc','-r200','fig.eps');  

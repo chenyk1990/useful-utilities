@@ -1,15 +1,15 @@
 from rsf.proj import *
-import rsf.recipes.beg as beg
+#import rsf.recipes.beg as beg
+#DATAPATH: search chev.bin
+#Fetch('chev.HH','chevron',beg.server)
 
-Fetch('chev.HH','chevron',beg.server)
-
-Flow('chev','chev.HH',
-     '''
-     dd form=native |
-     put o2=7923.3979 d2=12.5 o3=10298.643 d3=12.5
-     label1=Time unit1=s label2=Inline unit2=m label3=Crossline unit3=m |
-     scale dscale=0.01
-     ''')
+#Flow('chev','chev.HH',
+#     '''
+#     dd form=native |
+#     put o2=7923.3979 d2=12.5 o3=10298.643 d3=12.5
+#     label1=Time unit1=s label2=Inline unit2=m label3=Crossline unit3=m |
+#     scale dscale=0.01
+#     ''')
 
 Flow('spec','chev','pad n1=256 | spectra all=y')
 
