@@ -135,3 +135,59 @@ Paper('ieee_one_p1',lclass='IEEEtran',options='12pt,journal,draftclsnofoot,oneco
 env=Environment()
 env.Command(['ieee','IEEEtran.bst','IEEEtran.cls'],[os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.bst',os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.cls'],'cp  ${SOURCES[0]}  ${TARGETS[1]} && cp  ${SOURCES[1]}  ${TARGETS[2]} ')
 
+
+
+
+
+
+
+
+%\listoffigures
+
+%\AtEndDocument{
+%\begin{figure}[htb!]
+%  \centering
+%  \subfloat[]{\includegraphics[width=0.45\textwidth]{path/Fig/fig1}
+%    \label{fig:fig1}}
+%  \subfloat[]{\includegraphics[width=0.35\textwidth]{path/Fig/fig2}
+%    \label{fig:fig2}}    
+%   \caption{caption goes here}
+%   \label{fig:fig1,fig2}
+%\end{figure}
+
+%\begin{figure*}[ht!]
+%  \centering
+%  \subfloat[]{\includegraphics[width=0.45\textwidth]{path/Fig/fig1}
+%    \label{fig:fig1}}
+%  \subfloat[]{\includegraphics[width=0.35\textwidth]{path/Fig/fig2}
+%    \label{fig:fig2}}    
+%   \caption{caption goes here}
+%   \label{fig:fig1,fig2}
+%\end{figure*}
+
+
+%\begin{figure}[htb!]
+%  \centering
+%  \includegraphics[width=0.45\textwidth]{path/Fig/fig3}
+%   \caption{caption goes here}
+%   \label{fig:fig3}
+%\end{figure}
+%}
+%\newpage
+%\listoffigures
+
+
+%\begin{table}[h]
+%\caption{Table caption}
+%\begin{center}
+%     \begin{tabular}{|c|c|c|c|c|c|} 
+%	  \hline Column1 (unit)  & Column2 (unit) & Column3 (unit) \\ 
+%	  \hline 1 & 2  & 3 \\
+%       \hline
+%    \end{tabular} 
+%\end{center}
+%\label{tbl:table1}
+%\end{table}
+
+
+
