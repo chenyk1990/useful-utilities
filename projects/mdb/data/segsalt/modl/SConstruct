@@ -1,10 +1,10 @@
 from rsf.proj import *
-#from rsf.recipes.beg import server as private
+from rsf.recipes.beg import server as private
 # replace with your own data server
 
 for case in 'abcde':
     salt = 'salt' + case*2
-#    Fetch([salt+'.h',salt+'@'],'segsalt',private)
+    Fetch([salt+'.h',salt+'@'],'segsalt',private)
     Flow(salt,[salt+'.h','./'+salt+'@'],
          '''
          (cat ${SOURCES[0]} ; echo in=${SOURCES[1]} data_format=xdr_float) |
@@ -17,7 +17,7 @@ for case in 'abcde':
            grey color=j title=%s scalebar=y bias=2500 barreverse=y
            ''' % (case.capitalize()*2))
 
-#Fetch(['salt.h','Saltf@@'],'segsalt',private)
+Fetch(['salt.h','Saltf@@'],'segsalt',private)
 Flow('salt','salt.h ./Saltf@@',
      '''
      (cat ${SOURCES[0]} ; echo in=${SOURCES[1]} data_format=xdr_float) | 

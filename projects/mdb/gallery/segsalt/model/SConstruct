@@ -1,5 +1,5 @@
 from rsf.proj import *
-"""
+
 sys.path.append('..')
 import segsalt
 
@@ -19,7 +19,8 @@ Flow('refl','salt2',
 
 Result('refl','grey title=Reflectivity')
 
-
+dt = 0.002
+nt = 5001
 
 # Lowrank decomposition
 
@@ -48,20 +49,11 @@ Result('exp0',
        window n1=2501 |
        grey title="Zero-Offset Exploding Reflector Modeling"
        ''')
-"""
+
 # 3-D
 #####
-#segsalt.getvel3D('salt3')
-dt = 0.002
-nt = 5001
-Flow('salt3','salt',
-         '''
-         transp plane=23 memsize=1000 | 
-         transp plane=12 memsize=1000 |
-         put d1=0.02 unit1=km d2=0.02 unit2=km d3=0.02 unit3=km |
-         scale dscale=0.001 
-         ''')
-
+segsalt.getvel3D('salt3')
+     
 Result('salt3',
        '''
        byte clip=1 bias=2.5 |
@@ -126,12 +118,12 @@ Result('wave3',
        ''')
 
 # Modeling
-#Flow('wexp','refl3 wleft wright',
-#     '''
-#     fftexp3
-#     left=${SOURCES[1]} right=${SOURCES[2]} 
-#     nt=%d dt=%g 
-#     ''' % (nt,dt))
+Flow('wexp','refl3 wleft wright',
+     '''
+     fftexp3
+     left=${SOURCES[1]} right=${SOURCES[2]} 
+     nt=%d dt=%g 
+     ''' % (nt,dt))
 
 # (x,y,t) -> (t,x,y)
 Flow('wexp0','wexp',
@@ -141,27 +133,9 @@ Flow('wexp0','wexp',
      bandpass flo=2
      ''')
 
-#Flow('wexp1','wexp',
-#     '''
-#     transp plane=23 memsize=1000 | 
-#     transp plane=12 memsize=1000 
-#     ''')
-Flow('wexp2','wexp1','bandpass flo=5')
-
 Result('wexp0',
        '''
-       byte gainpanel=all |
-       grey3 frame1=1250 frame2=175 frame3=175 point1=0.4 point2=0.7
-       flat=n title="Zero-Offset Exploding Reflector Modeling" 
-       ''')
-Result('wexp1',
-       '''
-       byte gainpanel=all |
-       grey3 frame1=1250 frame2=175 frame3=175 point1=0.4 point2=0.7
-       flat=n title="Zero-Offset Exploding Reflector Modeling" 
-       ''')
-Result('wexp2',
-       '''
+       window n1=2501 |
        byte gainpanel=all |
        grey3 frame1=1250 frame2=175 frame3=175 point1=0.4 point2=0.7
        flat=n title="Zero-Offset Exploding Reflector Modeling" 
