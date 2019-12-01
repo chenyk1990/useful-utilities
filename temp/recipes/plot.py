@@ -59,7 +59,7 @@ def Vel(data,other):
 def Pick(data,other):
 	 Result(data,
        '''
-       byte allpos=y gainpanel=all |
+       byte allpos=y gainpanel=all bar=bar.rsf |
        transp plane=23 |
        grey3 flat=n frame1=500 frame2=125 frame3=25 
        label1=Time unit1=s color=j
