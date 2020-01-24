@@ -20,7 +20,7 @@
 %  [1] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
 %  [2] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
 %  [3] Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
-%  [4] Chen et al., 2017, Preserving the discontinuities in least- squares reverse time migration of simultaneous-source data, Geophysics, 82, S185-S196.
+%  [4] Chen et al., 2017, Preserving the discontinuities in least-squares reverse time migration of simultaneous-source data, Geophysics, 82, S185-S196.
 %  [5] Chen et al., 2019, Obtaining free USArray data by multi-dimensional seismic reconstruction, Nature Communications, 10:4434.
 
 clc;clear;close all;
@@ -106,9 +106,9 @@ d2=fxydmssa_recon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
 figure;imagesc([d(:,:,9),d0(:,:,9),d2(:,:,9)]);caxis([-0.5,0.5]);
 
 %% calculate Signal-to-noise Ratio (SNR)
-snrcyk(d,d0,2) %observed data
-snrcyk(d,d1,2) %MSSA method
-snrcyk(d,d2,2) %DMSSA method
+yc_snr(d,d0,2) %observed data
+yc_snr(d,d1,2) %MSSA method
+yc_snr(d,d2,2) %DMSSA method
 
 %SNR results (might be slightly different for different PC platforms)
 %d0: -5.9853
