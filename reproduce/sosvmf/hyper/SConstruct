@@ -80,7 +80,7 @@ Result('hflat-1',
 
 ###for noisy data
 
-Flow('hyper-nn','hyper','saltpepper den=2 inten=10 seed=201415 ')
+#Flow('hyper-nn','hyper','saltpepper den=2 inten=10 seed=201415 ')
 Flow('hyper-n','hyper','selfblend range=0.5 var=2 seed=201516')
 
 Grey('hyper-n','')
