@@ -18,8 +18,8 @@ ox = 0
 nw = 200
 dw = 0.0005
 ow = 0
-r1=30
-r2=30
+r1=10
+r2=10
 
 for eve in (1,2,3,4):
     spike='spike%d' % eve
@@ -81,11 +81,14 @@ Result('hflat-1',
 ###for noisy data
 
 Flow('hyper-nn','hyper','saltpepper den=2 inten=10 seed=201415 ')
-Flow('hyper-n','hyper',os.getenv('HOME')+'/RSFROOT/bin/sfselfblend range=0.5 var=2 seed=201516 ')
+Flow('hyper-n','hyper','selfblend range=0.5 var=2 seed=201516')
 
 Grey('hyper-n','')
-Flow('hdip-n','hyper-nn',
-     'bandpass fhi=50 | dip rect1=%d rect2=%d'%(r1,r2))
+Grey('hyper-nn','')
+
+## obtaining inaccurate dip
+Flow('hdip-n','hyper-n',
+     'saltpepper den=1.2 inten=10 seed=201415 |bandpass fhi=50 | dip rect1=%d rect2=%d'%(r1,r2))
 Grey('hdip-n','color=j clip=1.42 scalebar=y  barlabel="Slope"')
 
 

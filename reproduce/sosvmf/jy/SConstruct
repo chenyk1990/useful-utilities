@@ -115,10 +115,13 @@ Flow('flat1-n-mf','flat1-n','transp|mf nfw=13 |transp')
 Flow('flat2-n-mf','flat2-n','transp|mf nfw=13 |transp')
 Flow('flat3-n-mf','flat3-n','transp|mf nfw=13 |transp')
 
+Flow('flat1-n-mft','flat1-n-mf','transp')
+Flow('flat2-n-mft','flat2-n-mf','transp')
+Flow('flat3-n-mft','flat3-n-mf','transp')
 
-Flow('flat1-simi','flat1-n flat1-n-mf','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
-Flow('flat2-simi','flat2-n flat2-n-mf','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
-Flow('flat3-simi','flat3-n flat3-n-mf','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
+Flow('flat1-simi','flat1-n flat1-n-mft','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
+Flow('flat2-simi','flat2-n flat2-n-mft','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
+Flow('flat3-simi','flat3-n flat3-n-mft','transp |similarity other=${SOURCES[1]} rect1=10 rect2=10 | scale axis=2')
 
 
 Flow('flat1-n-svmf','flat1-n flat1-simi','transp plane=12 | svmf nfw=9 similarity=${SOURCES[1]} lambda1=0.15 lambda2=0.25 lambda3=0.5 lambda4=0.75 | transp plane=12 ')
