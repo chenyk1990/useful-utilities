@@ -1,0 +1,33 @@
+from rsf.tex import*
+os.environ['PSTEXPENOPTS']='color=y fat=3 fatmult=1.5'
+
+## add pdflatex into default PATH
+import sys
+env=Environment()
+if sys.platform == 'darwin':
+    env['ENV']['PATH'] = ':'.join(['/opt/local/bin',env['ENV']['PATH']])
+
+Paper('halfthreage',lclass='ams14',use='listings, amsmath,subfigure')
+Paper('seg2014_halfthr',lclass='segabs',use='listings, amsmath,subfigure')
+env.Command('seg2014_halfthr_final.pdf','seg2014_halfthr_final.ltx','pdflatex $SOURCE')
+
+Paper('halfthrjge',lclass='iopart',use='listings,harvard,subfigure,graphics,amsmath',    
+include=r'''
+\newcommand{\gguide}{{\it Preparing graphics for IOP journals}}
+''')
+
+## First revision
+Paper('halfthr_revise1',lclass='geophysics',options='manuscript,revised',use='listings,amsmath')
+Command('halfthr_revise_plain1.tex','halfthr_revise1.tex','cp $SOURCE $TARGET')
+Paper('halfthr_revise_plain1',lclass='geophysics',options='manuscript',use='amsmath')
+
+Paper('halfthr_revise2',lclass='geophysics',options='manuscript,revised',use='listings,amsmath')
+Command('halfthr_revise_plain2.tex','halfthr_revise2.tex','cp $SOURCE $TARGET')
+Paper('halfthr_revise_plain2',lclass='geophysics',options='manuscript',use='amsmath')
+
+Paper('reply1',use='hyperref,listings')
+Paper('reply2',use='hyperref,listings')
+
+Paper('halfthr',lclass='geophysics',options='manuscript',use='listings,amsmath')
+
+End(lclass='segabs',use='listings,amsmath')
