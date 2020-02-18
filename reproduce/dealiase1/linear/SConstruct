@@ -36,8 +36,8 @@ Grey('linear','')
 # INITIALIZATION
 ########################################################################
 matlab         = WhereIs('matlab')
-matROOT = '../matfun/'
-matfun = 'FXEMD'
+matROOT = '../matfun'
+matfun = 'FX_EMD'
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
 if not matlab:
