@@ -1,0 +1,27 @@
+from rsf.tex import*
+import os, sys
+
+env=Environment()
+if sys.platform == 'darwin':
+    env['ENV']['PATH'] = ':'.join(['/opt/local/bin',env['ENV']['PATH']])
+
+
+Paper('dmssarecon',options='manuscript',color='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',hires='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',use='listings,amsmath,subfigure,natbib,amsmath,graphicx,color,lineno',
+          include=r'''
+          \linenumbers*[1]
+          ''')
+
+Paper('reply1',use='hyperref,listings')
+Paper('dmssarecon_revise1',options='manuscript,revised',color='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',hires='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',use='listings,amsmath,natbib,amsmath,graphicx,color,lineno',
+          include=r'''
+          \linenumbers*[1]
+          ''')
+Command('dmssarecon_revise_plain1.tex','dmssarecon_revise1.tex','cp $SOURCE $TARGET')
+Paper('dmssarecon_revise_plain1',options='manuscript',color='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',hires='field-obs field-mssa field-dmssa field-s-obs field-s-mssa field-s-dmssa',use='listings,amsmath,natbib,amsmath,graphicx,color,lineno',
+          include=r'''
+          \linenumbers*[1]
+          ''')
+
+
+
+End()
