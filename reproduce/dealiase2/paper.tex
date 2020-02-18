@@ -1,32 +1,36 @@
+\published{IEEE Geoscience and Remote Sensing Letters, 13, no. 11, 1462-1466, (2016)}
+  
 \title{One-step slope estimation for dealiased seismic data reconstruction via iterative seislet thresholding}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\author{\IEEEauthorblockN{Wei Liu$^1$, Siyuan Cao$^1$, Shuwei Gan$^1$, Yangkang Chen$^2$, Shaohuan Zu$^1$, Zhaoyu Jin$^3$}\\
-$^1$\IEEEauthorblockA{State Key Laboratory of Petroleum Resources and Prospecting, 
+
+\author{Wei Liu\footnotemark[1], Siyuan Cao\footnotemark[1], Shuwei Gan\footnotemark[1], Yangkang Chen\footnotemark[2], Shaohuan Zun\footnotemark[1], Zhaoyu Jin\footnotemark[3]}
+\address{
+\footnotemark[1]
+State Key Laboratory of Petroleum Resources and Prospecting, 
 China University of Petroleum, 
 Fuxue Road 18th,
 Beijing, China, 102200, 
-Email: liuwei\_upc@126.com \& csy@cup.edu.cn \& gsw19900128@126.com \& zushaohuan@qq.com} \\
-$^2$\IEEEauthorblockA{Jackson School of Geosciences,
+Email: liuwei\_upc@126.com \& csy@cup.edu.cn \& gsw19900128@126.com \& zushaohuan@qq.com\\
+\footnotemark[2] Jackson School of Geosciences,
 The University of Texas at Austin,
 University Station, Box X,
 Austin, TX 78713-8924, USA,
-Email: ykchen@utexas.edu}\\
-$^3$ \IEEEauthorblockA{School of Geosciences,
+Email: ykchen@utexas.edu\\
+\footnotemark[3]School of Geosciences,
 University of Edinburgh,
-%Grant Institute, The King's Buildings, West Mains Road \\
 Edinburgh,UK, EH9 3JW,
-Email: s1263999@sms.ed.ac.uk}\\
+Email: s1263999@sms.ed.ac.uk
 }
+
 \maketitle
 
 \begin{abstract}
 The seislet transform can be used to interpolate regularly under-sampled seismic data if an accurate local slope map can be obtained. The dealiasing capability of such method highly depends on the accuracy of the estimated local slope, which can be achieved by using the low-frequency components of the aliased seismic data in an iterative manner. Previous approaches to solving this problem have been limited to the unstable estimation of local slope via a large number of iterations. Here, we propose a new way to obtain the slope estimation. We first estimate the NMO velocity and then use a velocity-slope transformation to get the optimal local slope. The new method allows us to avoid the iterative slope estimation and can obtain an accurate slope field in one step. The one-step slope estimation can significantly accelerate the iterative seislet domain thresholding process and can also stabilize the iterative inversion. Both synthetic and field data examples are used to demonstrate the performance by using the proposed approach compared with alternative approaches. 
 \end{abstract}
-%%To ensure a good slope estimation, low-frequency components of the aliased seismic data are used to estimate the local slope in an iterative manner. However, a large number of iterations are demanded and also the slope estimation is not stable via iterations. 
 
-\begin{keywords}
-Seismic interpolation, seislet transform, velocity-slope transformation, one-step slope estimation
-\end{keywords}
+%\begin{keywords}
+%Seismic interpolation, seislet transform, velocity-slope transformation, one-step slope estimation
+%\end{keywords}
 
 \section{Introduction} 
 Due to some physical limitations, such as the presence of obstacles in the field, feathering on the sea, and economical consideration, such as reducing recorded data intentionally in order to save acquisition cost, and other different reasons, seismic records are typically irregularly sampled, or regularly but under-sampled. Seismic data interpolation is such a crucial part in the whole seismic data processing workflow that deals with this problem. It can compensate for the acquisition limitation and help prepare a dense and regularly sampled seismic dataset for subsequent seismic imaging and inversion.  Meanwhile, seismic data reconstruction is also an important procedure to improve the amplitude quality and to remove sampling artifacts, which is of significant importance for subsequent processing workflows including high-resolution processing, amplitude preservation migration and amplitude-versus-offsets (AVO) analysis.
@@ -40,17 +44,17 @@ The commonly used approach for dealiased seismic interpolation is the prediction
 
 \begin{figure}[htb!]
   \centering
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper}
     \label{fig:hyper}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper0}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper0}
     \label{fig:hyper0}}    
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-zero}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-zero}
     \label{fig:hyper-zero}}\\
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis}
     \label{fig:hyper-seis}}
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx}
     \label{fig:hyper-fx}}
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd}
     \label{fig:hyper-seisvd}}
 	\caption{(a) Original synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
    \label{fig:hyper,hyper0,hyper-zero,hyper-seis,hyper-fx,hyper-seisvd}
@@ -117,11 +121,11 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis-dif}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis-dif}
     \label{fig:hyper-seis-dif}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx-dif}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx-dif}
     \label{fig:hyper-fx-dif}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd-dif}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd-dif}
     \label{fig:hyper-seisvd-dif}}         
 	\caption{(a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach.  }
    \label{fig:hyper-seis-dif,hyper-fx-dif,hyper-seisvd-dif}
@@ -129,9 +133,9 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-    \subfigure[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocs}
+    \subfloat[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocs}
     \label{fig:snrs-pocs}}
-  \subfigure[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocsvd}
+  \subfloat[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocsvd}
     \label{fig:snrs-pocsvd}}       
 	\caption{(a) SNRs by using the traditional iterative seislet thresholding. (b) SNRs by using the proposed approach. Please note that a large number of iterations can be saved and the performance can be improved.}
    \label{fig:snrs-pocs,snrs-pocsvd}
@@ -139,13 +143,13 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-    \subfigure[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-sdip}
+    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-sdip}
     \label{fig:hyper-sdip}}
-  \subfigure[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-pdip}
+  \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-pdip}
     \label{fig:hyper-pdip}}
-    \subfigure[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-dipiter}
+    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-dipiter}
     \label{fig:hyper-dipiter}}
-    \subfigure[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-vdip}
+    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-vdip}
     \label{fig:hyper-vdip}}         
 	\caption{(a) True slope. (b) Slope from PWD. (c) Slope estimated iteratively. (d) Slope from velocity-slope transformation.  }
    \label{fig:hyper-sdip,hyper-pdip,hyper-dipiter,hyper-vdip}
@@ -154,17 +158,17 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-n}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-n}
     \label{fig:hyper-n}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper0-n}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper0-n}
     \label{fig:hyper0-n}}    
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-zero-n}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-zero-n}
     \label{fig:hyper-zero-n}}\\
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis}
     \label{fig:hypern-seis}}
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx}
     \label{fig:hypern-fx}}
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd}
     \label{fig:hypern-seisvd}}
 	\caption{(a) Noisy synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
    \label{fig:hyper-n,hyper0-n,hyper-zero-n,hypern-seis,hypern-fx,hypern-seisvd}
@@ -172,11 +176,11 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-  \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis-dif}
+  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis-dif}
     \label{fig:hypern-seis-dif}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx-dif}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx-dif}
     \label{fig:hypern-fx-dif}}
-    \subfigure[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd-dif}
+    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd-dif}
     \label{fig:hypern-seisvd-dif}}         
 	\caption{Noisy data example. (a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach.  }
    \label{fig:hypern-seis-dif,hypern-fx-dif,hypern-seisvd-dif}
@@ -184,19 +188,19 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure*}[ht!]
   \centering
-    \subfigure[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei}
+    \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei}
     \label{fig:bei}}   
-  \subfigure[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei-zero}
+  \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei-zero}
     \label{fig:bei-zero}}
-  \subfigure[]{\includegraphics[width=0.125\textwidth]{bei/Fig/vscan}
+  \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/vscan}
     \label{fig:vscan}}  \\
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-pdip}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-pdip}
     \label{fig:bei-pdip}}        
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-vdip}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-vdip}
     \label{fig:bei-vdip}}     
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-fx}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-fx}
     \label{fig:bei-fx}}
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-seisvd}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-seisvd}
     \label{fig:bei-seisvd}}
 	\caption{(a) Original under-sampled field data.  (b) Zero padded data (with 50\% traces regularly removed). (c) Velocity analysis result. (d) Local slope calculated directly from (b) by using the PWD algorithm. (e) Local slope calculated from the velocity-slope transformation. (f) Reconstructed data by using Spitz's method. (g) Reconstructed data by using the proposed approach.  }
    \label{fig:bei,bei-zero,vscan,bei-vdip,bei-fx,bei-seisvd}
@@ -205,13 +209,13 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure*}[ht!]
   \centering
-    \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei}
+    \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei}
     \label{fig:fk-bei}}   
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-zero}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-zero}
     \label{fig:fk-bei-zero}}
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-fx}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-fx}
     \label{fig:fk-bei-fx}}
-  \subfigure[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-seisvd}
+  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-seisvd}
     \label{fig:fk-bei-seisvd}}
 	\caption{FK spectrum of different sections. (a) Original under-sampled field data. (b) Zero padded data (with 50\% traces regularly removed). (c) Reconstructed data by using Spitz's method. (d) Reconstructed data by using the proposed approach.  }
    \label{fig:fk-bei,fk-bei-zero,fk-bei-fx,fk-bei-seisvd}
@@ -220,22 +224,23 @@ The seislet-based POCS algorithm can be used to interpolate regularly missing tr
 
 \begin{figure}[htb!]
   \centering
-    \subfigure[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-seis-bp}
+    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-seis-bp}
     \label{fig:bei-seis-bp}}
-  \subfigure[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-dif-bp}
+  \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-dif-bp}
     \label{fig:bei-dif-bp}}\\
-    \subfigure[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-bei-seis-bp}
+    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-bei-seis-bp}
     \label{fig:fk-bei-seis-bp}}       
-    \subfigure[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-dif-bp}
+    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-dif-bp}
     \label{fig:fk-dif-bp}}       
 	\caption{(a) Bandpass filtered result after iterative seislet thresholding with a bound frequency 9 Hz. (b) Low frequency data of the reconstructed data in Fig. \ref{fig:bei-seisvd}. (c) FK spectrum of (a). (d) FK spectrum of (b).  }
    \label{fig:bei-seis-bp,bei-dif-bp,fk-bei-seis-bp,fk-dif-bp}
 \end{figure}
 
+
 \section{Acknowledgments}
 This research is partially supported by National Science and Technology Major Project of China under Grants No. 2011ZX05024-001-01 and Texas Consortium for Computational Seismology (TCCS). %Moreover, we are also grateful for the support of the Australian and Western Australian Governments and the North West Shelf Joint Venture Partners, as well as the Western Australian Energy Research Alliance. 
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{seg}
 \bibliography{dealiase}
 
 

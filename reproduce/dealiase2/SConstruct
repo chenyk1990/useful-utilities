@@ -46,4 +46,4 @@ Paper('ieee_dealiase',lclass='IEEEtran',options='10pt',use='cite,ifthen,seg,colo
 
 env.Command(['ieee','IEEEtran.bst','IEEEtran.cls'],[os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.bst',os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.cls'],'cp  ${SOURCES[0]}  ${TARGETS[1]} && cp  ${SOURCES[1]}  ${TARGETS[2]} ')
            
-End(lclass='segabs',use='listings,amsmath')
+End(lclass='geophysics',use='listings,amsmath')
