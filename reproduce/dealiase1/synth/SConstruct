@@ -171,7 +171,12 @@ Flow('fk-hyper-fx','hyper-fx','rtoc | fft3 axis=1 pad=2 | fft3 axis=2 pad=2| cab
 Greyfk('fk-hyper-fx','allpos=y color=j clip=100 label1=Frequency unit1=Hz label2=Wavenumber unit2= min2=-0.5 max2=0.5')
 
 
-
-
-
+# You must run ../synth30Hz/SConstruct first
+Flow('dip1','dip-pocs66','cp')
+Flow('dip2','../synth30Hz/dip-pocs66.rsf','cp')
+Greyplot('dip1','clip=1 color=j')	
+Greyplot('dip2','clip=1 color=j')
+Result('dip1','dip1','Overlay')
+Result('dip2','dip2','Overlay')
+	
 End()

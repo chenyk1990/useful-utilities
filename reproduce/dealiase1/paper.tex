@@ -91,85 +91,32 @@ trace of the coarsest scale of the seislet domain. The seislet transform differs
 where $\mathbf{P}^{(+)}_k$ and $\mathbf{P}^{(-)}_k$ are operators that predict a trace from its left and right neighbors, correspondingly, by shifting seismic events according to their local slopes.
 The local slope can be calculated using a robust algorithm as introduced in \cite{fomel2002pwd}.
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{coef/Fig/hyper-fk}
-    \label{fig:hyper-fk}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{coef/Fig/hyper-dwt}
-    \label{fig:hyper-dwt}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{coef/Fig/hyper-seiss}
-    \label{fig:hyper-seiss}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{coef/Fig/hyper-curv-img}
-    \label{fig:hyper-curv-img}}    
-	\caption{Comparison among different sparsity-promoting transforms based on the synthetic example shown in Figure \ref{fig:hyper}. (a) 2-D Fourier transform domain. (b) 2-D Wavelet transform domain. (c) 2-D Seislet transform domain. (d) 2-D Curvelet transform domain.}
-   \label{fig:hyper-fk,hyper-dwt,hyper-seis,hyper-curv-img}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-    \includegraphics[width=0.5\columnwidth]{coef/Fig/hyper-c}
-	\caption{Coefficients decaying diagram of different sparsity-promoting transforms.}
-   \label{fig:hyper-c}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper}
-    \label{fig:hyper}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper-zero}
-    \label{fig:hyper-zero}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/fk-hyper}
-    \label{fig:fk-hyper}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/fk-hyper-zero}
-    \label{fig:fk-hyper-zero}}
-	\caption{(a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) $F-K$ spectrum of original synthetic data. (d)  $F-K$ spectrum of decimated data }
-   \label{fig:hyper,hyper-zero,fk-hyper,fk-hyper-zero}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper-seis}
-    \label{fig:hyper-seis}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper-fx}
-    \label{fig:hyper-fx}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/fk-hyper-seis}
-    \label{fig:fk-hyper-seis}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/fk-hyper-fx}
-    \label{fig:fk-hyper-fx}}
-	\caption{(a) Reconstructed data using the proposed approach. (b) Reconstructed data using Spitz's approach. (c)  $F-K$ spectrum of reconstructed data using the proposed approach. (d)  $F-K$ spectrum of reconstructed data using Spitz's approach. }
-   \label{fig:hyper-seiss,hyper-fx,fk-hyper-seis,fk-hyper-fx}
-\end{figure}
 
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper-seis-dif}
-    \label{fig:hyper-seis-dif}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/hyper-fx-dif}
-    \label{fig:hyper-fx-dif}}
-	\caption{(a) Reconstruction error using the proposed approach. (b) Reconstruction error using the Spitz's approach.}
-   \label{fig:hyper-seis-dif,hyper-fx-dif}
-\end{figure}
+\inputdir{coef}
+\mutliplot{4}{hyper-fk,hyper-dwt,hyper-seis,hyper-curv-img}{width=0.45\columnwidth}{Comparison among different sparsity-promoting transforms based on the synthetic example shown in Figure \ref{fig:hyper}. (a) 2-D Fourier transform domain. (b) 2-D Wavelet transform domain. (c) 2-D Seislet transform domain. (d) 2-D Curvelet transform domain.}
 
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/dip}
-    \label{fig:dip}}
-  \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth/Fig/dip-pocs66}
-    \label{fig:dip1}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{synth30Hz/Fig/dip-pocs66}
-    \label{fig:dip2}}
-	\caption{(a) Accurate dip estimation. (b) Final dip estimation using 15 Hz low-pass filtering. (c) Final dip estimation using 30 Hz low-pass filtering. Note the aliased dip in (c).}
-   \label{fig:dip,dip1,dip2}
-\end{figure}
+\plot{hyper-c}{width=0.5\columnwidth}{Coefficients decaying diagram of different sparsity-promoting transforms.}
 
-\begin{figure}[htb!]
-  \centering
-    \includegraphics[width=0.5\columnwidth]{synth/Fig/snrs-pocs}
-	\caption{Convergence diagram of the first example using the proposed approach.}
-   \label{fig:snrs-pocs}
-\end{figure}
+
+
+
+\inputdir{synth}
+
+\mutliplot{4}{hyper,hyper-zero,fk-hyper,fk-hyper-zero}{width=0.45\columnwidth}{(a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) $F-K$ spectrum of original synthetic data. (d)  $F-K$ spectrum of decimated data.}
+
+
+
+
+\mutliplot{4}{hyper-seis,hyper-fx,fk-hyper-seis,fk-hyper-fx}{width=0.45\columnwidth}{(a) Reconstructed data using the proposed approach. (b) Reconstructed data using Spitz's approach. (c)  $F-K$ spectrum of reconstructed data using the proposed approach. (d)  $F-K$ spectrum of reconstructed data using Spitz's approach. }
+
+\mutliplot{2}{hyper-seis-dif,hyper-fx-dif}{width=0.45\columnwidth}{(a) Reconstruction error using the proposed approach. (b) Reconstruction error using the Spitz's approach.}
+
+
+\mutliplot{3}{dip,dip1,dip2}{width=0.45\columnwidth}{(a) Accurate dip estimation. (b) Final dip estimation using 15 Hz low-pass filtering. (c) Final dip estimation using 30 Hz low-pass filtering. Note the aliased dip in (c).}
+
+\plot{snrs-pocs}{width=0.5\columnwidth}{Convergence diagram of the first example using the proposed approach.}
 
 \subsection{Comparison of sparsity-promoting transforms}
 The well-known existing sparsity-promoting transforms in the exploration geophysics field include the Fourier\cite{chandrasekharan1949}, wavelet transform\cite{akansu2010}, and curvelet transform \cite{candes20061}. 
@@ -193,39 +140,19 @@ As we can see, the spectrum of the reconstructed data using the proposed approac
 
 The second synthetic example is a linear-event example to test the performance of the proposed approach on post-stack data. The original data is shown in Figure \ref{fig:linear}. We also remove 50\% traces regularly. In this example, we compare the proposed approach with the $F-K$ based POCS approach. The reconstructed results using the proposed approach and the $F-K$ based POCS approach are shown in Figures \ref{fig:linear-seis} and \ref{fig:linear-fft}, respectively. It is obvious that the proposed can still obtain a perfect performance, while the $F-K$ based POCS approach cannot obtain any improvement because of the strong aliasing noise in the $F-K$ domain. This test confirms the fact that $F-K$ based POCS approach should not be used to interpolate regularly missing traces \cite{spitz1991,mostafa2007,mostafa2010}. In this example, we use 100 iterations to obtain the reconstructed results of both seislet and Fourier transforms. The final SNR of the proposed approach reaches 22.47 dB, and the SNR of the $F-K$ based POCS approach stays unchanged: 3.007 dB. The slightly worse performance of the proposed approach on this example than the first example is because the crossing seismic events cause some errors when estimating the local slope, which affect the final performance a bit.  
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{linear/Fig/linear}
-    \label{fig:linear}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{linear/Fig/linear-zero}
-    \label{fig:linear-zero}}\\
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{linear/Fig/linear-seis}
-    \label{fig:linear-seis}}
-    \subfloat[]{\includegraphics[width=0.36\columnwidth]{linear/Fig/linear-fft}
-    \label{fig:linear-fft}}    
-	\caption{Second synthetic example test. (a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) Reconstructed data using the proposed approach. (d) Reconstructed data using $F-K$ based POCS approach. Note that the $F-K$ based POCS approach cannot obtain any improvement because of the aliasing noise caused by the regularly missing traces.}
-   \label{fig:linear,linear-zero,linear-seis,linear-fft}
-\end{figure}
+
+\inputdir{linear}
+\mutliplot{4}{linear,linear-zero,linear-seis,linear-fft}{width=0.45\columnwidth}{Second synthetic example test. (a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) Reconstructed data using the proposed approach. (d) Reconstructed data using $F-K$ based POCS approach. Note that the $F-K$ based POCS approach cannot obtain any improvement because of the aliasing noise caused by the regularly missing traces.}
+
+
 
 The field data example is a highly under-sampled common shot gather, as shown in Figure \ref{fig:field}. By manually adding zero traces between two neighbor traces, we obtain the zero-padded data, as shown in Figure \ref{fig:field-zero}. After interpolation, a much better sampled data can be obtained, as shown in Figure \ref{fig:field-seis}. In this example, we estimate the local slope using 5 Hz low-pass filtering. The corresponding $F-K$ spectrum are shown in Figures \ref{fig:fk-field}, \ref{fig:fk-field-zero} and \ref{fig:fk-field-seis}, respectively. For many real seismic data, we might have difficulties to get the low-frequency information because of the low SNR at low frequencies. Thus, the proposed approach set a relatively high demand for data quality. Fortunately, we only require the low-frequency data for slope estimation and the appropriate frequency range varies from 5 Hz to 20 Hz for different datasets, which is not a problem for most field dataset.
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/field}
-    \label{fig:field}}
-  \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/field-zero}
-    \label{fig:field-zero}}
-    \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/field-seis}
-    \label{fig:field-seis}}\\
-  \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/fk-field}
-    \label{fig:fk-field}}
-  \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/fk-field-zero}
-    \label{fig:fk-field-zero}}
-  \subfloat[]{\includegraphics[width=0.29\columnwidth]{field/Fig/fk-field-seis}
-    \label{fig:fk-field-seis}}
-	\caption{(a) Original field data. (b) Zero-padded field data. (c) Interpolated field data. (d) $F-K$ spectrum of original field data. (e) $F-K$ spectrum of zero-padded field data. (f) $F-K$ spectrum of interpolated field data.}
-   \label{fig:field,field-zero,field-seis,fk-field,fk-field-zero,fk-field-seis}
-\end{figure}
+
+
+
+\inputdir{field}
+\mutliplot{6}{field,field-zero,field-seis,fk-field,fk-field-zero,fk-field-seis}{width=0.29\columnwidth}{(a) Original field data. (b) Zero-padded field data. (c) Interpolated field data. (d) $F-K$ spectrum of original field data. (e) $F-K$ spectrum of zero-padded field data. (f) $F-K$ spectrum of interpolated field data.}
 
 \section{Conclusion}
 In this paper, we propose to use seislet domain percentile thresholding to iteratively reconstruct the regularly missing seismic traces based on the well-established POCS framework. Numerical tests show that the local slope is the main factor affecting the sparsity and anti-aliasing ability of seislet transform. %In order to provide the optimum slope estimation,
