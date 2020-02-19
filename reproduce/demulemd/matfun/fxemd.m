@@ -1,5 +1,5 @@
 function [ D1 ] = fxemd(D,flow,fhigh,dt,N,verb)
-%FX_EMD: F-X domain empirical mode decomposition along the spatial dimension
+%FXEMD: F-X domain empirical mode decomposition along the spatial dimension
 %  IN   D:   	intput data 
 %       flow:  processing frequency range (lower)
 %       fhigh: processing frequency range (higher)
@@ -32,7 +32,6 @@ function [ D1 ] = fxemd(D,flow,fhigh,dt,N,verb)
 %  Chen, W., J. Xie, S. Zu, S. Gan, and Y. Chen, 2017, Multiple reflections noise attenuation using adaptive randomized-order empirical mode decomposition, IEEE Geoscience and Remote Sensing Letters, 14, 18-22.
 %  Chen, Y., Y. Zhou, W. Chen, S. Zu, W. Huang, and D. Zhang, 2017, Empirical low rank decomposition for seismic noise attenuation, IEEE Transactions on Geoscience and Remote Sensing, 2017, 55, 4696-4711.
 %  Chen, Y. and S. Fomel, 2018, EMD-seislet transform, Geophysics, 83, A27-A32.
-
 
 if nargin==0
  error('Input data must be provided!');

@@ -1,4 +1,4 @@
- function FXEMD(infile,outfile,n1,n2,dt,lf,hf,N,verb)
+ function FXEMDM(infile,outfile,n1,n2,dt,lf,hf,N,verb)
 % Author      : Yangkang Chen
 %               Texas Consortium of Computational Seismology
 %               Jackson School of Geosciences
@@ -24,6 +24,7 @@
 %  You should have received a copy of the GNU General Public License
 %  along with this program; if not, write to the Free Software
 %  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+%  
 %  REFERENCES:
 %  Chen, Y. and J. Ma, 2014, Random noise attenuation by f-x empirical mode decomposition predictive filtering, Geophysics, 79, V81-V91.
 %  Chen, Y., C. Zhou, J. Yuan, and Z. Jin, 2014, Application of empirical mode decomposition to random noise attenuation of seismic data, Journal of Seismic Exploration, 23, 481-495.

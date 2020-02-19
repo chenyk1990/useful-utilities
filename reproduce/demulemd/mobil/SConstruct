@@ -3,13 +3,6 @@ from rsf.prog import RSFROOT
 def Grey(data,other):
 	Result(data,'grey screenratio=1.3 title= clip=0.29 %s '%other)
 
-#backup directory
-#/media/CHENYK2/SeismicDataYangkang/Synthetic/cyk/mobil/cmp807_raw.HH
-#/media/CHENYK2/SeismicDataYangkang/Synthetic/cyk/mobil/mo_supp.HH 
-
-#cp ~/chenyk.data3/cmp807.bb  ./cmp807_raw.HH
-#cp ~/chenyk.data3/mo.bb ./mo_supp.HH 
-
 Fetch('cmp807_raw.HH','rad')
 
 Flow('cmp0','cmp807_raw.HH','dd form=native | pow pow1=2 | mutter v0=1.3 tp=0.2 half=n | scale axis=2 | window max2=2.5')
@@ -82,8 +75,8 @@ Result('mo-near-offset-tx','mo-trace back-trace hm-trace','SideBySideAniso')
 # INITIALIZATION
 ########################################################################
 matlab         = WhereIs('matlab')
-matROOT = os.environ['HOME']+'/chenyk/matlibcyk/Mada_matlab'
-matfun = 'FXEMD'
+matROOT = '../matfun/'
+matfun = 'FXEMDM'
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
 if not matlab:

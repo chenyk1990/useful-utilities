@@ -50,8 +50,8 @@ Flow('dif','ncmp back','add scale=1,-1 ${SOURCES[1]}')
 # INITIALIZATION
 ########################################################################
 matlab         = WhereIs('matlab')
-matROOT = os.environ['HOME']+'/chenyk/matlibcyk/Mada_matlab'
-matfun = 'FXEMD'
+matROOT = '../matfun/'
+matfun = 'FXEMDM'
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
 if not matlab:
