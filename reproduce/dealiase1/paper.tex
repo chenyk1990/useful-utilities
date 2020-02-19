@@ -94,7 +94,7 @@ The local slope can be calculated using a robust algorithm as introduced in \cit
 
 
 \inputdir{coef}
-\mutliplot{4}{hyper-fk,hyper-dwt,hyper-seis,hyper-curv-img}{width=0.45\columnwidth}{Comparison among different sparsity-promoting transforms based on the synthetic example shown in Figure \ref{fig:hyper}. (a) 2-D Fourier transform domain. (b) 2-D Wavelet transform domain. (c) 2-D Seislet transform domain. (d) 2-D Curvelet transform domain.}
+\multiplot{4}{hyper-fk,hyper-dwt,hyper-seiss,hyper-curv-img}{width=0.45\columnwidth}{Comparison among different sparsity-promoting transforms based on the synthetic example shown in Figure \ref{fig:hyper}. (a) 2-D Fourier transform domain. (b) 2-D Wavelet transform domain. (c) 2-D Seislet transform domain. (d) 2-D Curvelet transform domain.}
 
 
 \plot{hyper-c}{width=0.5\columnwidth}{Coefficients decaying diagram of different sparsity-promoting transforms.}
@@ -104,24 +104,24 @@ The local slope can be calculated using a robust algorithm as introduced in \cit
 
 \inputdir{synth}
 
-\mutliplot{4}{hyper,hyper-zero,fk-hyper,fk-hyper-zero}{width=0.45\columnwidth}{(a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) $F-K$ spectrum of original synthetic data. (d)  $F-K$ spectrum of decimated data.}
+\multiplot{4}{hyper,hyper-zero,fk-hyper,fk-hyper-zero}{width=0.45\columnwidth}{(a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) $F-K$ spectrum of original synthetic data. (d)  $F-K$ spectrum of decimated data.}
 
 
 
 
-\mutliplot{4}{hyper-seis,hyper-fx,fk-hyper-seis,fk-hyper-fx}{width=0.45\columnwidth}{(a) Reconstructed data using the proposed approach. (b) Reconstructed data using Spitz's approach. (c)  $F-K$ spectrum of reconstructed data using the proposed approach. (d)  $F-K$ spectrum of reconstructed data using Spitz's approach. }
+\multiplot{4}{hyper-seis,hyper-fx,fk-hyper-seis,fk-hyper-fx}{width=0.45\columnwidth}{(a) Reconstructed data using the proposed approach. (b) Reconstructed data using Spitz's approach. (c)  $F-K$ spectrum of reconstructed data using the proposed approach. (d)  $F-K$ spectrum of reconstructed data using Spitz's approach. }
 
-\mutliplot{2}{hyper-seis-dif,hyper-fx-dif}{width=0.45\columnwidth}{(a) Reconstruction error using the proposed approach. (b) Reconstruction error using the Spitz's approach.}
+\multiplot{2}{hyper-seis-dif,hyper-fx-dif}{width=0.45\columnwidth}{(a) Reconstruction error using the proposed approach. (b) Reconstruction error using the Spitz's approach.}
 
 
-\mutliplot{3}{dip,dip1,dip2}{width=0.45\columnwidth}{(a) Accurate dip estimation. (b) Final dip estimation using 15 Hz low-pass filtering. (c) Final dip estimation using 30 Hz low-pass filtering. Note the aliased dip in (c).}
+\multiplot{3}{dip,dip1,dip2}{width=0.45\columnwidth}{(a) Accurate dip estimation. (b) Final dip estimation using 15 Hz low-pass filtering. (c) Final dip estimation using 30 Hz low-pass filtering. Note the aliased dip in (c).}
 
 \plot{snrs-pocs}{width=0.5\columnwidth}{Convergence diagram of the first example using the proposed approach.}
 
 \subsection{Comparison of sparsity-promoting transforms}
 The well-known existing sparsity-promoting transforms in the exploration geophysics field include the Fourier\cite{chandrasekharan1949}, wavelet transform\cite{akansu2010}, and curvelet transform \cite{candes20061}. 
 
-In order to effectively compare the sparseness of different transforms, we first select an input dataset (here, we use the synthetic example shown in Figure \ref{fig:hyper} as the input dataset). Then we transform the input data into sparse transform domain using different sparse transforms. Figure \ref{fig:hyper-fk,hyper-dwt,hyper-seis,hyper-curv-img} shows different transformed domains for the input data. The 2-D Fourier transform in this case means the $f-k$ transform. The 2-D wavelet transform means implementing the 1-D wavelet transform along the temporal direction first and along the spatial direction second. The 2-D seislet transform means implementing the seislet transform along the spatial direction first and 1-D seislet transform along the temporal direction second. The 2-D curvelet transform refers to the 2-D wedge wrapping based fast discrete curvelet transform \cite{candes20061}. Next we sort the coefficients in the transform domains into decaying 1-D vectors according to the coefficient amplitude and scale the 1-D vectors. Finally we plot the decaying coefficients with respect to the sequence number for all the transforms in one plot. Figure \ref{fig:hyper-c} shows a comparison between the decay of sorted coefficients in the 2-D Fourier transform, 2-D wavelet transform, 2-D seislet transform and 2-D curvelet transform domains. Our experiments show that the seislet coefficients decay significantly faster than coefficients of the other transforms, which indicates a more compact structure of the seislet domain. Thus, our POCS based interpolation approach is preferred to use the 2-D seislet transform domain as the sparsity-promoting transform. Although the sparsity comparison is based on the well-sampled data, the same conclusion can be extended to the under-sampled case. It is worth to be mentioned that most sparse transforms (in their original form) including the four mentioned transforms can not obtain acceptable reconstruction results for under-sampled data with regularly missing traces.
+In order to effectively compare the sparseness of different transforms, we first select an input dataset (here, we use the synthetic example shown in Figure \ref{fig:hyper} as the input dataset). Then we transform the input data into sparse transform domain using different sparse transforms. Figure \ref{fig:hyper-fk,hyper-dwt,hyper-seiss,hyper-curv-img} shows different transformed domains for the input data. The 2-D Fourier transform in this case means the $f-k$ transform. The 2-D wavelet transform means implementing the 1-D wavelet transform along the temporal direction first and along the spatial direction second. The 2-D seislet transform means implementing the seislet transform along the spatial direction first and 1-D seislet transform along the temporal direction second. The 2-D curvelet transform refers to the 2-D wedge wrapping based fast discrete curvelet transform \cite{candes20061}. Next we sort the coefficients in the transform domains into decaying 1-D vectors according to the coefficient amplitude and scale the 1-D vectors. Finally we plot the decaying coefficients with respect to the sequence number for all the transforms in one plot. Figure \ref{fig:hyper-c} shows a comparison between the decay of sorted coefficients in the 2-D Fourier transform, 2-D wavelet transform, 2-D seislet transform and 2-D curvelet transform domains. Our experiments show that the seislet coefficients decay significantly faster than coefficients of the other transforms, which indicates a more compact structure of the seislet domain. Thus, our POCS based interpolation approach is preferred to use the 2-D seislet transform domain as the sparsity-promoting transform. Although the sparsity comparison is based on the well-sampled data, the same conclusion can be extended to the under-sampled case. It is worth to be mentioned that most sparse transforms (in their original form) including the four mentioned transforms can not obtain acceptable reconstruction results for under-sampled data with regularly missing traces.
 
 
 \subsection{De-aliased interpolation by low-frequency constrained local slope estimation}
@@ -142,7 +142,7 @@ The second synthetic example is a linear-event example to test the performance o
 
 
 \inputdir{linear}
-\mutliplot{4}{linear,linear-zero,linear-seis,linear-fft}{width=0.45\columnwidth}{Second synthetic example test. (a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) Reconstructed data using the proposed approach. (d) Reconstructed data using $F-K$ based POCS approach. Note that the $F-K$ based POCS approach cannot obtain any improvement because of the aliasing noise caused by the regularly missing traces.}
+\multiplot{4}{linear,linear-zero,linear-seis,linear-fft}{width=0.45\columnwidth}{Second synthetic example test. (a) Original synthetic data. (b) Decimated data (50\% traces regularly removed). (c) Reconstructed data using the proposed approach. (d) Reconstructed data using $F-K$ based POCS approach. Note that the $F-K$ based POCS approach cannot obtain any improvement because of the aliasing noise caused by the regularly missing traces.}
 
 
 
@@ -152,7 +152,7 @@ The field data example is a highly under-sampled common shot gather, as shown in
 
 
 \inputdir{field}
-\mutliplot{6}{field,field-zero,field-seis,fk-field,fk-field-zero,fk-field-seis}{width=0.29\columnwidth}{(a) Original field data. (b) Zero-padded field data. (c) Interpolated field data. (d) $F-K$ spectrum of original field data. (e) $F-K$ spectrum of zero-padded field data. (f) $F-K$ spectrum of interpolated field data.}
+\multiplot{6}{field,field-zero,field-seis,fk-field,fk-field-zero,fk-field-seis}{width=0.29\columnwidth}{(a) Original field data. (b) Zero-padded field data. (c) Interpolated field data. (d) $F-K$ spectrum of original field data. (e) $F-K$ spectrum of zero-padded field data. (f) $F-K$ spectrum of interpolated field data.}
 
 \section{Conclusion}
 In this paper, we propose to use seislet domain percentile thresholding to iteratively reconstruct the regularly missing seismic traces based on the well-established POCS framework. Numerical tests show that the local slope is the main factor affecting the sparsity and anti-aliasing ability of seislet transform. %In order to provide the optimum slope estimation,

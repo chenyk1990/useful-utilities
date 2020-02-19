@@ -96,7 +96,7 @@ Wig('synth-s-dmssa','title=DMSSA')
 Wig('synth-sn-mssa','title=MSSA')
 Wig('synth-sn-dmssa','title=DMSSA')
 Wig('synth-err1','title="Error (MSSA)"')
-Wig('synth-err2','title="Error (DMSSA)" clip=1.4')
+Wig('synth-err2','title="Error (DMSSA)"')
 
 Wig('synth-s-clean-i','title=Clean')
 Wig('synth-s-noisy-i','title=Noisy')

@@ -5,4 +5,4 @@ os.environ['PSTEXPENOPTS']='color=y fat=3 fatmult=1.5 serifs=n'
 
 
 
-End(options='manuscript',use='amsmath,listings')
+End(use='amsmath,listings')
