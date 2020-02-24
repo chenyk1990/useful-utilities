@@ -33,10 +33,10 @@ function Curve(infile,N1,N2,outfile1,outfile2)
     X=zeros(N1,N2);
     rsf_read(X,infile);
     
-    C = fdct_wrapping(X,0,2); 
+    C = yc_fdct_wrapping(X,0,2); 
 
    %generate curvelet image (a complex array)
-    img = fdct_wrapping_dispcoef(C);
+    img = yc_fdct_wrapping_dispcoef(C);
     img=abs(img);
 
     nscale=max(size(C));

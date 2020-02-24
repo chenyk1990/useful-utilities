@@ -293,7 +293,7 @@ Result('zoom2-recon',['Fig/zoom2-recon-t.vpl']+labelsss,'Overlay')
 
 
 
-matcykROOT='/Users/chenyk/chenyk/matlibcyk/Mada_matlab'
+matcykROOT='../matfun'
 ############################################################
 ## Curvelet thresholding
 ############################################################

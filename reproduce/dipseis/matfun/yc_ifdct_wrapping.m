@@ -48,8 +48,8 @@ if finest == 1;
     window_length_2 = floor(2*M2) - floor(M2) - 1 - (mod(N2,3)==0);
     coord_1 = 0:(1/window_length_1):1;
     coord_2 = 0:(1/window_length_2):1;
-    [wl_1,wr_1] = fdct_wrapping_window(coord_1);
-    [wl_2,wr_2] = fdct_wrapping_window(coord_2);
+    [wl_1,wr_1] = yc_fdct_wrapping_window(coord_1);
+    [wl_2,wr_2] = yc_fdct_wrapping_window(coord_2);
     lowpass_1 = [wl_1, ones(1,2*floor(M1)+1), wr_1];
     if mod(N1,3)==0, lowpass_1 = [0, lowpass_1, 0]; end;
     lowpass_2 = [wl_2, ones(1,2*floor(M2)+1), wr_2];
@@ -71,8 +71,8 @@ else
     window_length_2 = floor(2*M2) - floor(M2) - 1;
     coord_1 = 0:(1/window_length_1):1;
     coord_2 = 0:(1/window_length_2):1;
-    [wl_1,wr_1] = fdct_wrapping_window(coord_1);
-    [wl_2,wr_2] = fdct_wrapping_window(coord_2);
+    [wl_1,wr_1] = yc_fdct_wrapping_window(coord_1);
+    [wl_2,wr_2] = yc_fdct_wrapping_window(coord_2);
     lowpass_1 = [wl_1, ones(1,2*floor(M1)+1), wr_1];
     lowpass_2 = [wl_2, ones(1,2*floor(M2)+1), wr_2];
     lowpass = lowpass_1'*lowpass_2;
@@ -94,8 +94,8 @@ for j = scales,
     window_length_2 = floor(2*M2) - floor(M2) - 1;
     coord_1 = 0:(1/window_length_1):1;
     coord_2 = 0:(1/window_length_2):1;
-    [wl_1,wr_1] = fdct_wrapping_window(coord_1);
-    [wl_2,wr_2] = fdct_wrapping_window(coord_2);
+    [wl_1,wr_1] = yc_fdct_wrapping_window(coord_1);
+    [wl_2,wr_2] = yc_fdct_wrapping_window(coord_2);
     lowpass_1 = [wl_1, ones(1,2*floor(M1)+1), wr_1];
     lowpass_2 = [wl_2, ones(1,2*floor(M2)+1), wr_2];
     lowpass_next = lowpass_1'*lowpass_2;
@@ -158,8 +158,8 @@ for j = scales,
             wrapped_XX((wrapped_XX - 1)/floor(4*M_horiz) + (wrapped_YY-1)/floor(4*M_vert) == 2) + 1;
         coord_corner = C1 + C2 * ((wrapped_XX - 1)/(floor(4*M_horiz)) - (wrapped_YY - 1)/(floor(4*M_vert))) ./ ...
             (2-((wrapped_XX - 1)/(floor(4*M_horiz)) + (wrapped_YY - 1)/(floor(4*M_vert))));
-        wl_left = fdct_wrapping_window(coord_corner);
-        [wl_right,wr_right] = fdct_wrapping_window(coord_right);
+        wl_left = yc_fdct_wrapping_window(coord_corner);
+        [wl_right,wr_right] = yc_fdct_wrapping_window(coord_right);
         switch is_real
          case 0
           wrapped_data = fftshift(fft2(ifftshift(C{j}{l})))/sqrt(prod(size(C{j}{l})));
@@ -211,8 +211,8 @@ for j = scales,
             mid_line_right = wedge_midpoints(subl) + slope_wedge_right*(wrapped_YY - 1);
             coord_right = 1/2 + floor(4*M_vert)/(wedge_endpoints(subl+1) - wedge_endpoints(subl)) * ...
                 (wrapped_XX - mid_line_right)./(floor(4*M_vert)+1 - wrapped_YY);
-            wl_left = fdct_wrapping_window(coord_left);
-            [wl_right,wr_right] = fdct_wrapping_window(coord_right);
+            wl_left = yc_fdct_wrapping_window(coord_left);
+            [wl_right,wr_right] = yc_fdct_wrapping_window(coord_right);
             switch is_real
              case 0
               wrapped_data = fftshift(fft2(ifftshift(C{j}{l})))/sqrt(prod(size(C{j}{l})));
@@ -262,8 +262,8 @@ for j = scales,
             wrapped_XX((wrapped_XX - 1)/floor(4*M_horiz) == (wrapped_YY-1)/floor(4*M_vert)) - 1;
         coord_corner = C1 + C2 * (2-((wrapped_XX - 1)/(floor(4*M_horiz)) + (wrapped_YY - 1)/(floor(4*M_vert)))) ./ ...
             ((wrapped_XX - 1)/(floor(4*M_horiz)) - (wrapped_YY - 1)/(floor(4*M_vert)));
-        wl_left = fdct_wrapping_window(coord_left);
-        [wl_right,wr_right] = fdct_wrapping_window(coord_corner);
+        wl_left = yc_fdct_wrapping_window(coord_left);
+        [wl_right,wr_right] = yc_fdct_wrapping_window(coord_corner);
         switch is_real
          case 0
           wrapped_data = fftshift(fft2(ifftshift(C{j}{l})))/sqrt(prod(size(C{j}{l})));

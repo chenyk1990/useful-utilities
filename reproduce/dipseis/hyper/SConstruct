@@ -62,7 +62,7 @@ Flow('hypers3','hypers','put n2=76 n3=3 o3=0 d1=0.004 d2=1')
 
 
 
-matcykROOT='/Users/chenyk/chenyk/matlibcyk/Mada_matlab'
+matcykROOT='../matfun'
 ############################################################
 ## Curvelet thresholding
 ############################################################

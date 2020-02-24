@@ -22,7 +22,7 @@ ykchen@utexas.edu
   \ifthenelse{\boolean{@revd}}{\textcolor{black}{#1}}{#1}}
   
 \begin{abstract}
-The seislet transform has been demonstrated to have a better compression performance for seismic data compared with other well-known sparsity promoting transforms, thus it can be used to remove random noise by simply applying a thresholding operator in the seislet domain. Since the seislet transform compresses the seismic data along the local structures, the seislet thresholding can be viewed as \dlo{the simplest}\wen{a simple} structural filtering approach. Because of the dependence on a precise local slope estimation, the seislet transform usually suffers from low compression ratio and high reconstruction error for seismic profiles that have dip conflicts. In order to remove the limitation of seislet thresholding in dealing with conflicting-dip data, I propose a \dlo{semi-automatic} dip-separated filtering strategy. In this method, I first use an adaptive empirical mode decomposition based dip filter to separate the seismic data into several dip bands (5 or 6)\dlo{, and then I manually recombine the decomposed dip components into a small number (2 or 3) of dip components in order to reduce computational cost}. Next, I apply seislet thresholding to each separated dip component \dlo{(after dip recombination)} to remove random noise. Then I combine all the denoised components to form the final denoised data. \dlo{There are two combination steps in the multi-step process: the dip combination after empirical mode decomposition based dip filtering and the combination of denoised components to form the output data.} Compared with other dip filters, the empirical mode decomposition based dip filter is data-adaptive. One only need to specify the number of dip components to be separated. \dlo{There is only one manual step in the proposed denoising framework; the manual combination of dip components after the initial dip filtering. Thus the semi-automatic multi-step approach is easy to be implemented.} Both complicated synthetic and field data examples show superior performance of my proposed approach than the traditional alternatives. The dip-separated structural filtering is not limited to seislet thresholding, and can also be extended to all those methods that require slope information.
+The seislet transform has been demonstrated to have a better compression performance for seismic data compared with other well-known sparsity promoting transforms, thus it can be used to remove random noise by simply applying a thresholding operator in the seislet domain. Since the seislet transform compresses the seismic data along the local structures, the seislet thresholding can be viewed as \dlo{the simplest}\wen{a simple} structural filtering approach. Because of the dependence on a precise local slope estimation, the seislet transform usually suffers from low compression ratio and high reconstruction error for seismic profiles that have dip conflicts. In order to remove the limitation of seislet thresholding in dealing with conflicting-dip data, I propose a \dlo{semi-automatic} dip-separated filtering strategy. In this method, I first use an adaptive empirical mode decomposition based dip filter to separate the seismic data into several dip bands (5 or 6). Next, I apply seislet thresholding to each separated dip component to remove random noise. Then I combine all the denoised components to form the final denoised data. Compared with other dip filters, the empirical mode decomposition based dip filter is data-adaptive. Both complicated synthetic and field data examples show superior performance of my proposed approach than the traditional alternatives. The dip-separated structural filtering is not limited to seislet thresholding, and can also be extended to all those methods that require slope information.
 \end{abstract}
 
 \section{Keywords}
@@ -118,46 +118,12 @@ The special property of \dlo{EMD}\wen{empirical mode decomposition (EMD)} based 
 
 In the following sections, I will use the \wen{EMD based dip filter} \dlo{parameters defined in Table \ref{tbl:filterpara1}} to decompose the synthetic and field data examples into 5 dip components\dlo{, as shown in Figures \ref{fig:dip1,dip2,dip3,dip4,dip5} and \ref{fig:field-dip1,field-dip2,field-dip3,field-dip4,field-dip5}}. Note that the number of dip components is not limited to 5. \dlo{The dip separation also follows the same way as shown in Table \ref{tbl:filterpara1} to parameterize equation \ref{eq:emdbdf}.} As \dlo{we}\wen{one} can see, the \dlo{EMDBDF}\wen{EMD based dip filter} can act as a data-driven dip components separator, without any parameters to be defined except for the separation number \dlo{$M$}\wen{$N$}. 
 
+\inputdir{sigmoid}
+\multiplot{3}{sig,dip0,slet0}{width=0.39\columnwidth}{(a) Synthetic data. (b) True local slope. (c) True seislet domain.}
 
-\AtEndDocument{
-\newpage
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/sig}
-    \label{fig:sig}}
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/dip0}
-    \label{fig:dip0}}\\
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/slet0}
-    \label{fig:slet0}}
-   \caption{(a) Synthetic data. (b) True local slope. (c) True seislet domain.}
-   \label{fig:sig,dip0,slet0}
-\end{figure}
+\multiplot{3}{dip1,slet1,dip2,slet2,dip3,slet3}{width=0.39\columnwidth}{Smoothed local slope maps using different smoothing radii (SR) and the corresponding seislet domain. (a) Local slope map with $SR=50$. (b) Seislet domain using local slope shown in (a). (c) Local slope map with $SR=100$. (d) Seislet domain using local slope shown in (c). (e) Local slope map with $SR=250$. (f) Seislet domain using local slope shown in (e).}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/dip1}
-    \label{fig:dip1}}
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/slet1}
-    \label{fig:slet1}}\\
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/dip2}
-    \label{fig:dip2}}
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/slet2}
-    \label{fig:slet2}}\\
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/dip3}
-    \label{fig:dip3}}
-  \subfloat[]{\includegraphics[width=0.39\columnwidth]{sigmoid/Fig/slet3}
-    \label{fig:slet3}}
-   \caption{Smoothed local slope maps using different smoothing radii (SR) and the corresponding seislet domain. (a) Local slope map with $SR=50$. (b) Seislet domain using local slope shown in (a). (c) Local slope map with $SR=100$. (d) Seislet domain using local slope shown in (c). (e) Local slope map with $SR=250$. (f) Seislet domain using local slope shown in (e). }
-   \label{fig:dip1,slet1,dip2,slet2,dip3,slet3}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\columnwidth]{sigmoid/Fig/sigcoef}
-   \caption{Seislet domain coefficients decreasing diagrams\wen{, compared with the curvelet domain coefficients decreasing diagram}.}
-  \label{fig:sigcoef}
-\end{figure}
-}
+\plot{sigcoef}{width=0.8\columnwidth}{Seislet domain coefficients decreasing diagrams\wen{, compared with the curvelet domain coefficients decreasing diagram}.}
 
 \dlo{The dip-separated filtering is not only benefiting the seislet thresholding.} Other structural filtering approaches that require a precise slope estimation will perform better when the dip estimation is applied on dip-separated profiles than the traditional implementation. The slope estimation after dip separation will be obviously superior than that without dip separation. \dlo{We}\wen{One} can use the slope estimation shown in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0} as an example. The slope estimation\wen{s} in the separated dip components \dlo{(Figures \ref{fig:sep1-dip} and \ref{fig:sep2-dip})} \dlo{is}\wen{are} more precise than that of the original profile in the dip conflicting area. The separated slope is \dlo{more smooth}\wen{smoother} while the original slope is highly non-stationary when the events cross each other. The dip estimation error will transform into large filtering damages in any structural filtering approaches. Other structural filtering approaches that do not rely on the slope estimation will also benefit a lot because a reduced number of slope components will result in a much easier parameterization, such as choosing the prediction length in the prediction filtering \cite[]{yangkang2014} and choosing the minimum rank in the multichannel singular spectrum analysis (MSSA) \cite[]{mssa}.
 
@@ -167,7 +133,7 @@ In order to overcome the problem of plane-wave destruction in estimating conflic
 \dlo{Figure \ref{fig:flowchart} shows the detailed workflows for the proposed semi-automatic multi-step approach.} \wen{Figure \ref{fig:flowchart_new} shows the detailed workflow chart of the proposed dip-separated denoising framework.} In Table \ref{tbl:denotes}, I give a detailed explanation for the meanings of different abbreviations. 
 
 \dlo{The dip separation and recombination fashion can vary slightly for different field datasets. We can first select a small portion of the whole dataset to choose an optimal number of initial dip components ($N$) and an optimal number of final dip recombined components ($M$).  However, one can generally set $N=5$ and $M=2$ to be more conveniently implemented, as I do in the paper. $M=2$ indicates that one only separate the steepest components and the near-horizontal components, which suits most field datasets.}
-
+\inputdir{./}
 \plot{flowchart_new}{width=\textwidth}{\dlo{Demonstration of the semi-automatic multi-step random noise attenuation approach.}\wen{Workflow chart of the proposed dip-separated denoising framework.} }
 \tabl{denotes}{Explanation of abbreviations shown in Figure \ref{fig:flowchart_new}. }
  {
@@ -204,253 +170,43 @@ In this section, I give \dlo{one}\wen{two} synthetic and one field data examples
 I \wen{first} use a \dlo{complicated} synthetic example \wen{with linear events} to demonstrate the performance of the proposed approach. The synthetic data is composed of four linear events with different slopes. They cross each other and form four crossing points. I create this synthetic data in order to decrease the performance of dip estimation using plane-wave destruction as there are dip conflicts in those crossing points. After using the \dlo{EMD}\wen{empirical mode decomposition (EMD)} based dip filter, the decomposed dip components are shown in Figure \ref{fig:dip1,dip2,dip3,dip4,dip5}. %check and difference using the proposed approach and common seislet-domain thresholding as
 \dlo{The parameters I choose in designing the \dlo{EMDBDF}\wen{EMD based dip filter} (equation \ref{eq:emdbdf}) in order to obtain the five decomposed dip components are shown in Table \ref{tbl:filterpara1}.}
 
-After dip \wen{decomposition} \dlo{recombination, I obtain two separated dip components that have no dip conflicts, which are shown in Figure \ref{fig:sep1,sep2}. As \dlo{we}\wen{one} can see, after \dlo{the} \dlo{EMDBDF}\wen{applying the EMD based dip filter} and dip recombination,} I remove the crossing points and the local dip conflicts that affect performance of \wen{the} seislet transform. Figure \ref{fig:dip1-emd-p,dip2-emd-p,dip3-emd-p,dip4-emd-p,dip5-emd-p,plane-dip} shows the local slope maps using plane-wave destruction \wen{algorithm} on separated dip components and original seismic profile. \dlo{The seislet domain of the original data is shown in Figure \ref{fig:plane-seis}. The seislet domains after \dlo{EMDBDF}\wen{EMD} based dip separation are shown in Figures \ref{fig:sep1-seis} and \ref{fig:sep2-seis}, respectively. }
-The reconstructed seismic data \wen{for each separated dip component} after thresholding are shown in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}. \dlo{Figures \ref{fig:sep1-recon} and \ref{fig:sep2-recon} correspond\dlo{s} to the two denoised seismic data for two separated dip components.} \dlo{Figure \ref{fig:plane-emdseis} is the summation of Figure \ref{fig:sep1-recon} and \ref{fig:sep2-recon}} \wen{Figure \ref{fig:plane-emd} is the summation of Figures \ref{fig:dip1-emd0}-\ref{fig:dip5-emd0}} and thus the output using the proposed approach. Figure \ref{fig:plane-st} is the denoised result using conventional method. \wen{In order to demonstrate the superior performance of the proposed over other widely used denoising approaches, I also show the denoised results using the curvelet thresholding approach \cite[]{candes20061,candes20062} and the \dlo{FX}\wen{$f-x$} deconvolution method \cite[]{canales}. In order to have a fair comparison, I try different parameter combinations in order to obtain the best denoised results with the least loss of useful energy for all the methods. } The noise sections corresponding to the proposed approach and the conventional approach\wen{es} are shown in \dlo{Figure \ref{fig:plane-emdseis-dif,plane-seis-dif,plane-curv-dif,plane-fx-dif}}\wen{Figures \ref{fig:plane-emd-n} and \ref{fig:plane-st-n}}. \dlo{Because of dip conflicts, conventional seislet thresholding cause\wen{s} some artifacts in the final denoised image.}\wen{Because of dip conflicts, the seislet domain of the original seismic image is not optimally sparse, and the threshold \dlo{we}\wen{one} use should be more conservative in order to avoid any possible damages to the signals. The resulted denoised image is a bit noisier and the noise section has a lower amplitude level.} Although the curvelet transform has directional property, the compactly \dlo{crosing}\wen{crossing} events make thresholding in the curvelet transform domain not easy to implement, thus \dlo{we}\wen{one} can only use a very \dlo{convervative}\wen{conservative} threshold value to obtain the optimum denoised result that leaves the least useful energy in the noise section. The noise section using curvelet thresholding is relatively less noisier than other methods, which indicates that more noise are still in the denoised result. The \dlo{FX}\wen{$f-x$} deconvolution method can obtain a good denoising performance but \wen{might} cause some useful dipping energy lost due to the boundary effects. However, using the proposed approach, I obtain an excellent result. \dlo{The SNR of original noise data is 3.685 dB. The SNR of the denoised data using conventional seislet thresholding is 20.41 dB. The SNRs of the denoised data using the curvelet thresholding and the \dlo{FX}\wen{$f-x$} deconvolution are 20.51 dB and 20.67 dB, respectively. The SNR of the denoised data using the proposed semi-automatic multi-step approach is 23.46 dB.}\wen{The SNR of original noise data is 3.685 dB. The SNR of the denoised data using conventional seislet thresholding is 22.21 dB. The SNRs of the denoised data using the curvelet thresholding and the $f-x$ deconvolution are 21.07 dB and 20.98 dB, respectively. The SNR of the denoised data using the proposed approach is 24.38 dB.} The comparison of SNRs also proves the better performance of the proposed approach \wen{than the other approaches}. \dlo{Please note that even though we do not manually combine the separated dip components, we can still get the same result. Figure \ref{fig:dip1-thr,dip2-thr,dip3-thr,dip4-thr,dip5-thr,dips-thr} shows a example of denoising on each separated dip components. Figures \ref{fig:dip1-thr}, \ref{fig:dip2-thr}, \ref{fig:dip3-thr}, \ref{fig:dip4-thr}, and \ref{fig:dip5-thr} show the denoised result of each dip component. Figure \ref{fig:dips-thr} show the final denoised result by summing the 5 dip components in Figures \ref{fig:dip1-thr}, \ref{fig:dip2-thr}, \ref{fig:dip3-thr}, \ref{fig:dip4-thr}, and \ref{fig:dip5-thr}. Compared with denoised result in two final dip components, the performance is quite similar. The estimated SNR of Figure \ref{fig:dips-thr} is 23.39 \wen{dB}, which is quite close to that of Figure \ref{fig:plane-emdseis}.}\wen{  In this example, I preserve 2\% coefficients for all the dip components. For the traditional seislet method, I choose a bit more coefficients, 3\%, to perform the denoising. For the curvelet method, I choose 6\% coefficients to perform the denoising. } 
+After dip \wen{decomposition} \dlo{recombination, I obtain two separated dip components that have no dip conflicts, which are shown in Figure \ref{fig:sep1,sep2}. As \dlo{we}\wen{one} can see, after \dlo{the} \dlo{EMDBDF}\wen{applying the EMD based dip filter} and dip recombination,} I remove the crossing points and the local dip conflicts that affect performance of \wen{the} seislet transform. Figure \ref{fig:dip1-emd-p,dip2-emd-p,dip3-emd-p,dip4-emd-p,dip5-emd-p,plane-dip} shows the local slope maps using plane-wave destruction \wen{algorithm} on separated dip components and original seismic profile. \dlo{The seislet domain of the original data is shown in Figure \ref{fig:plane-recon}. The seislet domains after \dlo{EMDBDF}\wen{EMD} based dip separation are shown in Figures \ref{fig:sep1-seis} and \ref{fig:sep2-seis}, respectively. }
+The reconstructed seismic data \wen{for each separated dip component} after thresholding are shown in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}. \dlo{Figures \ref{fig:sep1-recon} and \ref{fig:sep2-recon} correspond\dlo{s} to the two denoised seismic data for two separated dip components.} \dlo{Figure \ref{fig:plane-emdseis} is the summation of Figure \ref{fig:sep1-recon} and \ref{fig:sep2-recon}} \wen{Figure \ref{fig:plane-emdseis} is the summation of Figures \ref{fig:dip1-emd0}-\ref{fig:dip5-emd0}} and thus the output using the proposed approach. Figure \ref{fig:plane-recon} is the denoised result using conventional method. \wen{In order to demonstrate the superior performance of the proposed over other widely used denoising approaches, I also show the denoised results using the curvelet thresholding approach \cite[]{candes20061,candes20062} and the \dlo{FX}\wen{$f-x$} deconvolution method \cite[]{canales}. In order to have a fair comparison, I try different parameter combinations in order to obtain the best denoised results with the least loss of useful energy for all the methods. } The noise sections corresponding to the proposed approach and the conventional approach\wen{es} are shown in \dlo{Figure \ref{fig:plane-emdseis-dif,plane-seis-dif,plane-curv-dif,plane-fx-dif}}\wen{Figures \ref{fig:plane-emdseis-dif} and \ref{fig:plane-seis-dif}}. \dlo{Because of dip conflicts, conventional seislet thresholding cause\wen{s} some artifacts in the final denoised image.}\wen{Because of dip conflicts, the seislet domain of the original seismic image is not optimally sparse, and the threshold \dlo{we}\wen{one} use should be more conservative in order to avoid any possible damages to the signals. The resulted denoised image is a bit noisier and the noise section has a lower amplitude level.} Although the curvelet transform has directional property, the compactly \dlo{crosing}\wen{crossing} events make thresholding in the curvelet transform domain not easy to implement, thus \dlo{we}\wen{one} can only use a very \dlo{convervative}\wen{conservative} threshold value to obtain the optimum denoised result that leaves the least useful energy in the noise section. The noise section using curvelet thresholding is relatively less noisier than other methods, which indicates that more noise are still in the denoised result. The \dlo{FX}\wen{$f-x$} deconvolution method can obtain a good denoising performance but \wen{might} cause some useful dipping energy lost due to the boundary effects. However, using the proposed approach, I obtain an excellent result. \dlo{The SNR of original noise data is 3.685 dB. The SNR of the denoised data using conventional seislet thresholding is 20.41 dB. The SNRs of the denoised data using the curvelet thresholding and the \dlo{FX}\wen{$f-x$} deconvolution are 20.51 dB and 20.67 dB, respectively. The SNR of the denoised data using the proposed semi-automatic multi-step approach is 23.46 dB.}\wen{The SNR of original noise data is 3.685 dB. The SNR of the denoised data using conventional seislet thresholding is 22.21 dB. The SNRs of the denoised data using the curvelet thresholding and the $f-x$ deconvolution are 21.07 dB and 20.98 dB, respectively. The SNR of the denoised data using the proposed approach is 24.38 dB.} The comparison of SNRs also proves the better performance of the proposed approach \wen{than the other approaches}. \dlo{Please note that even though we do not manually combine the separated dip components, we can still get the same result. Figure \ref{fig:dip1-thr,dip2-thr,dip3-thr,dip4-thr,dip5-thr,dips-thr} shows a example of denoising on each separated dip components. Figures \ref{fig:dip1-thr}, \ref{fig:dip2-thr}, \ref{fig:dip3-thr}, \ref{fig:dip4-thr}, and \ref{fig:dip5-thr} show the denoised result of each dip component. Figure \ref{fig:dips-thr} show the final denoised result by summing the 5 dip components in Figures \ref{fig:dip1-thr}, \ref{fig:dip2-thr}, \ref{fig:dip3-thr}, \ref{fig:dip4-thr}, and \ref{fig:dip5-thr}. Compared with denoised result in two final dip components, the performance is quite similar. The estimated SNR of Figure \ref{fig:dips-thr} is 23.39 \wen{dB}, which is quite close to that of Figure \ref{fig:plane-emdseis}.}\wen{  In this example, I preserve 2\% coefficients for all the dip components. For the traditional seislet method, I choose a bit more coefficients, 3\%, to perform the denoising. For the curvelet method, I choose 6\% coefficients to perform the denoising. } 
 
-\wen{I then use a second synthetic example with curved events to further confirm the superior performance of the proposed approach, as shown in Figures \ref{fig:hyper-c,hyper-e,hyper-s,hyper,hyper-ct,hyper-fx} and \ref{fig:hyper-e-n,hyper-s-n-0,hyper-ct-n-0,hyper-fx-n}. This example is composed with three curved events with spatially variable slope. The clean and noisy data are shown in Figures \ref{fig:hyper-c} and \ref{fig:hyper}, respectively. Figures \ref{fig:hyper-e}, \ref{fig:hyper-s}, \ref{fig:hyper-ct}, and \ref{fig:hyper-fx} show the denoised performances using the proposed method, traditional seislet method, curvelet method, and \dlo{FX}\wen{$f-x$} deconvolution method, respectively. Figures \ref{fig:hyper-e-n}, \ref{fig:hyper-s-n-0}, \ref{fig:hyper-ct-n-0}, and \ref{fig:hyper-fx-n} show their corresponding removed noise sections. It is obvious that the proposed approach can obtain the cleanest denoised data while the other three methods cause a bit more random noise left in the denoised images. The SNR improvements using four different approaches are 10.18 dB, 9.54 dB, 9.27 dB, and 7.98 dB, respectively. In this example, I preserve 3\% coefficients for all the dip components, preserve 5 \% coefficients for the traditional seislet method, and 8\% for the curvelet method. }
+\wen{I then use a second synthetic example with curved events to further confirm the superior performance of the proposed approach, as shown in Figures \ref{fig:hyper-c,hyper-e,hyper-s-0,hyper,hyper-ct-0,hyper-fx-0} and \ref{fig:hyper-e-n,hyper-s-n-0,hyper-ct-n-0,hyper-fx-n-0}. This example is composed with three curved events with spatially variable slope. The clean and noisy data are shown in Figures \ref{fig:hyper-c} and \ref{fig:hyper}, respectively. Figures \ref{fig:hyper-e}, \ref{fig:hyper-s-0}, \ref{fig:hyper-ct-0}, and \ref{fig:hyper-fx-0} show the denoised performances using the proposed method, traditional seislet method, curvelet method, and \dlo{FX}\wen{$f-x$} deconvolution method, respectively. Figures \ref{fig:hyper-e-n}, \ref{fig:hyper-s-n-0}, \ref{fig:hyper-ct-n-0}, and \ref{fig:hyper-fx-n-0} show their corresponding removed noise sections. It is obvious that the proposed approach can obtain the cleanest denoised data while the other three methods cause a bit more random noise left in the denoised images. The SNR improvements using four different approaches are 10.18 dB, 9.54 dB, 9.27 dB, and 7.98 dB, respectively. In this example, I preserve 3\% coefficients for all the dip components, preserve 5 \% coefficients for the traditional seislet method, and 8\% for the curvelet method. }
 
 \subsection{Field data example}
-The field data example is shown in Figure \ref{fig:field}. There is a salt dome in the down middle part of the image. Because of random noise, the useful seismic reflections are not very clear. Because of the salt dome, there exists dip conflicts near the flanks of the salt dome, which will cause bad compression performance for \wen{the} seislet transform. I first use the EMD based dip filter to separate the profile into five dip components\dlo{, as shown in Figure \ref{fig:field-dip1,field-dip2,field-dip3,field-dip4,field-dip5}}. \wen{Then I apply seislet thresholding on each of the five separated dip components and finally add all the denoised components together. The denoised image using the proposed approach is shown in Figure \ref{fig:field-e}. } \dlo{I then combine the separated dip components into two components to avoid dip conflicts. Two combined components are shown in Figure \ref{fig:field-sep1,field-sep2}. Figures \ref{fig:field-sep1-dip} and \ref{fig:field-sep2-dip} show the local slope map for two separated dip components using \wen{the} plane-wave destruction algorithm. Figure \ref{fig:field-dip} shows the local slope map of original seismic profile. As \dlo{we}\wen{one} can observe from the slope estimation\wen{s} of two separated dip components, dip estimation focus\wen{es} better on different slope bands \wen{than the original slope estimation}. The first dip component get\wen{s} better dip estimation for salt flanks while the second dip component get\wen{s} better dip estimation for horizontal components. Figure \ref{fig:field-seis,field-sep1-seis,field-sep2-seis} shows the seislet domains for the original seismic profile and two separated dip components. After \wen{forward seislet transform,} thresholding in the seislet domains of both separated components, and \wen{the} inverse seislet transform, I obtain the denoised results for two separated dip components, as show in Figures \ref{fig:field-sep1-recon} and \ref{fig:field-sep2-recon}. The final result summing the two separated denoised results is shown in Figure \ref{fig:field-emdseis}.} \wen{As a reference, the denoised result using conventional one-step seislet transform is shown in Figure \ref{fig:field-s}. The denoised images using curvelet thresholding and \dlo{FX}\wen{$f-x$} deconvolution are shown in Figures \ref{fig:field-c} and \ref{fig:field-fx}, respectively.} \dlo{Figure \ref{fig:field-emdseis-dif,field-seis-dif} show\wen{s} the two noise sections corresponding to the proposed and conventional methods. From the comparison of denoised result\wen{s} using two approaches, I find that the proposed semi-automatic multi-step approach can recover useful signal\wen{s} and enhance weak signals better \wen{than the traditional approach}, as shown by the arrows. I zoom two parts that corresponding to the two frame boxes A\&B in the denoised results using two approaches (Figures \ref{fig:field-emdseis} and \ref{fig:field-recon}), and show them in Figure \ref{fig:field-sep1-recon,field-sep2-recon,field-emdseis,field-recon}. The comparisons of zoomed sections show more obvious advantage of the proposed semi-automatic multi-step random noise attenuation approach in preserving more useful energy and enhancing weak signals that were smeared in traditional method.} \wen{The noise sections using four different approaches are shown in Figure \ref{fig:field-e-n,field-s-n,field-c-n,field-fx-n}. While the \dlo{FX}\wen{$f-x$} deconvolution method fails to obtain acceptable result, the other three methods obtain much better performance in that seldom useful energy is damaged during the processing. However, it is obvious that the proposed approach remove the most random noise while preserving the useful signals. In this example, I preserve 10\% coefficients in the seislet domain for each dip component, 14\% coefficients in the seislet domain for the original image, and 20\% coefficients in the curvelet domain.} The comparisons of zoomed sections show more obvious advantage of the proposed approach in preserving more useful energy and enhancing weak signals that were smeared in traditional seislet method.
+The field data example is shown in Figure \ref{fig:field,field-emdseis,field-recon,field-ct,field-fx}. There is a salt dome in the down middle part of the image. Because of random noise, the useful seismic reflections are not very clear. Because of the salt dome, there exists dip conflicts near the flanks of the salt dome, which will cause bad compression performance for \wen{the} seislet transform. I first use the EMD based dip filter to separate the profile into five dip components\dlo{, as shown in Figure \ref{fig:field-dip1,field-dip2,field-dip3,field-dip4,field-dip5}}. \wen{Then I apply seislet thresholding on each of the five separated dip components and finally add all the denoised components together. The denoised image using the proposed approach is shown in Figure \ref{fig:field-emdseis}. } \dlo{I then combine the separated dip components into two components to avoid dip conflicts. Two combined components are shown in Figure \ref{fig:field-sep1,field-sep2}. Figures \ref{fig:field-sep1-dip} and \ref{fig:field-sep2-dip} show the local slope map for two separated dip components using \wen{the} plane-wave destruction algorithm. Figure \ref{fig:field-dip} shows the local slope map of original seismic profile. As \dlo{we}\wen{one} can observe from the slope estimation\wen{s} of two separated dip components, dip estimation focus\wen{es} better on different slope bands \wen{than the original slope estimation}. The first dip component get\wen{s} better dip estimation for salt flanks while the second dip component get\wen{s} better dip estimation for horizontal components. Figure \ref{fig:field-seis,field-sep1-seis,field-sep2-seis} shows the seislet domains for the original seismic profile and two separated dip components. After \wen{forward seislet transform,} thresholding in the seislet domains of both separated components, and \wen{the} inverse seislet transform, I obtain the denoised results for two separated dip components, as show in Figures \ref{fig:field-sep1-recon} and \ref{fig:field-sep2-recon}. The final result summing the two separated denoised results is shown in Figure \ref{fig:field-emdseis}.} \wen{As a reference, the denoised result using conventional one-step seislet transform is shown in Figure \ref{fig:field-recon}. The denoised images using curvelet thresholding and \dlo{FX}\wen{$f-x$} deconvolution are shown in Figures \ref{fig:field-ct} and \ref{fig:field-fx}, respectively.} \dlo{Figure \ref{fig:field-emdseis-dif,field-seis-dif} show\wen{s} the two noise sections corresponding to the proposed and conventional methods. From the comparison of denoised result\wen{s} using two approaches, I find that the proposed semi-automatic multi-step approach can recover useful signal\wen{s} and enhance weak signals better \wen{than the traditional approach}, as shown by the arrows. I zoom two parts that corresponding to the two frame boxes A\&B in the denoised results using two approaches (Figures \ref{fig:field-emdseis} and \ref{fig:field-recon}), and show them in Figure \ref{fig:field-sep1-recon,field-sep2-recon,field-emdseis,field-recon}. The comparisons of zoomed sections show more obvious advantage of the proposed semi-automatic multi-step random noise attenuation approach in preserving more useful energy and enhancing weak signals that were smeared in traditional method.} \wen{The noise sections using four different approaches are shown in Figure \ref{fig:field-emdseis-dif,field-seis-dif,field-ct-dif,field-fx-dif}. While the \dlo{FX}\wen{$f-x$} deconvolution method fails to obtain acceptable result, the other three methods obtain much better performance in that seldom useful energy is damaged during the processing. However, it is obvious that the proposed approach remove the most random noise while preserving the useful signals. In this example, I preserve 10\% coefficients in the seislet domain for each dip component, 14\% coefficients in the seislet domain for the original image, and 20\% coefficients in the curvelet domain.} The comparisons of zoomed sections show more obvious advantage of the proposed approach in preserving more useful energy and enhancing weak signals that were smeared in traditional seislet method.
 
 \wen{The main cost in the proposed approach is the computation in the sifting process of empirical mode decomposition \cite[]{emd}, which might require a large CPU cost. EMD process does not require a large memory cost since it is a recursive process and the memory required is in linear relation with the data size. The 3D version of the proposed approach may require a combination of 2D EMD along each frequency slice and a 3D version of seislet transform. Currently the proposed method is not applicable to 4D or 5D, since there are no 3D and 4D versions of EMD, or 4D and 5D versions of seislet transform. }
 
+\inputdir{complex}
+\multiplot{2}{plane-c,plane}{width=0.48\columnwidth}{\dlo{Complex}\wen{First} synthetic example. (a) Clean data. (b) Noisy data.}
 
-\AtEndDocument{
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{complex/Fig/plane-c}
-    \label{fig:plane-c}}
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{complex/Fig/plane}
-    \label{fig:plane}}
-   \caption{\dlo{Complex}\wen{First} synthetic example. (a) Clean data. (b) Noisy data.}
-   \label{fig:plane-c,plane}
-\end{figure}
+\multiplot{5}{dip1,dip2,dip3,dip4,dip5}{width=0.29\columnwidth}{\dlo{Initial s}\wen{S}eparated dip components using \dlo{EMDBDF}\wen{EMD based dip filter} for synthetic data. (a) First dip component. (b) Second dip component. (c) Third dip component. (d) Fourth dip component. (e) Last dip component.}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip1}
-    \label{fig:dip1}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip2}
-    \label{fig:dip2}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip3}
-    \label{fig:dip3}}\\
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip4}
-    \label{fig:dip4}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip5}
-    \label{fig:dip5}}
-   \caption{\dlo{Initial s}\wen{S}eparated dip components using \dlo{EMDBDF}\wen{EMD based dip filter} for synthetic data. (a) First dip component. (b) Second dip component. (c) Third dip component. (d) Fourth dip component. (e) Last dip component.}
-   \label{fig:dip1,dip2,dip3,dip4,dip5}
-\end{figure}
+\multiplot{6}{dip1-emd-p,dip2-emd-p,dip3-emd-p,dip4-emd-p,dip5-emd-p,plane-dip}{width=0.29\columnwidth}{Local slope comparison for synthetic data. \dlo{Local slope map before dip separation.} \wen{(a)} First local slope map. \wen{(b)} Second local slope map. \wen{(c) Third local slope map. (d) Fourth local slope map. (e) Fifth local slope map. (f) Local slope map before dip separation.}}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip1-emd-p}
-    \label{fig:dip1-emd-p}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip2-emd-p}
-    \label{fig:dip2-emd-p}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip3-emd-p}
-    \label{fig:dip3-emd-p}}\\
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip4-emd-p}
-    \label{fig:dip4-emd-p}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip5-emd-p}
-    \label{fig:dip5-emd-p}}  
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/plane-dip}
-    \label{fig:plane-dip}}              
-   \caption{Local slope comparison for synthetic data. \dlo{Local slope map before dip separation.} \wen{(a)} First local slope map. \wen{(b)} Second local slope map. \wen{(c) Third local slope map. (d) Fourth local slope map. (e) Fifth local slope map. (f) Local slope map before dip separation.}}
-   \label{fig:dip1-emd-p,dip2-emd-p,dip3-emd-p,dip4-emd-p,dip5-emd-p,plane-dip}
-\end{figure}
+\multiplot{5}{dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}{width=0.29\columnwidth}{\wen{(a) Denoised first dip component. (b) Denoised second dip component. (c) Denoised third dip component. (d) Denoised fourth dip component. (e) Denoised fifth dip component.}}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip1-thr}
-    \label{fig:dip1-emd0}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip2-thr}
-    \label{fig:dip2-emd0}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip3-thr}
-    \label{fig:dip3-emd0}}\\
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip4-thr}
-    \label{fig:dip4-emd0}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{complex/Fig/dip5-thr}
-    \label{fig:dip5-emd0}}
-   \caption{\wen{(a) Denoised first dip component. (b) Denoised second dip component. (c) Denoised third dip component. (d) Denoised fourth dip component. (e) Denoised fifth dip component.}}
-   \label{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}
-\end{figure}
+\multiplot{4}{plane-emdseis,plane-recon,plane-curv,plane-fx}{width=0.4\columnwidth}{Denoised results for \wen{the first} synthetic data. \dlo{(a) Denoised first component using seislet thresholding. (b) Denoised second component using seislet thresholding.} \wen{(a)}\dlo{(c)} Denoised result using the proposed method (summation of \dlo{(a) and (b)}\wen{(a)-(e) in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}}). \wen{(b)}\dlo{(d)} Denoised result using the conventional seislet thresholding method. \wen{(c)}\dlo{(e)} Denoised result using the curvelet thresholding method. \wen{(d)}\dlo{(f)} Denoised result using the \dlo{FX}\wen{$f-x$} deconvolution method.}
+
+\multiplot{4}{plane-emdseis-dif,plane-seis-dif,plane-curv-dif,plane-fx-dif}{width=0.4\columnwidth}{Denoised results for \wen{the first} synthetic data. \dlo{(a) Denoised first component using seislet thresholding. (b) Denoised second component using seislet thresholding.} \wen{(a)}\dlo{(c)} Denoised result using the proposed method (summation of \dlo{(a) and (b)}\wen{(a)-(e) in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}}). \wen{(b)}\dlo{(d)} Denoised result using the conventional seislet thresholding method. \wen{(c)}\dlo{(e)} Denoised result using the curvelet thresholding method. \wen{(d)}\dlo{(f)} Denoised result using the \dlo{FX}\wen{$f-x$} deconvolution method.}
+
+\inputdir{hyper}
+\multiplot{6}{hyper-c,hyper-e,hyper-s-0,hyper,hyper-ct-0,hyper-fx-0}{width=0.29\columnwidth}{\wen{Second synthetic example. (a) Clean data. (b) Denoised data using the proposed approach.  (c) Denoised data using the traditional seislet thresholding approach. (d) Noisy data. (e) Denoised data using the curvelet transform. (f) Denoised data using $f-x$ deconvolution.}}
 
 
+\multiplot{4}{hyper-e-n,hyper-s-n-0,hyper-ct-n-0,hyper-fx-n-0}{width=0.4\columnwidth}{\wen{Removed noise sections for the second synthetic example. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. (c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-emdseis}
-    \label{fig:plane-emd}}
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-recon}
-    \label{fig:plane-st}}\\
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-curv}
-    \label{fig:plane-curv}}
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-fx}
-    \label{fig:plane-fx}}
-   \caption{Denoised results for \wen{the first} synthetic data. \dlo{(a) Denoised first component using seislet thresholding. (b) Denoised second component using seislet thresholding.} \wen{(a)}\dlo{(c)} Denoised result using the proposed method (summation of \dlo{(a) and (b)}\wen{(a)-(e) in Figure \ref{fig:dip1-emd0,dip2-emd0,dip3-emd0,dip4-emd0,dip5-emd0}}). \wen{(b)}\dlo{(d)} Denoised result using the conventional seislet thresholding method. \wen{(c)}\dlo{(e)} Denoised result using the curvelet thresholding method. \wen{(d)}\dlo{(f)} Denoised result using the \dlo{FX}\wen{$f-x$} deconvolution method.}
-   \label{fig:plane-emd,plane-st,plane-curv,plane-fx}
-\end{figure}
+\inputdir{field}
+\multiplot{5}{field,field-emdseis,field-recon,field-ct,field-fx}{width=0.4\columnwidth}{\wen{(a) Field data. (b) Denoised data using the proposed approach. (c) Denoised data using the traditional seislet thresholding approach. (d) Denoised data using the curvelet transform. (e) Denoised data using $f-x$ deconvolution.}}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-emdseis-dif}
-    \label{fig:plane-emd-n}}
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-seis-dif}
-    \label{fig:plane-st-n}}\\
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-curv-dif}
-    \label{fig:plane-curv-dif}}
-  \subfloat[]{\includegraphics[width=0.400\columnwidth]{complex/Fig/plane-fx-dif}
-    \label{fig:plane-fx-dif}}
-   \caption{Removed noise sections for \wen{the first} synthetic data. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. \wen{(c) Noise section using the curvelet thresholding method. (f) Noise section using the \dlo{FX}\wen{$f-x$} deconvolution method.} }
-   \label{fig:plane-emd-n,plane-st-n,plane-curv-dif,plane-fx-dif}
-\end{figure}
+\multiplot{4}{field-emdseis-dif,field-seis-dif,field-ct-dif,field-fx-dif}{width=0.4\columnwidth}{Removed noise sections for field data. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. \wen{(c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
+
+\multiplot{4}{zoom2-emdseis,zoom2-recon,zoom1-emdseis,zoom1-recon}{width=0.4\columnwidth}{Zoomed denoised results for field data (corresponding to the frame boxes A \& B in Figure \ref{fig:field,field-emdseis,field-recon,field-ct,field-fx}). (a) \& (c) correspond to the proposed method. (b) \& (d) correspond to the conventional seislet thresholding method.}
 
 
-}
-
-\AtEndDocument{
-
-%\begin{figure}[htb!]
-%  \centering
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{sig/Fig/sig}
-%    \label{fig:sig}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{sig/Fig/sig-e}
-%    \label{fig:sig-e}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{sig/Fig/sig-s}
-%    \label{fig:sig-s}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{sig/Fig/sig-c}
-%    \label{fig:sig-c}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{sig/Fig/sig-fx}
-%    \label{fig:sig-fx}}                
-%   \caption{\wen{(a) Field data. (b) Denoised data using the proposed approach. (c) Denoised data using the traditional seislet thresholding approach. (d) Denoised data using the curvelet transform. (e) Denoised data using $f-x$ deconvolution.}}
-%   \label{fig:field}
-%\end{figure}
-
-%\begin{figure}[htb!]
-%  \centering
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{sig/Fig/sig-e-n}
-%    \label{fig:sig-e-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{sig/Fig/sig-s-n}
-%    \label{fig:sig-s-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{sig/Fig/sig-c-n}
-%    \label{fig:sig-c-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{sig/Fig/sig-fx-n}
-%    \label{fig:sig-fx-n}}    
-%   \caption{Removed noise sections for field data. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. \wen{(c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
-%   \label{fig:sig-emdseis-dif,sig-seis-dif,sig-curv-dif,sig-fx-dif}
-%\end{figure}
-
-
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-c}
-    \label{fig:hyper-c}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-e}
-    \label{fig:hyper-e}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-s-0}
-    \label{fig:hyper-s}}\\
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper}
-    \label{fig:hyper}}    
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-ct-0}
-    \label{fig:hyper-ct}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-fx-0}
-    \label{fig:hyper-fx}}                
-   \caption{\wen{Second synthetic example. (a) Clean data. (b) Denoised data using the proposed approach.  (c) Denoised data using the traditional seislet thresholding approach. (d) Noisy data. (e) Denoised data using the curvelet transform. (f) Denoised data using $f-x$ deconvolution.}}
-   \label{fig:hyper-c,hyper-e,hyper-s,hyper,hyper-ct,hyper-fx}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-e-n}
-    \label{fig:hyper-e-n}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-s-n-0}
-    \label{fig:hyper-s-n-0}}\\
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-ct-n-0}
-    \label{fig:hyper-ct-n-0}}
-  \subfloat[]{\includegraphics[width=0.31\columnwidth]{hyper/Fig/hyper-fx-n-0}
-    \label{fig:hyper-fx-n}}    
-   \caption{\wen{Removed noise sections for the second synthetic example. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. (c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
-   \label{fig:hyper-e-n,hyper-s-n-0,hyper-ct-n-0,hyper-fx-n}
-\end{figure}
-
-
-
-\begin{figure}[htb!]
- \centering
- \subfloat[]{\includegraphics[width=0.31\columnwidth]{field/Fig/field}
-   \label{fig:field}}
- \subfloat[]{\includegraphics[width=0.31\columnwidth]{field/Fig/field-emdseis}
-   \label{fig:field-e}}
- \subfloat[]{\includegraphics[width=0.31\columnwidth]{field/Fig/field-recon}
-   \label{fig:field-s}}\\
- \subfloat[]{\includegraphics[width=0.31\columnwidth]{field/Fig/field-ct}
-   \label{fig:field-c}}
- \subfloat[]{\includegraphics[width=0.31\columnwidth]{field/Fig/field-fx}
-   \label{fig:field-fx}}                
-  \caption{\wen{(a) Field data. (b) Denoised data using the proposed approach. (c) Denoised data using the traditional seislet thresholding approach. (d) Denoised data using the curvelet transform. (e) Denoised data using $f-x$ deconvolution.}}
-  \label{fig:field}
-\end{figure}
-
-\begin{figure}[htb!]
- \centering
- \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/field-emdseis-dif}
-   \label{fig:field-e-n}}
- \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/field-seis-dif}
-   \label{fig:field-s-n}}\\
- \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/field-ct-dif}
-   \label{fig:field-c-n}}
- \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/field-fx-dif}
-   \label{fig:field-fx-n}}    
-  \caption{Removed noise sections for field data. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. \wen{(c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
-  \label{fig:field-e-n,field-s-n,field-c-n,field-fx-n}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/zoom2-emdseis}
-    \label{fig:zoom2-emdseis}}
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/zoom2-recon}
-    \label{fig:zoom2-recon}}\\
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/zoom1-emdseis}
-    \label{fig:zoom1-emdseis}}
-  \subfloat[]{\includegraphics[width=0.48\columnwidth]{field/Fig/zoom1-recon}
-    \label{fig:zoom1-recon}}
-   \caption{Zoomed denoised results for field data (corresponding to the frame boxes A \& B in Figure \ref{fig:field-sep1-recon,field-sep2-recon,field-emdseis,field-recon}). (a) \& (c) correspond to the proposed method. (b) \& (d) correspond to the conventional seislet thresholding method.}
-   \label{fig:zoom2-emdseis,zoom2-recon,zoom1-emdseis,zoom1-recon}
-\end{figure}
-
-
-%\begin{figure}[htb!]
-%  \centering
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{southsea/Fig/sc}
-%    \label{fig:sc}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{southsea/Fig/sc-e}
-%    \label{fig:sc-e}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{southsea/Fig/sc-s}
-%    \label{fig:sc-s}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{southsea/Fig/sc-c}
-%    \label{fig:sc-c}}
-%  \subfloat[]{\includegraphics[width=0.31\columnwidth]{southsea/Fig/sc-fx}
-%    \label{fig:sc-fx}}                
-%   \caption{\wen{(a) sc data. (b) Denoised data using the proposed approach. (c) Denoised data using the traditional seislet thresholding approach. (d) Denoised data using the curvelet transform. (e) Denoised data using $f-x$ deconvolution.}}
-%   \label{fig:sc}
-%\end{figure}
-
-%\begin{figure}[htb!]
-%  \centering
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{southsea/Fig/sc-e-n}
-%    \label{fig:sc-e-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{southsea/Fig/sc-s-n}
-%    \label{fig:sc-s-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{southsea/Fig/sc-c-n}
-%    \label{fig:sc-c-n}}
-%  \subfloat[]{\includegraphics[width=0.48\columnwidth]{southsea/Fig/sc-fx-n}
-%    \label{fig:sc-fx-n}}    
-%   \caption{Removed noise sections for sc data. (a) Noise section using the proposed method. (b) Noise section using the conventional seislet thresholding method. \wen{(c) Noise section using the curvelet thresholding approach. (d) Noise section using $f-x$ deconvolution.}}
-%   \label{fig:sc-emdseis-dif,sc-seis-dif,sc-curv-dif,sc-fx-dif}
-%\end{figure}
-}
 
 \section{Conclusion}
 I have proposed a novel \dlo{semi-automatic} dip-separated structural filtering approach that cascades a new empirical mode decomposition based adaptive dip filter and one structural filtering approach. The seislet thresholding is used as a simple example for structural filtering. The principle idea of the proposed approach is to adaptively separate complicated seismic profiles that contain dip conflicts into separated profiles that contain no dip conflicts. \dlo{The separation is achieved by two steps. The first step is to adaptively decompose the data into many dip components using the empirical mode decomposition based dip filter, and then manually combine the initial decomposed dip components into a smaller number of recombined dip components.}\wen{The dip separation is achieved by the empirical mode decomposition based dip filter.} \dlo{This first-decomposition and second-recombination dip separation strategy using the empirical mode decomposition based dip filter enjoys the benefits of convenience of adaptivity and efficiency for later seislet thresholding.} Because of the dip decomposition\dlo{ and recombination}, plane-wave destruction can obtain more precise slope estimation on each \dlo{recombined} dip component and can help to obtain better compression performance for the seislet transform than the traditional implementation. Synthetic and field data examples show that the proposed approach\dlo{ can not only help to preserve more useful energy and enhance weak signals, but also can increase the stability when using seislet-based thresholding}\wen{can help remove more random noise while preserving the energy of useful signals}.
@@ -480,20 +236,6 @@ where $\mathbf{u}$ is the vectorized seismic data, $\mathbf{d}_n$ is the $n$th d
  }
 
 
-%\tabl{filterpara1}{Parameters in designing 5 \dlo{EMDBDF}\wen{EMD based dip filter}s in order to separate seismic section into five dip components, as shown in Figures \ref{fig:dip1,dip2,dip3,dip4,dip5}\dlo{ and \ref{fig:field-dip1,field-dip2,field-dip3,field-dip4,field-dip5}}.}
-% {
-%    \begin{center}
-%     \begin{tabular}{|c|c|c|c|c|}
-%      \hline Filter index     & \dlo{$N$}\wen{$I$}  & \wen{$n$}\dlo{$m$}  & $\epsilon$   			        & $D$    		 \\ 
-%      \hline first & 10   &2    & $\epsilon_1=1, \epsilon_2=0$ 		& $D_1=\{1\}, D_2=\{2,3,\cdots,10\}$ \\
-%      \hline second  & 10   &3    & $\epsilon_1=0, \epsilon_2=1, \epsilon_3=0$& $D_1=\{1\}, D_2=\{2\}, D_3=\{3,4,\cdots,10\}$ \\
-%      \hline third  & 10   &3    & $\epsilon_1=0, \epsilon_2=1, \epsilon_3=0$ 		& $D_1=\{1,2\}, D_2=\{3\}, D_3=\{4,5,\cdots,10\}$ \\
-%      \hline fourth  & 10   &3    & $\epsilon_1=0, \epsilon_2=1, \epsilon_3=0$ 		& $D_1=\{1,2,3\}, D_2=\{4\}, D_3=\{5,6,\cdots,10\}$ \\
-%      \hline fifth  & 10   &2    & $\epsilon_1=0, \epsilon_2=1$ 		& $D_1=\{1,2,3,4\}, D_2=\{5,6,\cdots,10\}$ \\
-%      \hline
-%    \end{tabular} 
-%   \end{center}
-%}
 \onecolumn
 \bibliographystyle{seg}
 \bibliography{emdseis}
