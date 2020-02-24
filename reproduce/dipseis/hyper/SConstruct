@@ -29,7 +29,6 @@ def Greydip(data,other):
 matlab         = WhereIs('matlab')
 matROOT = '../matfun'
 matfun = 'hyper'
-matfun1 = 'hyper1'
 
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
