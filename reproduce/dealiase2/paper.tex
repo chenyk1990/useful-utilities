@@ -3,7 +3,7 @@
 \title{One-step slope estimation for dealiased seismic data reconstruction via iterative seislet thresholding}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
-\author{Wei Liu\footnotemark[1], Siyuan Cao\footnotemark[1], Shuwei Gan\footnotemark[1], Yangkang Chen\footnotemark[2], Shaohuan Zun\footnotemark[1], Zhaoyu Jin\footnotemark[3]}
+\author{Wei Liu\footnotemark[1], Siyuan Cao\footnotemark[1], Shuwei Gan\footnotemark[1], Yangkang Chen\footnotemark[2], Shaohuan Zu\footnotemark[1], Zhaoyu Jin\footnotemark[3]}
 \address{
 \footnotemark[1]
 State Key Laboratory of Petroleum Resources and Prospecting, 
@@ -42,23 +42,8 @@ The commonly used approach for dealiased seismic interpolation is the prediction
 
 \cite{shuwei20153} proposes a sparse transform based interpolation method based on the seislet transform. The under-sampled regularly sampled data will be sparse in the seislet domain provided that an accurate local slope field can be obtained. To get such accurate slope map, a lot of iterations should be carried out with low-frequency constraints. In this letter, we propose a new algorithm that does not require the iterative slope estimation. The slope map can be easily estimated through velocity-slope transformation \cite{liuyang2013}. In the new method, we can use a fairly small number of projection onto convex sets (POCS) iterations to get a very good interpolation result. Both synthetic and field data examples are used to show the performance. Since the velocity-slope transformation is valid only for prestack seismic data, where data structure is relatively simple and the slope is generally positive, the proposed method can only be used in prestack seismic data reconstruction. 
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper}
-    \label{fig:hyper}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper0}
-    \label{fig:hyper0}}    
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-zero}
-    \label{fig:hyper-zero}}\\
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis}
-    \label{fig:hyper-seis}}
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx}
-    \label{fig:hyper-fx}}
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd}
-    \label{fig:hyper-seisvd}}
-	\caption{(a) Original synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
-   \label{fig:hyper,hyper0,hyper-zero,hyper-seis,hyper-fx,hyper-seisvd}
-\end{figure}
+\inputdir{hyper}
+\multiplot{6}{hyper,hyper0,hyper-zero,hyper-seis,hyper-fx,hyper-seisvd}{width=0.3\textwidth}{(a) Original synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
 
 \section{Method}
 \subsection{Projection onto convex sets (POCS)}
@@ -119,122 +104,24 @@ The next example is a poorly sampled marine dataset, which is shown in Fig. \ref
 \section{Conclusion}
 The seislet-based POCS algorithm can be used to interpolate regularly missing traces, but requires a fairly accurate local slope estimation. The iterative slope estimation strategy may not always  be successful, which will degrade the final interpolation performance. We propose a more stable way for calculating the local slope by using the velocity-slope transformation, which reduces the number of iterations needed in interpolation and can significantly improve the interpolation performance. Results from both synthetic and field data examples show that the proposed seislet-based POCS algorithm with one-step slope estimation can efficiently and effectively reconstruct the regularly missing traces.
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seis-dif}
-    \label{fig:hyper-seis-dif}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-fx-dif}
-    \label{fig:hyper-fx-dif}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hyper/Fig/hyper-seisvd-dif}
-    \label{fig:hyper-seisvd-dif}}         
-	\caption{(a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach.  }
-   \label{fig:hyper-seis-dif,hyper-fx-dif,hyper-seisvd-dif}
-\end{figure}
+\inputdir{hyper}
+\multiplot{3}{hyper-seis-dif,hyper-fx-dif,hyper-seisvd-dif}{width=0.3\textwidth}{(a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach. }
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocs}
-    \label{fig:snrs-pocs}}
-  \subfloat[]{\includegraphics[width=0.14\textwidth]{hyper/Fig/snrs-pocsvd}
-    \label{fig:snrs-pocsvd}}       
-	\caption{(a) SNRs by using the traditional iterative seislet thresholding. (b) SNRs by using the proposed approach. Please note that a large number of iterations can be saved and the performance can be improved.}
-   \label{fig:snrs-pocs,snrs-pocsvd}
-\end{figure}
+\multiplot{2}{snrs-pocs,snrs-pocsvd}{width=0.3\textwidth}{(a) SNRs by using the traditional iterative seislet thresholding. (b) SNRs by using the proposed approach. Please note that a large number of iterations can be saved and the performance can be improved.}
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-sdip}
-    \label{fig:hyper-sdip}}
-  \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-pdip}
-    \label{fig:hyper-pdip}}
-    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-dipiter}
-    \label{fig:hyper-dipiter}}
-    \subfloat[]{\includegraphics[width=0.10\textwidth]{hyper/Fig/hyper-vdip}
-    \label{fig:hyper-vdip}}         
-	\caption{(a) True slope. (b) Slope from PWD. (c) Slope estimated iteratively. (d) Slope from velocity-slope transformation.  }
-   \label{fig:hyper-sdip,hyper-pdip,hyper-dipiter,hyper-vdip}
-\end{figure}
+\multiplot{4}{hyper-sdip,hyper-pdip,hyper-dipiter,hyper-vdip}{width=0.45\textwidth}{(a) True slope. (b) Slope from PWD. (c) Slope estimated iteratively. (d) Slope from velocity-slope transformation. }
 
+\inputdir{hypern}
+\multiplot{6}{hyper-n,hyper0-n,hyper-zero-n,hypern-seis,hypern-fx,hypern-seisvd}{width=0.3\textwidth}{(a) Noisy synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
 
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-n}
-    \label{fig:hyper-n}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper0-n}
-    \label{fig:hyper0-n}}    
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hyper-zero-n}
-    \label{fig:hyper-zero-n}}\\
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis}
-    \label{fig:hypern-seis}}
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx}
-    \label{fig:hypern-fx}}
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd}
-    \label{fig:hypern-seisvd}}
-	\caption{(a) Noisy synthetic data. (b) Under-sampled data. (c) Zero padded data (50\% traces regularly removed). (d) Reconstructed data by using traditional iterative seislet thresholding. (e) Reconstructed data by using Spitz's method. (f) Reconstructed data by using the proposed approach.}
-   \label{fig:hyper-n,hyper0-n,hyper-zero-n,hypern-seis,hypern-fx,hypern-seisvd}
-\end{figure}
+\multiplot{3}{hypern-seis-dif,hypern-fx-dif,hypern-seisvd-dif}{width=0.3\textwidth}{Noisy data example. (a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach. }
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seis-dif}
-    \label{fig:hypern-seis-dif}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-fx-dif}
-    \label{fig:hypern-fx-dif}}
-    \subfloat[]{\includegraphics[width=0.11\textwidth]{hypern/Fig/hypern-seisvd-dif}
-    \label{fig:hypern-seisvd-dif}}         
-	\caption{Noisy data example. (a) Reconstruction error by using the traditional iterative seislet thresholding. (b) Reconstruction error by using Spitz's method. (c) Reconstruction error by using the proposed approach.  }
-   \label{fig:hypern-seis-dif,hypern-fx-dif,hypern-seisvd-dif}
-\end{figure}
+\inputdir{bei}
+\multiplot{7}{bei,bei-zero,vscan,bei-pdip,bei-vdip,bei-fx,bei-seisvd}{width=0.21\textwidth}{(a) Original under-sampled field data.  (b) Zero padded data (with 50\% traces regularly removed). (c) Velocity analysis result. (d) Local slope calculated directly from (b) by using the PWD algorithm. (e) Local slope calculated from the velocity-slope transformation. (f) Reconstructed data by using Spitz's method. (g) Reconstructed data by using the proposed approach. }
 
-\begin{figure*}[ht!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei}
-    \label{fig:bei}}   
-  \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/bei-zero}
-    \label{fig:bei-zero}}
-  \subfloat[]{\includegraphics[width=0.125\textwidth]{bei/Fig/vscan}
-    \label{fig:vscan}}  \\
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-pdip}
-    \label{fig:bei-pdip}}        
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-vdip}
-    \label{fig:bei-vdip}}     
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-fx}
-    \label{fig:bei-fx}}
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/bei-seisvd}
-    \label{fig:bei-seisvd}}
-	\caption{(a) Original under-sampled field data.  (b) Zero padded data (with 50\% traces regularly removed). (c) Velocity analysis result. (d) Local slope calculated directly from (b) by using the PWD algorithm. (e) Local slope calculated from the velocity-slope transformation. (f) Reconstructed data by using Spitz's method. (g) Reconstructed data by using the proposed approach.  }
-   \label{fig:bei,bei-zero,vscan,bei-vdip,bei-fx,bei-seisvd}
-\end{figure*}
+\multiplot{4}{fk-bei,fk-bei-zero,fk-bei-fx,fk-bei-seisvd}{width=0.45\textwidth}{FK spectrum of different sections. (a) Original under-sampled field data. (b) Zero padded data (with 50\% traces regularly removed). (c) Reconstructed data by using Spitz's method. (d) Reconstructed data by using the proposed approach. }
 
-
-\begin{figure*}[ht!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei}
-    \label{fig:fk-bei}}   
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-zero}
-    \label{fig:fk-bei-zero}}
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-fx}
-    \label{fig:fk-bei-fx}}
-  \subfloat[]{\includegraphics[width=0.115\textwidth]{bei/Fig/fk-bei-seisvd}
-    \label{fig:fk-bei-seisvd}}
-	\caption{FK spectrum of different sections. (a) Original under-sampled field data. (b) Zero padded data (with 50\% traces regularly removed). (c) Reconstructed data by using Spitz's method. (d) Reconstructed data by using the proposed approach.  }
-   \label{fig:fk-bei,fk-bei-zero,fk-bei-fx,fk-bei-seisvd}
-\end{figure*}
-
-
-\begin{figure}[htb!]
-  \centering
-    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-seis-bp}
-    \label{fig:bei-seis-bp}}
-  \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/bei-dif-bp}
-    \label{fig:bei-dif-bp}}\\
-    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-bei-seis-bp}
-    \label{fig:fk-bei-seis-bp}}       
-    \subfloat[]{\includegraphics[width=0.12\textwidth]{bei/Fig/fk-dif-bp}
-    \label{fig:fk-dif-bp}}       
-	\caption{(a) Bandpass filtered result after iterative seislet thresholding with a bound frequency 9 Hz. (b) Low frequency data of the reconstructed data in Fig. \ref{fig:bei-seisvd}. (c) FK spectrum of (a). (d) FK spectrum of (b).  }
-   \label{fig:bei-seis-bp,bei-dif-bp,fk-bei-seis-bp,fk-dif-bp}
-\end{figure}
+\multiplot{4}{bei-seis-bp,bei-dif-bp,fk-bei-seis-bp,fk-dif-bp}{width=0.45\textwidth}{(a) Bandpass filtered result after iterative seislet thresholding with a bound frequency 9 Hz. (b) Low frequency data of the reconstructed data in Fig. \ref{fig:bei-seisvd}. (c) FK spectrum of (a). (d) FK spectrum of (b). }
 
 
 \section{Acknowledgments}
