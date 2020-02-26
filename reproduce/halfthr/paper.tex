@@ -1,3 +1,6 @@
+
+\published{Journal of Geophysics and Engineering, 11, no. 6, 065001, (2014)}
+
 \title{Irregular seismic data reconstruction using a percentile-half-thresholding algorithm}
 
 \author{Yangkang Chen\footnotemark[1], Keling Chen\footnotemark[2], Peidong Shi\footnotemark[3] and Yanyan Wang\footnotemark[3]}
@@ -158,147 +161,35 @@ The third example is a field marine data, which was investigated widely in the l
 We have introduced a general thresholding framework for IST algorithm. The only difference between half thresholding and conventional soft or hard thresholding is owing to the thresholding operator, so the percentile-thresholding strategy can be easily inserted into the half-thresholding algorithm. We compared four different types of thresholding strategies by using two synthetic examples and one field data example. The results show that apart from the threshold-setting convenience, the percentile thresholding also has the possibility for improving the recovery performance. Compared with soft thresholding, half thresholding tends to have a more precise reconstructed result.
 
 \section{Acknowledgments}
-We would like to thank Pengliang Yang for help discussions during his visit in UT Austin. We also thank \new{Sanyi Yuan, Shan Qu, and} \old{three}\new{two} anonymous reviewers for their constructive suggestions, which helped improve this paper. We are grateful to developers of the Madagascar software package for providing corresponding codes for testing the algorithms and preparing the figures. 
+We thank \new{Sanyi Yuan, Shan Qu, and} \old{three}\new{two} anonymous reviewers for their constructive suggestions, which helped improve this paper. We are grateful to developers of the Madagascar software package for providing corresponding codes for testing the algorithms and preparing the figures. 
 
-\AtEndDocument{
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{linear/Fig/linear}
-    \label{fig:linear}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{linear/Fig/linear-zero}
-    \label{fig:linear-zero}}
-	\caption{(a) Synthetic data (linear events). (b) Decimated synthetic data (created by randomly removing 30\% traces).}
-   \label{fig:linear,linear-zero}
-\end{figure}
+\inputdir{linear}
+\multiplot{2}{linear,linear-zero}{width=0.45\textwidth}{(a) Synthetic data (linear events). (b) Decimated synthetic data (created by randomly removing 30\% traces).}
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/data2}
-    \label{fig:data2}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/data3}
-    \label{fig:data3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/data5}
-    \label{fig:data5}}  
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/data6}
-    \label{fig:data6}}      
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff2}
-    \label{fig:diff2}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff3}
-    \label{fig:diff3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff5}
-    \label{fig:diff5}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff6}
-    \label{fig:diff6}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff2_10}
-    \label{fig:diff2_10}}    
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff3_10}
-    \label{fig:diff3_10}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff5_10}
-    \label{fig:diff5_10}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3100\textwidth]{linear/Fig/diff6_10}
-    \label{fig:diff6_10}}    
-	\caption{Reconstructed results for synthetic data (linear events). (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.  (i)-(l) Amplitude amplified error sections by $\times 10$, corresponding to (e)-(h), respectively.}
-   \label{fig:data2,data3,data5,data6,diff2,diff3,diff5,diff6,diff2_10,diff3_10,diff5_10,diff6_10}
-\end{figure}
+\multiplot{12}{data2,data3,data5,data6,diff2,diff3,diff5,diff6,diff2_10,diff3_10,diff5_10,diff6_10}{width=0.21\textwidth}{Reconstructed results for synthetic data (linear events). (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.  (i)-(l) Amplitude amplified error sections by $\times 10$, corresponding to (e)-(h), respectively.}
 
-\begin{figure}[htb!]
-  \centering
-  \includegraphics[width=0.8\textwidth,height=0.6\textwidth]{linear/Fig/SNRs}
+\plot{SNRs}{width=0.8\textwidth}{Convergence diagrams for synthetic data (linear events). "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
 
-	\caption{Convergence diagrams for synthetic data (linear events). "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
-	    \label{fig:SNRs}
-\end{figure}
+\inputdir{hyper}
+\multiplot{2}{hyper,hyper-zero}{width=0.45\textwidth}{(a) Synthetic data (hyperbolic events). (b) Decimated synthetic data (created by randomly removing 30\% traces). }
+
+\multiplot{12}{hyper-data2,hyper-data3,hyper-data5,hyper-data6,hyper-diff2,hyper-diff3,hyper-diff5,hyper-diff6}{width=0.21\textwidth}{Reconstructed results for synthetic data (hyperbolic events). (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.}
+
+\plot{hyper-SNRs}{width=0.8\textwidth}{Convergence diagrams for synthetic data (hyperbolic events). "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
 
 
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper}
-    \label{fig:hyper}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-zero}
-    \label{fig:hyper-zero}}
-	\caption{(a) Synthetic data (hyperbolic events). (b) Decimated synthetic data (created by randomly removing 30\% traces). }
-   \label{fig:hyper,hyper-zero}
-\end{figure}
+\inputdir{sean}
+\multiplot{2}{sean,sean-zero}{width=0.45\textwidth}{(a) Field data. (b) Decimated field data (created by randomly removing 30\% traces). }
 
+\multiplot{12}{sean-data2,sean-data3,sean-data5,sean-data6,sean-diff2,sean-diff3,sean-diff5,sean-diff6}{width=0.21\textwidth}{Reconstructed results for field data.  (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.}
 
-\begin{figure}[htb!]
-  \centering
-   \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-data2}
-    \label{fig:hyper-data2}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-data3}
-    \label{fig:hyper-data3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-data5}
-    \label{fig:hyper-data5}}    
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-data6}
-    \label{fig:hyper-data6}}    
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-diff2}
-    \label{fig:hyper-diff2}}    
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-diff3}
-    \label{fig:hyper-diff3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-diff5}
-    \label{fig:hyper-diff5}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{hyper/Fig/hyper-diff6}
-    \label{fig:hyper-diff6}}
-	\caption{Reconstructed results for synthetic data (hyperbolic events). (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.}
-   \label{fig:hyper-data2,hyper-data3,hyper-data5,hyper-data6,hyper-diff2,hyper-diff3,hyper-diff5,hyper-diff6}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-  \includegraphics[width=0.8\textwidth,height=0.6\textwidth]{hyper/Fig/hyper-SNRs}
-
-	\caption{Convergence diagrams for synthetic data (hyperbolic events). "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
-	    \label{fig:hyper-SNRs}
-\end{figure}
-
-
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean}
-    \label{fig:sean}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-zero}
-    \label{fig:sean-zero}}
-	\caption{(a) Field data. (b) Decimated field data (created by randomly removing 30\% traces).}
-   \label{fig:sean,sean-zero}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-data2}
-    \label{fig:sean-data2}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-data3}
-    \label{fig:sean-data3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-data5}
-    \label{fig:sean-data5}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-data6}
-    \label{fig:sean-data6}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-diff2}
-    \label{fig:sean-diff2}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-diff3}
-    \label{fig:sean-diff3}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-diff5}
-    \label{fig:sean-diff5}}
-  \subfloat[]{\includegraphics[width=0.23\textwidth,height=0.3500\textwidth]{sean/Fig/sean-diff6}
-    \label{fig:sean-diff6}}
-	\caption{Reconstructed results for field data.  (a) Using constant-value soft thresholding. (b) Using constant-value half thresholding.  (c) Using percentile soft thresholding. (d) Using percentile half thresholding.  (e)-(h) Reconstruction error sections corresponding to (a)-(d), respectively.}
-   \label{fig:sean-data2,sean-data3,sean-data5,sean-data6,sean-diff2,sean-diff3,sean-diff5,sean-diff6}
-\end{figure}
-
-\begin{figure}[htb!]
-  \centering
-  \includegraphics[width=0.8\textwidth,height=0.6\textwidth]{sean/Fig/sean-SNRs}
-	\caption{Convergence diagrams for field data. "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
-	    \label{fig:sean-SNRs}
-\end{figure}
-}
+\plot{sean-SNRs}{width=0.8\textwidth}{Convergence diagrams for field data. "p" corresponds to percentile half thresholding. "o" corresponds to constant-value half thresholding. "s" corresponds to percentile soft thresholding. "*" corresponds to constant-value soft thresholding. }
 
 
 
 \bibliographystyle{seg}
 \bibliography{halfthr}
-\newpage
-\listoffigures
-\newpage
+
 
 
 
