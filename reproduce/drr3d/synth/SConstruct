@@ -15,7 +15,7 @@ def Grey3(data,other):
 def Grey30(data,other):
 	Result(data,
        '''
-       byte clip=0.35 |
+       byte clip=0.4 |
        grey3 flat=n frame1=100 frame2=5 frame3=5 
        point1=0.8 point2=0.8 label2=Inline label3=Xline label1="Time" unit1=s title=
        screenratio=1.4 color=g %s'''%other)
@@ -23,7 +23,7 @@ def Grey30(data,other):
 def Grey(data,other):
 	Result(data,
        '''
-       grey label2=Trace label1="Time" unit1=s clip=0.9 title=
+       grey label2=Trace label1="Time" unit1=s clip=0.4 title=
        screenratio=1.4 color=g %s'''%other)
 
 def Wig(data,other):
@@ -32,15 +32,48 @@ def Wig(data,other):
        wiggle poly=y transp=y yreverse=y label2=Trace label1="Time" unit1=s clip=0.4 title=
        screenratio=1.4 color=g %s'''%other)
 
-## Load data
-Flow('synth-clean','../data/syn_clean.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
-Flow('synth-noisy','../data/syn_noisy_sigma0.2.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
-Flow('synth-obs','../data/syn_noisy_sigma0.2_mis.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
-Flow('synth-mssa','../data/syn_sigma0.2_mssa.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
-Flow('synth-dmssa','../data/syn_sigma0.2_dmssa.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+########################################################################
+# INITIALIZATION
+########################################################################
+matlab         = WhereIs('matlab')
+matROOT = '../matfun'
+matfun = 'Synth'
+matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
-Flow('synth-dmssa2','../data/syn_sigma0.2_dmssa_K2.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
-Flow('synth-dmssa1','../data/syn_sigma0.2_dmssa_K1.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+if not matlab:
+    sys.stderr.write('\nCannot find Matlab.\n')
+    sys.exit(1)
+    
+k=3
+n=4
+put='d1=1 o1=1 n2=20 d2=1 o2=1 n3=20 d3=1 o3=1'
+############################################################
+## with parameter
+############################################################
+
+Flow(['synth-clean-0','synth-noisy-0','synth-obs-0','synth-mssa-0','synth-dmssa1-0','synth-dmssa2-0','synth-dmssa3-0'],[os.path.join(matROOT,matfun+'.m')],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${TARGETS[0]}','${TARGETS[1]}','${TARGETS[2]}','${TARGETS[3]}','${TARGETS[4]}','${TARGETS[5]}','${TARGETS[6]}');quit"
+     '''%vars(),stdin=0,stdout=-1)
+
+Flow('synth-clean','synth-clean-0','put %s'%put)
+Flow('synth-noisy','synth-noisy-0','put %s'%put)
+Flow('synth-obs','synth-obs-0','put %s'%put)
+Flow('synth-mssa','synth-mssa-0','put %s'%put)
+Flow('synth-dmssa1','synth-dmssa1-0','put %s'%put)
+Flow('synth-dmssa2','synth-dmssa2-0','put %s'%put)
+Flow('synth-dmssa','synth-dmssa3-0','put %s'%put)
+
+## Load data
+# Flow('synth-clean','../data/syn_clean.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+# Flow('synth-noisy','../data/syn_noisy_sigma0.2.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+# Flow('synth-obs','../data/syn_noisy_sigma0.2_mis.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+# Flow('synth-mssa','../data/syn_sigma0.2_mssa.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+# Flow('synth-dmssa','../data/syn_sigma0.2_dmssa.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+
+# Flow('synth-dmssa2','../data/syn_sigma0.2_dmssa_K2.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+# Flow('synth-dmssa1','../data/syn_sigma0.2_dmssa_K1.bin','bin2rsf bfile=${SOURCES[0]} n1=300 n2=400 | put n2=20 n3=20 d1=0.004 d2=1 d3=1 o1=0 o2=1 o3=1')
+
 
 Grey3('synth-clean','title=Clean')
 Grey3('synth-noisy','title=Noisy')
