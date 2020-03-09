@@ -1,11 +1,10 @@
 from rsf.proj import *
-from rsf.recipes.beg import server as private
 from rsf.prog import RSFROOT
 
 def Grey1(data,other):
 	Result(data,
 	  '''
-       window n1=194  | window n2=55  | grey clip=0.2 wanttitle=n label1=Depth unit1=m label2=Trace unit2= labelsz=10 
+       window n1=194  | window n2=55  | grey clip=0.3 wanttitle=n label1=Depth unit1=m label2=Trace unit2= labelsz=10 
 	  labelfat=4 font=2 titlesz=10 titlefat=4 labelfat=4 font=2 titlefat=4 color=g %s 
        '''%other)
 
@@ -27,8 +26,7 @@ def Grey3(data,other):
 # Field data test
 ##################
 ns=7
-Fetch('elf7_win.HH','total',private)
-Flow('field','elf7_win.HH','dd form=native |window f3=18 n3=1 n2=60 | put label1=Depth unit1=m label2=Trace o2=1 d2=1 | scale axis=2')
+Flow('field','field0','cp')
 Flow('field-noise','field','cp')
 Grey1('field-noise','')
 

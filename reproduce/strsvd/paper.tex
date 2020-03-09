@@ -1,3 +1,5 @@
+\published{Journal of Geophysics and Engineering, 12, 262-272, (2015)}
+
 \title{Structure-oriented singular value decomposition for random noise attenuation of seismic data}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
@@ -90,28 +92,13 @@ $\tau_n>0$ corresponds to shifting trace downward with respect to the reference 
 As can be seen from the equation \ref{eq:steer}, the selection of reference trace is crucial for the effectiveness of LSVD. It can be chosen as random trace in the processing window if the noise level is not high, or can be chosen as a stacked trace after normal-moveout (NMO) of common-midpoint gathers. \cite{bekara2007} proposed an iterative strategy for selecting the optimal reference trace stating that the resulting shifted traces are stacked after each cross-correlation pass for updating the new reference traces and the process of cross-correlation, shifting, and stacking is repeated until the process converges.
 Figure \ref{fig:dn,dh,dhc,dc} shows a demonstration for dip steering and the processes of LSVD. Figure \ref{fig:dn} is the original noisy dipping event. Figure \ref{fig:dh} denotes the flattened event after forward dip steering. Figure \ref{fig:dhc} shows the LSVD denoised result by choosing only one singular value. The final denoised result after inverse dip steering on Figure \ref{fig:dhc} is shown in Figure \ref{fig:dc}. The time shifts after the optimizing equation \ref{eq:steer} are shown in Figure \ref{fig:shift}. The reference trace is simply chosen as the first trace of the original data, as shown in Figure \ref{fig:dn}.
 
-\AtEndDocument{
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{dipsteer/Fig/dn}
-	\label{fig:dn}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{dipsteer/Fig/dh}
-	\label{fig:dh}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{dipsteer/Fig/dhc}
-	\label{fig:dhc}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{dipsteer/Fig/dc}
-	\label{fig:dc}}
-\caption{Demonstration for dip steering and LSVD. (a) Noisy dip reflector. (b) Flattened event using dip steering. (c) SVD denoised result by selecting only one eigen-image. (d) Denoised data after inverse dip steering.}
-\label{fig:dn,dh,dhc,dc}
-\end{figure}
 
-\begin{figure}[htb!]
-\centering
-\includegraphics[width=0.85\columnwidth,height=0.8\columnwidth]{dipsteer/Fig/shift}
-\caption{Time shifts for each trace for the forward dip steering as shown in Figure \ref{fig:dn,dh,dhc,dc} (reference trace selected as the left trace in Figure \ref{fig:dn}).}
-\label{fig:shift}
-\end{figure}
-}
+\inputdir{dipsteer}
+\multiplot{4}{dn,dh,dhc,dc}{width=0.45\textwidth}{Demonstration for dip steering and LSVD. (a) Noisy dip reflector. (b) Flattened event using dip steering. (c) SVD denoised result by selecting only one eigen-image. (d) Denoised data after inverse dip steering.}
+
+\plot{shift}{width=0.6\textwidth}{Time shifts for each trace for the forward dip steering as shown in Figure \ref{fig:dn,dh,dhc,dc} (reference trace selected as the left trace in Figure \ref{fig:dn}).}
+
+
 
 \subsection{Structure-oriented SVD}
 The structure-oriented SVD (SOSVD) refers to two processes: flattening along the local structure in a local  spatial window and applying GSVD in the flattened local spatial window. The procedures can be summarized as:
@@ -181,124 +168,31 @@ where $\mathbf{I}$ stands for the identity operator, and $\mathcal{\mathbf{P}}_{
 \section{Examples}
 In this section, we first use two synthetic examples with different complexities. Then a field data example is presented for better demonstration of the proposed approach. \new{For all the three examples, we compare the denoising performances for GSVD, LSVD,SOSVD, and the commonly used $f-x$ deconvolution. A brief review of the theory of $f-x$ deconvolution is provided in the appendix.}
 
-The first synthetic example is a simple seismic profile that has hyperbolic events. It is generated from the SeismicLab library. The clean data and noisy data with simulated Gaussian white noise are shown in Figure \ref{fig:clean,noisy}. There are three hyperbolic events in the synthetic data. Two events have small slopes and the other one has high slope. The denoised results using GSVD, LSVD, and SOSVD are shown in Figures \ref{fig:hyper-gsvd}, \ref{fig:hyper-lsvd}, and \ref{fig:hyper-svd}, respectively. As a reference, we also show the denoised result using $f-x$ deconvolution in Figure \ref{fig:hyper-fx}. From the comparison of denoised results shown in Figure \ref{fig:hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}, we can initially conclude that the GSVD removes the least noise, there are some damages to the events for LSVD, $f-x$ deconvolution does a little damage to the dipping hyperbolic event, and the denoised result using the proposed SOSVD obtains a nearly perfect result. The removed noise sections are shown in Figure \ref{fig:hyper-n-gsvd,hyper-n-lsvd,hyper-n-fx,hyper-n-svd}. From the noise sections, we can confirm the observation made from the denoised results shown in Figure \ref{fig:hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}. The GSVD cannot remove too much random noise because we cannot remove too many eigen images, otherwise the damages to useful events are very large. The GSVD causes some damages to the steep event, LSVD causes some damages to areas that have conflicting slopes, $f-x$ deconvolution causes damages to both steep event and more horizontal events. There are nearly no coherent signals lost in the noise section for the proposed SOSVD.
+The first synthetic example is a simple seismic profile that has hyperbolic events. It is generated from the SeismicLab library. The clean data and noisy data with simulated Gaussian white noise are shown in Figure \ref{fig:hyper,hyper-noise}. There are three hyperbolic events in the synthetic data. Two events have small slopes and the other one has high slope. The denoised results using GSVD, LSVD, and SOSVD are shown in Figures \ref{fig:hyper-gsvd}, \ref{fig:hyper-lsvd}, and \ref{fig:hyper-svd}, respectively. As a reference, we also show the denoised result using $f-x$ deconvolution in Figure \ref{fig:hyper-fx}. From the comparison of denoised results shown in Figure \ref{fig:hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}, we can initially conclude that the GSVD removes the least noise, there are some damages to the events for LSVD, $f-x$ deconvolution does a little damage to the dipping hyperbolic event, and the denoised result using the proposed SOSVD obtains a nearly perfect result. The removed noise sections are shown in Figure \ref{fig:hyper-n-gsvd,hyper-n-lsvd,hyper-n-fx,hyper-n-svd}. From the noise sections, we can confirm the observation made from the denoised results shown in Figure \ref{fig:hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}. The GSVD cannot remove too much random noise because we cannot remove too many eigen images, otherwise the damages to useful events are very large. The GSVD causes some damages to the steep event, LSVD causes some damages to areas that have conflicting slopes, $f-x$ deconvolution causes damages to both steep event and more horizontal events. There are nearly no coherent signals lost in the noise section for the proposed SOSVD.
 
-The second synthetic example is a linear-event section. Figure \ref{fig:complex-clean,complex-noisy} shows the clean and noisy data. There are one horizontal and three dipping events in this section. Two of the dipping events cross with each other. After using the GSVD, LSVD, $f-x$ deconvolution, and the proposed SOSVD, we obtain four denoised sections, as shown in Figure \ref{fig:complex-gsvd,complex-lsvd,complex-fx,complex-svd}. The GSVD still does a bad job because of the dipping events. The LSVD seems to cause more damages to the useful events than the previous example because almost in each processing window there are more than one slopes, which makes the dip steering strategy fail. $f-x$ deconvolution damages both horizontal and dipping events. The proposed SOSVD removes the most noise and preserves the useful energy best. From the noise sections as shown in Figure \ref{fig:complex-n-gsvd,complex-n-lsvd,complex-n-fx,complex-n-svd}, we conclude that the SOSVD gets an excellent performance except for small damage to the crossing point of the original noisy data. The damage for the crossing point comes from the fact that the PWD algorithm cannot obtain a precise slope estimation in the region and thus causes the flattening along the structure more difficult. \new{In fact, the only disadvantage of the proposed approach is the incapability to handle crossing seismic events. The crossing points will appear in the noise section. The problem can be handled by slope-separated processing using the same approach. However, as a byproduct, the proposed approach may has potential to be used as a diffraction detector, which will be helpful for other important tasks in seismic data processing and imaging. This topic regarding to the crossing point may be the subject of future investigation.}
+The second synthetic example is a linear-event section. Figure \ref{fig:complex,complex-noise} shows the clean and noisy data. There are one horizontal and three dipping events in this section. Two of the dipping events cross with each other. After using the GSVD, LSVD, $f-x$ deconvolution, and the proposed SOSVD, we obtain four denoised sections, as shown in Figure \ref{fig:complex-gsvd,complex-lsvd,complex-fx,complex-svd}. The GSVD still does a bad job because of the dipping events. The LSVD seems to cause more damages to the useful events than the previous example because almost in each processing window there are more than one slopes, which makes the dip steering strategy fail. $f-x$ deconvolution damages both horizontal and dipping events. The proposed SOSVD removes the most noise and preserves the useful energy best. From the noise sections as shown in Figure \ref{fig:complex-n-gsvd,complex-n-lsvd,complex-n-fx,complex-n-svd}, we conclude that the SOSVD gets an excellent performance except for small damage to the crossing point of the original noisy data. The damage for the crossing point comes from the fact that the PWD algorithm cannot obtain a precise slope estimation in the region and thus causes the flattening along the structure more difficult. \new{In fact, the only disadvantage of the proposed approach is the incapability to handle crossing seismic events. The crossing points will appear in the noise section. The problem can be handled by slope-separated processing using the same approach. However, as a byproduct, the proposed approach may has potential to be used as a diffraction detector, which will be helpful for other important tasks in seismic data processing and imaging. This topic regarding to the crossing point may be the subject of future investigation.}
  
 The third example is a field data example. This example is a part extracted from a 3D North Sea data \cite[]{lomask2006,fomel2010painting}.  The original image is shown in Figure \ref{fig:field-noise}. As we can see, the seismic data contain a lot of \old{in-continuous}\new{dis-continuous} events caused by a low SNR, which makes the interpretation and evaluation of the useful signals impossible. After using GSVD, LSVD, $f-x$ deconvolution and SOSVD, we obtain four denoised sections that are shown in Figure \ref{fig:field-gsvd,field-lsvd,field-fx,field-svd}. It's obvious that GSVD and LSVD both cause some damages to the useful signals. Although $f-x$ deconvolution preserves the useful reflections well, there seems no improvement for SNR of the data. By using SOSVD, we can obtain a very good denoised image (Figure \ref{fig:field-svd}). The image becomes clean and seismic reflections becomes continuous, which is beneficial for the following interpretation. From the noise sections shown in Figure \ref{fig:field-n-gsvd,field-n-lsvd,field-n-fx,field-n-svd}, we can get the similar conclusion that  SOSVD preserves the most useful energy while removing the most noise.
 
-\AtEndDocument{ 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper}
-	\label{fig:hyper}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-noise}
-	\label{fig:hyper-noise}}
-\caption{Hyperbolic-events synthetic seismic profile. (a) Clean data. (b) Noisy data.}
-\label{fig:clean,noisy}
-\end{figure}
+\inputdir{hyper}
+\multiplot{2}{hyper,hyper-noise}{width=0.45\textwidth}{Hyperbolic-events synthetic seismic profile. (a) Clean data. (b) Noisy data.}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-gsvd}
-	\label{fig:hyper-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-lsvd}
-	\label{fig:hyper-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-fx}
-	\label{fig:hyper-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-svd}
-	\label{fig:hyper-svd}}
-\caption{Comparison of denoised data for the hyperbolic-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}
-\end{figure}
+\multiplot{4}{hyper-gsvd,hyper-lsvd,hyper-fx,hyper-svd}{width=0.45\textwidth}{Comparison of denoised data for the hyperbolic-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-n-gsvd}
-	\label{fig:hyper-n-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-n-lsvd}
-	\label{fig:hyper-n-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-n-fx}
-	\label{fig:hyper-n-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{hyper/Fig/hyper-n-svd}
-	\label{fig:hyper-n-svd}}
-\caption{Comparison of removed noise for the hyperbolic-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:hyper-n-gsvd,hyper-n-lsvd,hyper-n-fx,hyper-n-svd}
-\end{figure}
+\multiplot{4}{hyper-n-gsvd,hyper-n-lsvd,hyper-n-fx,hyper-n-svd}{width=0.45\textwidth}{Comparison of removed noise for the hyperbolic-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex}
-	\label{fig:complex}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-noise}
-	\label{fig:complex-noise}}
-\caption{Complex-events synthetic seismic profile. (a) Clean data. (b) Noisy data.}
-\label{fig:complex-clean,complex-noisy}
-\end{figure}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-gsvd}
-	\label{fig:complex-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-lsvd}
-	\label{fig:complex-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-fx}
-	\label{fig:complex-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-svd}
-	\label{fig:complex-svd}}
-\caption{Comparison of denoised data for the complex-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:complex-gsvd,complex-lsvd,complex-fx,complex-svd}
-\end{figure}
+\inputdir{complex}
+\multiplot{2}{complex,complex-noise}{width=0.45\textwidth}{Complex-events synthetic seismic profile. (a) Clean data. (b) Noisy data.}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-n-gsvd}
-	\label{fig:complex-n-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-n-lsvd}
-	\label{fig:complex-n-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-n-fx}
-	\label{fig:complex-n-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{complex/Fig/complex-n-svd}
-	\label{fig:complex-n-svd}}
-\caption{Comparison of removed noise for the complex-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:complex-n-gsvd,complex-n-lsvd,complex-n-fx,complex-n-svd}
-\end{figure}
+\multiplot{4}{complex-gsvd,complex-lsvd,complex-fx,complex-svd}{width=0.45\textwidth}{Comparison of denoised data for the complex-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
 
-\begin{figure}[htb!]
-\centering
-\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-noise}
-\caption{Field data example.}
-	\label{fig:field-noise}
-\end{figure}
+\multiplot{4}{complex-n-gsvd,complex-n-lsvd,complex-n-fx,complex-n-svd}{width=0.45\textwidth}{Comparison of removed noise for the complex-events synthetic example. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
 
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-gsvd}
-	\label{fig:field-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-lsvd}
-	\label{fig:field-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-fx}
-	\label{fig:field-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-svd}
-	\label{fig:field-svd}}
-\caption{Comparison of denoised data for field data. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:field-gsvd,field-lsvd,field-fx,field-svd}
-\end{figure}
-
-\begin{figure}[htb!]
-\centering
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-n-gsvd}
-	\label{fig:field-n-gsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-n-lsvd}
-	\label{fig:field-n-lsvd}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-n-fx}
-	\label{fig:field-n-fx}}
-\subfigure[]{\includegraphics[width=0.45\columnwidth,height=0.4\columnwidth]{fieldstrsvd/Fig/field-n-svd}
-	\label{fig:field-n-svd}}
-\caption{Comparison of removed noise for field data. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
-\label{fig:field-n-gsvd,field-n-lsvd,field-n-fx,field-n-svd}
-\end{figure}
-}
+\inputdir{fieldstrsvd}
+\plot{field-noise}{width=0.45\textwidth}{Field data example.}
+\multiplot{4}{field-gsvd,field-lsvd,field-fx,field-svd}{width=0.45\textwidth}{Comparison of denoised data for field data. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
+\multiplot{4}{field-n-gsvd,field-n-lsvd,field-n-fx,field-n-svd}{width=0.45\textwidth}{Comparison of removed noise for field data. (a) Using GSVD. (b) Using LSVD. (c) Using $f-x$ deconvolution. (d) Using SOSVD.}
 
 
 \section{Conclusions}
@@ -398,10 +292,9 @@ Finally, the estimated clean data (denoised data) can be expressed as:
 
 It is worth to be mentioned that, the $f-x$ deconvolution approach introduced here only applies a forward AR model to estimate the signal. A hybrid forward and backward version of AR model was proposed in \cite{yanghua1999}.
 
-\bibliographystyle{jge}
+\bibliographystyle{seg}
 \bibliography{strsvd}
-\newpage
-\listoffigures
+
 
 
 
