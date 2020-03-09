@@ -1,0 +1,51 @@
+from rsf.tex import*
+import os, sys
+os.environ['PSTEXPENOPTS']='color=y fat=3 fatmult=1.5 serifs=n'
+
+env=Environment()
+if sys.platform == 'darwin':
+    env['ENV']['PATH'] = ':'.join(['/opt/local/bin',env['ENV']['PATH']])
+
+
+Paper('seg',lclass='segabs',use='amsmath,subfigure,listings')
+Paper('strsvd',options='manuscript',use='amsmath,subfigure,listings')
+
+
+
+
+
+
+
+Paper('strsvd_revise1',lclass='geophysics',options='manuscript,revised',use='amsmath,subfigure,listings')
+
+Command('strsvd_revise_plain1.tex','strsvd_revise1.tex','cp $SOURCE $TARGET')
+
+Paper('strsvd_revise_plain1',lclass='geophysics',options='manuscript',use='amsmath,subfigure,listings')
+Paper('reply1',use='hyperref,listings')  
+
+
+
+
+
+
+
+
+
+
+
+#Paper('strsvd',options='manuscript',use='subfigure,natbib,amsmath,graphicx,color,lineno',
+#          include=r'''
+#          \linenumbers*[1]
+#          ''')  
+Paper('rsa',use='amsmath,subfigure,listings')
+
+
+#env.Command('seg_siminoise_final.pdf','seg_siminoise_final.ltx','pdflatex $SOURCE')
+#env.Command('seg2014_simi_final.pdf','seg2014_simi_final.ltx','pdflatex $SOURCE')
+
+
+Paper('sstrfault',use='amsmath,subfigure,listings')
+Paper('sstrfaulteage',lclass='mad15',use='amsmath,subfigure,listings')
+Paper('strsvdeage',lclass='mad15',use='amsmath,subfigure,listings')
+
+End(options='manuscript',use='amsmath,subfigure,listings')
