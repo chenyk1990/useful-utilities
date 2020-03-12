@@ -1,30 +1,12 @@
 from rsf.proj import *
 import os
 
-#DATAPATH=~/chenyk.open/small/xjylaser/f00.dat
-
 ## module defining
 def Grey(data,other): 
 	Result(data,'put o2=1 d2=1|grey label1="Time" unit1=s label2=Trace unit2="" labelsz=10 title="" wherexlabel=b wheretitle=t clip=0.5 minval=-1.5 maxval=1.5 %s'%other)
 
 def Graph(data,other):
 	Result(data,'graph label1="" label2="" unit1=""  labelsz=11 labelfat=4 font=2 titlesz=11 titlefat=4  unit2=""  title="" wherexlabel=b wheretitle=t %s' %other)
-	
-for case in Split('f00'):
-    dat = case+'.dat'
-#    Fetch(dat,'pwd',server)
-    Flow(case,dat,
-         '''
-         echo in=$SOURCE n1=501 n2=501 o1=0 o2=0 d1=1 d2=1 
-         data_format=xdr_float | dd form=native
-         ''',stdin=0)
-    if case != 'p':
-        Result(case,'grey title=%s screenratio=1' % case)
-    else:
-        Result(case,'grey title=Slope screenratio=1 color=j scalebar=y clip=5') 
-
-    pad = case+'-pad'
-    Flow(pad,case,'pad end1=25')
 
 Flow('synth','synth0','cp')
 Grey('synth','title="Model"')
