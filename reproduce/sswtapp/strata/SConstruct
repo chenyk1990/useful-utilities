@@ -28,13 +28,13 @@ sgy='BOONS.SGY'
 
 # 110 foot stacking bins
 
-Flow('boon3','boons','intbin xk=cdp yk=fldr | put label3=Line label2=Trace')
+Flow('boon3','../boonsville/boon3.rsf','cp')
 
 Result('boon3','byte gainpanel=all | grey3 frame1=1000 frame2=76 frame3=45 title="Boonsville Data" flat=y point1=0.7 point2=0.7')
 
 Flow('boont','boon3','window j1=2')
 
-#Flow('dip3','boont','fdip rect1=20 rect2=5 rect3=5 verb=y')
+Flow('dip3','boont','fdip rect1=20 rect2=5 rect3=5 verb=y')
 
 Flow('dip1','dip3','window n4=1')
 Flow('dip2','dip3','window f4=1')
@@ -82,8 +82,8 @@ Flow('time','wcos',
      eikonal vel=n zshot=76 yshot=45
      ''')
 
-#Flow('pick','dip3 seed time',
-#     'pwpaint2 seed=${SOURCES[1]} cost=${SOURCES[2]} order=1')
+Flow('pick','dip3 seed time',
+     'pwpaint2 seed=${SOURCES[1]} cost=${SOURCES[2]} order=1')
 Result('pick','byte gainpanel=all allpos=y | grey3 frame1=500 frame2=76 frame3=45 title="Relative Age" color=j flat=y point1=0.7 point2=0.7')
 
 Flow('flat','boont pick','iwarp warp=${SOURCES[1]}')
@@ -158,7 +158,7 @@ Result('stra-int','wboon cont0 cont-c cont-v','Overlay')
 
 Result('stra-int-2','wboon-2 cont0 cont-c cont-v','Overlay')
 
-Flow('tfsswt2-2d3d','../boonsville_mac/tfsswt2-2d3d.rsf','cp')
+Flow('tfsswt2-2d3d','../boonsville/tfsswt2-2d3d.rsf','cp')
 Grey33f('tfsswt2-2d3d','title="Strata Interpretation" flat=y frame3=75 frame1=525 frame2=80 color=j screenratio=0.5 label1=Time unit1=s label2=Inline label3=Crossline point1=0.5 point2=0.5 screenratio=0.6 scalebar=y')
 
 Result('stra-tf','Fig/tfsswt2-2d3d.vpl cont0 cont-c cont-v','Overlay')
@@ -173,16 +173,6 @@ Grey('stra1','title="Top of Caddo" unit1= minval=0 maxval=0.85')
 Grey('stra2','title="Strata between Caddo and Vineyard" unit1= minval=0 maxval=0.85')
 Grey('stra3','title="Top of Vineyard" unit1= minval=0 maxval=0.85')
 Grey('stra4','title="Strata between Vineyard and Base" unit1= minval=0 maxval=0.85')
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -232,35 +222,35 @@ Result('boonm','wboonm contm','Overlay')
 #Flow('rot','boonm','simenv verb=n rect=1000',split=[3,97],reduce='cat axis=4')
 
 # new method - local skewness
-#Flow('sqr','boonm','localskew verb=n rect=1000',split=[3,97],reduce='cat axis=4')
-#Flow('kur','boonm','localskew verb=n rect=1000 const=y inv=n',split=[3,97],reduce='cat axis=4')
-#Flow('skew','sqr kur','mul ${SOURCES[1]}')
+# Flow('sqr','boonm','localskew verb=n rect=1000',split=[3,97],reduce='cat axis=4')
+# Flow('kur','boonm','localskew verb=n rect=1000 const=y inv=n',split=[3,97],reduce='cat axis=4')
+# Flow('skew','sqr kur','mul ${SOURCES[1]}')
+# 
+# Flow('mrot','sqr','stack axis=1 | transp',split=[4,97],reduce='cat axis=3')
+# 
+# Flow('mpik','mrot','pick rect1=10 rect2=10 | add add=90')
+# 
+# Result('mpik',
+#        '''
+#        grey color=j scalebar=y title="Estimated Phase Rotation"
+#        unit1= unit2= transp=n yreverse=n 
+#        ''')
 
-#Flow('mrot','sqr','stack axis=1 | transp',split=[4,97],reduce='cat axis=3')
-
-Flow('mpik','mrot','pick rect1=10 rect2=10 | add add=90')
-
-Result('mpik',
-       '''
-       grey color=j scalebar=y title="Estimated Phase Rotation"
-       unit1= unit2= transp=n yreverse=n 
-       ''')
-
-Flow('ampl','flat','window n1=1 min1=1.129')
-Result('ampl','grey title="Amplitude Before Rotation" unit1= unit2= transp=n yreverse=n color=G')
-
-Flow('npik','mpik','spray axis=1 n=1001 d=0.002')
-
-Flow('boonr','boonm npik','phaserot phase=${SOURCES[1]}')
-
-Result('boonr',
-       '''
-       window min1=0 max1=1.598 |
-       byte gainpanel=all |
-       grey3 flat=y transp=y
-			unit1=s unit2= allpos=y  frame3=75 frame1=525 frame2=80 unit1=s unit2= unit3= framelabelcol=VP_BLACK  
-			parallel2=n labelsz=6 point1=0.5 point2=0.5 screenratio=1
-       ''' )
+# Flow('ampl','flat','window n1=1 min1=1.129')
+# Result('ampl','grey title="Amplitude Before Rotation" unit1= unit2= transp=n yreverse=n color=G')
+# 
+# Flow('npik','mpik','spray axis=1 n=1001 d=0.002')
+# 
+# Flow('boonr','boonm npik','phaserot phase=${SOURCES[1]}')
+# 
+# Result('boonr',
+#        '''
+#        window min1=0 max1=1.598 |
+#        byte gainpanel=all |
+#        grey3 flat=y transp=y
+# 			unit1=s unit2= allpos=y  frame3=75 frame1=525 frame2=80 unit1=s unit2= unit3= framelabelcol=VP_BLACK  
+# 			parallel2=n labelsz=6 point1=0.5 point2=0.5 screenratio=1
+#        ''' )
 
 
 End()
