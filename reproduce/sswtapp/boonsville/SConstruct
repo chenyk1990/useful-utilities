@@ -1,9 +1,11 @@
 from rsf.proj import *
-from rsf.recipes.beg import server
+#from rsf.recipes.beg import server
 from math import *
 from rsf.prog import RSFROOT
 
-#DATAPATH:  https://drive.google.com/file/d/1hGVse8tH1BOrrtOmU6sa5usELa5l1AtS/view?usp=sharing
+#DATAPATH: 
+#1) non-Chinese user: https://drive.google.com/file/d/1hGVse8tH1BOrrtOmU6sa5usELa5l1AtS/view?usp=sharing
+#2) Chinese user: link:https://pan.baidu.com/s/1MKsnbJvmR0wqSYbC8p-RvQ  psswd:ladf
 #BOONS.SGY
 
 ## reference trace
