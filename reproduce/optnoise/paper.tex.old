@@ -278,80 +278,49 @@ Figure \ref{fig:synth,synth-n,dip,dip2,dip1} shows a slope calculation test. We 
 
 
 \subsection{Plane-wave orthogonal polynomial transform}
-We have introduced in detail the theory of plane-wave trace continuation, i.e., how we predict an arbitrary trace in a seismic gather from a random starting trace. We have shown that by discretizing the plane-wave equation. We can derive the spatial trace continuation relation, which can be used for trace prediction. We have presented that during trace continuation, the amplitude of seismic waveforms can be well preserved. Regarding the slope estimation, which is an important factor in the plane-wave trace continuation operator, we introduce the robust slope estimation approach. We also show that the robust slope estimation approach can obtain robust slope estimation in the presence of strong noise. Considering the amplitude-preserving capability of the OPT in a flattened dimension, we can cascade the plane-wave trace continuation operator and the OPT together to obtain a two-folds amplitude-preserving performance during a complete workflow. Thus, we name the cascaded framework as the plane-wave orthogonal polynomial transform. The complete framework for noise attenuation using the plane-wave orthogonal polynomial transform is shown in Algorithm 1. 
+We have introduced in detail the theory of plane-wave trace continuation, i.e., how we predict an arbitrary trace in a seismic gather from a random starting trace. We have shown that by discretizing the plane-wave equation. We can derive the spatial trace continuation relation, which can be used for trace prediction. We have presented that during trace continuation, the amplitude of seismic waveforms can be well preserved. Regarding the slope estimation, which is an important factor in the plane-wave trace continuation operator, we introduce the robust slope estimation approach. We also show that the robust slope estimation approach can obtain robust slope estimation in the presence of strong noise. Considering the amplitude-preserving capability of the OPT in a flattened dimension, we can cascade the plane-wave trace continuation operator and the OPT together to obtain a two-folds amplitude-preserving performance during a complete workflow. Thus, we name the cascaded framework as the plane-wave orthogonal polynomial transform. The complete framework for noise attenuation using the plane-wave orthogonal polynomial transform is shown in Algorithm \ref{alg:alg1}. 
 
-%\begin{algorithm}
-%  \caption{Plane-wave orthogonal polynomial transform}
-%  \textbf{Input:} Noisy data $\mathbf{D}$. Order of coefficients to be preserved $\tau$. \\
-%  \textbf{Output:} Denoised data $\mathcal{D}$. 
-%   \begin{algorithmic}[1]
-%     \State \textbf{Forward plane-wave flattening}: $\hat{\mathbf{D}}$=\text{PWF}($\mathbf{D}$)
-%     \State \textbf{Forward OPT}: $\mathbf{C}$ = \text{OPT}($\hat{\mathbf{D}}$) 
-%     \State \textbf{Mask}:   $\hat{\mathbf{C}}$ = $\mathcal{M}$($\mathbf{C}$,$\tau$)
-%     \State \textbf{Inverse OPT}: $\hat{\mathcal{D}}$=\text{IOPT}($\hat{\mathbf{C}}$)
-%     \State \textbf{Inverse plane-wave flattening}:$\mathcal{D}$=\text{IPWF}($\hat{\mathcal{D}}$)
-%\end{algorithmic}
-%\label{alg:alg1}
-%\end{algorithm}
+\begin{algorithm}
+  \caption{Plane-wave orthogonal polynomial transform}
+  \textbf{Input:} Noisy data $\mathbf{D}$. Order of coefficients to be preserved $\tau$. \\
+  \textbf{Output:} Denoised data $\mathcal{D}$. 
+   \begin{algorithmic}[1]
+     \State \textbf{Forward plane-wave flattening}: $\hat{\mathbf{D}}$=\text{PWF}($\mathbf{D}$)
+     \State \textbf{Forward OPT}: $\mathbf{C}$ = \text{OPT}($\hat{\mathbf{D}}$) 
+     \State \textbf{Mask}:   $\hat{\mathbf{C}}$ = $\mathcal{M}$($\mathbf{C}$,$\tau$)
+     \State \textbf{Inverse OPT}: $\hat{\mathcal{D}}$=\text{IOPT}($\hat{\mathbf{C}}$)
+     \State \textbf{Inverse plane-wave flattening}:$\mathcal{D}$=\text{IPWF}($\hat{\mathcal{D}}$)
+\end{algorithmic}
+\label{alg:alg1}
+\end{algorithm}
+The forward OPT corresponds to inverting $\mathbf{P}^H(\mathbf{P}\mathbf{P}^H)^{-1}$. The inverse OPT corresponds to multiplying the orthogonal polynomial coefficients by $\mathbf{P}$. In algorithm \ref{alg:alg1}, the detailed implementations of the forward plane-wave flattening operator and the inverse plane-wave flattening operator are shown in algorithms \ref{alg:alg2} and \ref{alg:alg3}, respectively.
 
-\begin{algorithm}{Algorithm 1: Plane-wave orthogonal polynomial transform}{\mathbf{D},\tau}
-     \textbf{Input:} \text{Noisy data} \mathbf{D}. \text{Order of coefficients to be preserved} \tau. \\
-     \textbf{Output:} \text{Denoised data} \mathcal{D}. \\
-     \textbf{Forward plane-wave flattening}: \hat{\mathbf{D}}=\text{PWF}(\mathbf{D}) \\
-     \textbf{Forward OPT}: \mathbf{C} = \text{OPT}(\hat{\mathbf{D}}) \\
-     \textbf{Mask}:   \hat{\mathbf{C}} = \mathcal{M}(\mathbf{C},\tau)\\
-     \textbf{Inverse OPT}: \hat{\mathcal{D}}=\text{IOPT}(\hat{\mathbf{C}})\\
-     \textbf{Inverse plane-wave flattening}:\mathcal{D}=\text{IPWF}(\hat{\mathcal{D}})
+\begin{algorithm}
+  \caption{Plane-wave flattening}
+  \textbf{Input:} Matrix containing curved events $\mathbf{D}$. \\
+  \textbf{Output:} Matrix containing flattened events $\hat{\mathbf{D}}$. \\
+   \textbf{Setting the first trace as the reference trace.}
+   \begin{algorithmic}[1]
+       \For{$n$ = $1,\cdots,N$}
+    \State \textbf{Predict the first trace}: $\hat{\mathbf{D}}(i)$=\text{PWTC}($\mathbf{D}(i)$,1)  
+       \EndFor
+\end{algorithmic}
+\label{alg:alg2}
 \end{algorithm}
 
-
-The forward OPT corresponds to inverting $\mathbf{P}^H(\mathbf{P}\mathbf{P}^H)^{-1}$. The inverse OPT corresponds to multiplying the orthogonal polynomial coefficients by $\mathbf{P}$. In algorithm 1, the detailed implementations of the forward plane-wave flattening operator and the inverse plane-wave flattening operator are shown in algorithms 2 and 3, respectively.
-
-\begin{algorithm}{Algorithm 2: Plane-wave flattening}{\mathbf{D}}
- \textbf{Input:} \text{Matrix containing curved events} \mathbf{D}. \\
- \textbf{Output:} \text{Matrix containing flattened events} \hat{\mathbf{D}}. \\
- \textbf{Setting the first trace as the reference trace.} \\
-    \begin{FOR}{n \= 1, 2, \ldots, N} \\
-    \textbf{Predict the first trace}: \hat{\mathbf{D}}(i)=\text{PWTC}(\mathbf{D}(i),1)  
-    \end{FOR}
+\begin{algorithm}
+  \caption{Inverse plane-wave flattening}
+  \textbf{Input:} Matrix including flattened events $\mathbf{D}$. \\
+  \textbf{Output:} Matrix including curved events $\hat{\mathbf{D}}$. \\
+   \textbf{Setting the first trace as the reference trace.}
+   \begin{algorithmic}[1]
+       \For{$n$ = $1,\cdots,N$}
+    \State \textbf{Predict the first trace}: $\hat{\mathbf{D}}(i)$=\text{PWTC}($\mathbf{D}(i),-1$)  
+       \EndFor
+\end{algorithmic}
+\label{alg:alg3}
 \end{algorithm}
-
-%\begin{algorithm}
-%  \caption{Plane-wave flattening}
-%  \textbf{Input:} Matrix containing curved events $\mathbf{D}$. \\
-%  \textbf{Output:} Matrix containing flattened events $\hat{\mathbf{D}}$. \\
-%   \textbf{Setting the first trace as the reference trace.}
-%   \begin{algorithmic}[1]
-%       \For{$n$ = $1,\cdots,N$}
-%    \State \textbf{Predict the first trace}: $\hat{\mathbf{D}}(i)$=\text{PWTC}($\mathbf{D}(i)$,1)  
-%       \EndFor
-%\end{algorithmic}
-%\label{alg:alg2}
-%\end{algorithm}
-%
-%\begin{algorithm}
-%  \caption{Inverse plane-wave flattening}
-%  \textbf{Input:} Matrix including flattened events $\mathbf{D}$. \\
-%  \textbf{Output:} Matrix including curved events $\hat{\mathbf{D}}$. \\
-%   \textbf{Setting the first trace as the reference trace.}
-%   \begin{algorithmic}[1]
-%       \For{$n$ = $1,\cdots,N$}
-%    \State \textbf{Predict the first trace}: $\hat{\mathbf{D}}(i)$=\text{PWTC}($\mathbf{D}(i),-1$)  
-%       \EndFor
-%\end{algorithmic}
-%\label{alg:alg3}
-%\end{algorithm}
-
-\begin{algorithm}{Algorithm 3: Inverse plane-wave flattening}{\mathbf{D}}
- \textbf{Input:} \text{Matrix including flattened events} \mathbf{D}. \\
- \textbf{Output:} \text{Matrix including curved events} \hat{\mathbf{D}}. \\
- \textbf{Setting the first trace as the reference trace.} \\
-    \begin{FOR}{n \= 1, 2, \ldots, N} \\
-    \textbf{Predict the first trace}: \hat{\mathbf{D}}(i)=\text{PWTC}(\mathbf{D}(i),-1) 
-    \end{FOR}
-\end{algorithm}
-
-In algorithms 2 and 3, note that $N$ denotes the number of spatial traces. $1$ and $-1$ in the operator $\text{PWTC}()$ denote predicting from a trace to the first trace and predicting the first trace to another trace, respectively. $\mathbf{D}(i)$ and $\hat{\mathbf{D}}(i)$ denote the $i$th column (or trace) in the matrix 
+In algorithms \ref{alg:alg2} and \ref{alg:alg3}, note that $N$ denotes the number of spatial traces. $1$ and $-1$ in the operator $\text{PWTC}()$ denote predicting from a trace to the first trace and predicting the first trace to another trace, respectively. $\mathbf{D}(i)$ and $\hat{\mathbf{D}}(i)$ denote the $i$th column (or trace) in the matrix 
 $\mathbf{D}$ and $\hat{\mathbf{D}}$.
 
 
