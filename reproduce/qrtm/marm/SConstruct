@@ -38,13 +38,13 @@ Flow('qp','input/acc_Qp.dat','bin2rsf bfile=${SOURCES[0]} n1=234 n2=663  d1=10 d
 Greyv('qp','title="Q" bias=40 allpos=y ')
 
 #takes about 10 minutes
-Flow('img-1 img2-1','vp qp','cqrtm type=1 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=32 q=${SOURCES[1]} out2=${TARGETS[1]} ')
+Flow('img-1 img2-1','vp qp','cqrtm type=1 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=30 q=${SOURCES[1]} out2=${TARGETS[1]} >$TARGET && /usr/bin/rm -rf ./output/*.*',stdout=-1)
 
-Flow('img-2 img2-2','vp qp','cqrtm type=2 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=32 q=${SOURCES[1]} out2=${TARGETS[1]} ')
+Flow('img-2 img2-2','vp qp','cqrtm type=2 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=30 q=${SOURCES[1]} out2=${TARGETS[1]} >$TARGET && /usr/bin/rm -rf ./output/*.*',stdout=-1)
 
-Flow('img-3 img2-3','vp qp','cqrtm type=3 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=32 q=${SOURCES[1]} out2=${TARGETS[1]} ')
+Flow('img-3 img2-3','vp qp','cqrtm type=3 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=30 q=${SOURCES[1]} out2=${TARGETS[1]} >$TARGET && /usr/bin/rm -rf ./output/*.*',stdout=-1)
 
-Flow('img-0 img2-0','vp qp','cqrtm type=0 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=32 q=${SOURCES[1]} out2=${TARGETS[1]} ')
+Flow('img-0 img2-0','vp qp','cqrtm type=0 nz=234 nx=663 dz=10 dx=10 L=20 nt=2001 dt=0.001 f0=20 ds=20 s0=15 ns=30 q=${SOURCES[1]} out2=${TARGETS[1]} >$TARGET && /usr/bin/rm -rf ./output/*.*',stdout=-1)
 
 
 Grey2('img-1','title="Q" allpos=n clip=300000 color=d')
