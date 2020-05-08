@@ -1,0 +1,183 @@
+
+\begin{center}
+Reply to the reviews of manuscript\\
+
+\textbf{"Automatic high-resolution microseismic event detection via supervised machine learning"}\\
+
+\end{center}
+
+We thank the two anonymous reviewers and Dr. Stephen Arrowsmith for their constructive suggestions. We have taken into account all the recommendations and have changed the paper accordingly.
+
+\section{REVIEWER 1}
+\begin{enumerate}
+\item \textsl{How the normalization has been performed, among each other feature or for all? Have you performed any scaling to prevent some features from having too different values?}\\
+
+\textbf{Reply: The normalization has been applied to the features after the feature extraction to prevent the extracted values from having too different scale. The details of normalization is as follows in subsection "2. Feature extraction and normalization": \\ \\
+"After feature extraction, feature normalization, which is used to standardize the range of independent features of data, is a common requirement for most machine learning estimators. Without standardization, the estimators might behave badly. We normalize the features by removing the mean and scaling to unit variance in this work."}
+
+\item \textsl{Figure 5 shows that there are almost 3 sets of repeated 2D features with more or less similar P-values.}\\
+
+\textbf{Reply: In the Figure 5 of the old manuscript, 64-95 feature ID means contrast/correlation/energy/homogeneity for $0^0$ orientation, with distance of 1-8 of neighboring voxels (8*4=32 number of features); \\
+98-127 feature ID means these features for $45^0$ orientation; \\
+128-159 feature ID means these features for $90^0$ orientation; \\
+160-191 feature ID means these features for $135^0$ orientation. \\
+From Figure 3-5, many 2D features share similar values with each other. Because in the feature extraction step, we choose a range of orientation and distance is considered here is to make the feature extraction process more general. The features numbers in the old F-value figures do not fit the list of 2D features, we've fixed it. And we've added the following texts to explain this correlation between 2D features:\\ \\
+In \textbf{2. Feature extraction and normalization}:"Please note that a range of orientation and distance is considered here is to make the feature extraction process more general, however, causes feature redundancy, which will be discussed with details in the \textbf{3. Feature selection}."\\ \\
+In \textbf{3. Feature selection}:"Since we extract the 2D features with a range of orientation and distance for the sake of generalization, there exist highly correlated 2D feature clusters, as shown in Figure \ref{fig:CorrMatrix}. In this simple synthetic scenario, many 2D features share similar values with each other. Therefore, those clustering features provide redundant information and feature selection is needed to compensate this side-effect."
+}
+
+\item \textsl{What are the 51 selected features for the synthetic test? What is the common characteristics of them? why they have high correlations?}\\
+\textbf{Reply: The top 10 important features are shown in Table 4. They all have high feature importance. As mentioned in the paper:\\ \\
+In \textbf{3. Feature selection}:"Since we extract the 2D features with a range of orientation and distance for the sake of generalization, there exist highly correlated 2D feature clusters, as shown in Figure 4a. In this simple synthetic scenario, many 2D features share similar values with each other. Therefore, those clustering features provide redundant information and feature selection is needed to compensate this side-effect. }
+
+\item \textsl{Figure 1 can be moved to the supplementary materials. Figure 2 and 6 can be combined. Likewise, not all the figures 9 to 17 seem to be necessary and might be moved to the supplementary material section.}\\
+\textbf{Reply: We've rearranged all the figures and tried to reduce the number of them. We've added new comparison to STA/LTA and CNN and gather them as one figure. In the real data, three test profiles are shown (four profiles before). The predicted results based on relaxed labeling criteria is moved to the discussion part.}
+
+\item \textsl{Figure4 and 5 indicate that 2D features not only are highly correlated, are redundant as well. However, still all the features are used in the automatic feature selection.}\\
+\textbf{Reply: We've added figure 10a to further explain this question.\\
+As we mentioned before, the 2D features include contrast/correlation/energy/homogeneity for $0^0$/$45^0$/$135^0$/$90^0$ orientation, with distance of 1-8 of neighboring voxels. We expect the similarity between different 2D features. The reason why we include a range of orientation and distance is to make the feature extraction more general and let the feature selection do the job to select the important ones. In figure 4a and figure 3, we can see that they are highly correlated in the synthetic example. However, regarding the real data, in figure 10a and figure 9, the correlation between different features are largely decreased.\\
+The following details are added to the paper:\\ \\
+In \textbf{2. Feature extraction and normalization}: "Please note that a range of orientation and distance is considered here is to make the feature extraction process more general, however, causes feature redundancy, which will be discussed with details in the \textbf{3. Feature selection}."\\ \\
+In \textbf{3. Feature selection}: "Since we extract the 2D features with a range of orientation and distance for the sake of generalization, there exist highly correlated 2D feature clusters, as shown in Figure 4a. In this simple synthetic scenario, many 2D features share similar value with each other. Therefore, those clustering features provide redundant information and we need to do feature selection to compensate this side-effect."\\ \\
+In \textbf{Field data example}: "The correlation matrix of the features is shown in Figure 10a. Compared to Figure 4a, the correlation between 2D feature clusters is reduced, because in this more complex scenario, different 2D features (\textit{Contrast}, \textit{Correlation}, \textit{Energy}, and \textit{Homogeneity} with $0^o$, $45^o$, $135^o$, and $90^o$ orientation and distance of $1-8$) start to make a difference, instead of just creating redundancy."}
+
+\item \textsl{Could you depict different groups of features?}\\
+\textbf{Reply: The details of features are shown in the Table 1 and 2}
+
+\item \textsl{More measurements of the classifier performance such as precision, recall, and F-score are needed.}\\
+\textbf{Reply: The classification metrics of different strategies for $SNR=-13dB$ are added in Table 3.}
+
+\item \textsl{Could you depict different groups of features?}\\
+\textbf{Reply: Please check the Table 1 and 2.}
+
+\item \textsl{Add more recent deep learning based detection methods}\\
+\textbf{Reply: three papers and more explanation are added in the introduction part according to your advice:\\ \\
+"Mousavi et al. (2018a,b), Perol et al. (2018), Dokht et al. (2019), Zhu and Beroza (2018), and Zheng et al. (2017) have showed successful and promising performances of deep learning for the event detection. However, the deep-learning-based seismic event detection methods usually require much larger training datasets compared to the traditional-machine-learning-based methods like SVM."}
+
+\item \textsl{Some typos}\\
+\textbf{Reply: All the typos have been fixed."}
+
+\end{enumerate}
+
+\section{REVIEWER 2}
+\begin{enumerate}
+\item \textsl{There is nothing novel about the method. There are no interesting or insightful comparisons. The paper doesn't compare the performance to any sort of baseline, so there is no evidence that the proposed algorithm as an improvement over the standard algorithm for this problem - this is a major omission and must be addressed in the revised manuscript. They only result presented is an accuracy percentage, and there are no  plots that give the readers any insights into the method performance. It's not clear what the authors want the reader to take away from this paper. The paper may be suitable for publication with additional experiments and analysis.}\\
+
+\textbf{Reply: Thanks for your constructive advice. It is indeed crucial to show more comparison to the state-of-the-art method and other ML methods, only comparing the proposed workflow with SVM+1Dfeatures is not enough. Therefore, we have added two more comparisons to the STA/LTA (the state-of-the-art method) and convolutional-neural-network (CNN). The results are shown in figure 5-6 and figure 11-13. \\ \\
+More related explanations are also added to the text as follows:\\ \\
+In \textbf{5. Test on new data}:"Moreover, we also compare the proposed workflow to the state-of-the-art STA/LTA method and convolutional-neural-networks (CNN). The STA/LTA parameter is measured in the time domain and defined as follows:
+\begin{equation}
+\begin{split}
+      STA\left( i \right) = \frac{1}{NSTA} \sum_{j=i-NSTA}^{i} d\left(j\right),\\
+      LTA\left( i \right) = \frac{1}{NLTA} \sum_{j=i-NLTA}^{i} d\left(j\right),\\
+      R_{STA/LTA}\left( i \right) = \frac{STA\left( i \right)}{LTA\left( i \right)},
+\label{eq3}
+\end{split}
+\end{equation}
+$d\left(i\right)$ denotes the input microseismic data and $NSTA$ and $NLTA$ denote short-term and long-term periods, respectively. We use $NSTA=2*wavelength$ and $NLTA=8*wavelength$ in this example. The results using STA/LTA method are shown in figure~5d and 6d. It is obvious that STA/LTA method cannot perform well when strong noise exists. It is worth mentioning that the STA/LTA method is usually implemented after an initial denoising preprocess to the raw data. \\
+Regarding the CNN, we design a six-layer architecture, which is adopted from LeNet (LeCun et al., 1990): two convolutional layers with 32 kernels ($3\times3$) to learn the local features; followed by one max pooling layer with ($10\times10$) to reduce the number of parameters; after flattening process, two fully connected layers with 128 kernels are followed; a softmaxing layer is added in the end to generate the final classification. The results using CNN are shown in figure~5e and 6e. We can see that it works well in detecting events, even though not as good as the proposed workflow in figure~5b and 6b. Some useful events, which are pointed with red arrows, are damaged. It is well-known that CNN is not able to show its privilege over the traditional machine learning algorithms when very limited training data is available.  \\
+The classification metrics of different strategies for the test data 2 ($SNR=-13dB$) are written in Table 3."\\ \\
+In \textbf{Field data example}: " In addition, the predicted results using CNN are shown in figure 11d, 12d, and 13d. We can see that CNN results in a reasonable prediction, albeit not as good as the proposed workflow, because CNN is not able to show its privilege over the traditional machine learning algorithms when only one training dataset is fed in."\\ \\
+In addition, the purpose of this paper is not promoting SVM, the specific algorithm we use. The information we want the reader to take away from this paper is the whole workflow we designed, especially high vertical resolution segmentation and 2D texture feature extraction. The others can replace SVM with some other algorithm in this workflow, such as random forest for the sake of efficiency. We have shown the necessary details about the proposed workflow in the paper together with the DEMO to make it reproducible for the readers. We've adjusted the structure of the paper by moving the Theory of SVM into a subsection of the workflow and modified the abstract accordingly.}
+
+\item \textsl{The manuscript contains grammatical errors, awkward phrasings, odd or misused word choices and language that is too informal for a scientific publication. The revised manuscript needs to be edited by a proof-reader}\\
+
+\textbf{Reply: The manuscript has been checked by the proof-reader. }\\
+
+\item \textsl{The prior work section of the paper is weak and the choice of papers in the literature review sections seems random (and more focused on self-citation than giving the reader a useful review of the state-of-the-art for this problem). This needs to be addressed in the revised manuscript. There have been many papers published in 2018/2019 using machine learning for seismic signal processing applications, but with the exception of the authors’ own work, none of cited papers have come out in the last year. Seismology-specific references should be included where appropriate (e.g. P15, L35). }\\
+
+\textbf{Reply: More papers regarding seismic event detection/first-arrival picking have been added to the introduction part:\\ \\
+In \textbf{Introduction}: "In recent years, some researchers have already done investigations on supervised machine learning based event detection or event picking (Zhao and Gross, 2017; Chen et al., 2017; Mousavi et al., 2018a,b; Perol et al., 2018; Zhu and Beroza, 2018; Zheng et al., 2017; Dokht et al., 2019; Akram et al., 2017; Knapmeyer-Endrun and Hammer, 2015; McCormack et al., 1993; Provost et al., 2017; Rouet-Leduc et al., 2017). ...\\ \\
+Mousavi et al. (2018a,b), Perol et al. (2018), Dokht et al. (2019), Zhu and Beroza (2018), and Zheng et al. (2017) have showed successful and promising performances of deep learning for the event detection. However, the deep-learning-based seismic event detection methods usually require much larger training datasets compared to the traditional-machine-learning-based methods like SVM."}\\
+
+
+\item \textsl{The paper does not include links to the project code or information about how to access the data set, so the work is not reproducible. Not only do the authors fail to present a comparison to alternate detection algorithms, but they make it impossible for other researchers to do so. Some details (see below) of the method and experiments are missing, so an interested researchers could not reimplement this on their own. This is not acceptable.}\\
+
+\textbf{Reply: The related code for synthetic example is provided to make this work reproducible.}\\
+
+\item \textsl{The paper is missing some details of the experiments or choices that are not well-explained, including:\\
+1. How many receivers are there (P7, L58)? \\
+2. What is the value of “wavelength” (P8, L21)?  \\
+3. Why did you choose $30\%$ of the features (P10, L28)? Was this an arbitrary choice or based on a specific criterion?  \\
+4. A random forest is used for feature selection (P10, L42) and those features are fed into an SVM. Why not use the RF directly to do the detection? How does the performance of the SVM compare to using the random forest with the selected features?  \\
+5. Why is gamma set to 1/N (P11, P35)? Why not select gamma with cross-validation? \\
+6. How big is the test set? The training set is described on P8, L31, but based on the description of the test (P12, L8) it sounds like only two samples are used for testing. Is this test data still synthetic? 
+7. How is SNR defined/computed (P12, L17)? \\
+8. Why not include a third example where the training data comes from the synthetic data and the test set is field data (P13 , L4)? It seems that synthetic data is a more useful means of obtaining ground truth – this kind of comparison would make the paper much more insightful.  \\
+9. How are “strict” vs. “relaxed” labels defined (P13 , L4)? Is this just a judgment call by the human analyst? Are there some specific criteria to make this determination? How was the data labeled?  \\
+10. How many training samples are in each of the two training sets for the field data (P13, L9)? And how many samples in the test set?  \\
+11. What evidence is there to support the claim that the quality of labels is more important than quality (P15, L25)? There are no results/plot that shows the performance as a function of the training set size for both high and low quality labels. }\\
+
+\textbf{Reply: The related details are as followed and have been added to the manuscript accordingly. \\ \\
+1. There are 240 receivers in total  \\
+2. The value of “2*wavelength” is $0.058s$ \\
+3. $30\%$ was chosen based on the number and redundancy of the features. \\
+4. We've tested the RF directly to do the detection. The purpose of this paper is not promoting SVM, the specific algorithm we use. The information we want the reader to take away from this paper is the whole workflow we designed, especially high vertical resolution segmentation and 2D texture feature extraction. The others can replace SVM with some other algorithm in this workflow, such as random forest for the sake of efficiency. As long as the proposed workflow is used, RF also performs well. We've discussed this in the DISCUSSION section, as follows: \\ \\
+In \textbf{Discussion}: "In this work, we choose SVM as the machine learning algorithm in the workflow, due to its high accuracy and nice theoretical guarantees regarding over-fitting. Compared to the other popular classification algorithm, like random forests, SVM is more memory-intensive and time-consuming. It is possible to replace SVM with random forests in this workflow for the sake of efficiency. The propositions in this paper still stand." \\
+5. Both C and Gamma in SVM control the level of regularization. We set gamma automatically to 1/N, which is a safe choice, and select C with cross-validation. This is one choice of hyper-parameters and it works in those synthetic and real case. It is also possible to select gamma with cross-validation. \\
+6. Two test datasets are used for testing in the synthetic example. The test data is synthetic. \\
+7. The definition of SNR is added to the paper, as follows: \\
+"The definition of noise energy is as follows:
+\begin{equation}
+\begin{split}
+      SNR_{dB} = 10 log_{10}\left( \frac{P_{signal}}{P_{noise}} \right),
+\label{eq2}
+\end{split}
+\end{equation}
+where $P$ is average power." \\
+8. We've tested this. The predicted results are not good, because the synthetic data and field data are not in the same distribution. This idea could be possible if very realistic synthetic training data is used. In this work, the synthetic example is not that realistic and more like a demo to help to elaborate the proposed workflow. \\
+9. Yes, this is a judgment call by the human analyst for different purposes, like whether you want to consider the weak and blurry events in your masked results or not.  \\
+10. The the size of segment for both training data and test data is the same. In the field data example, after segmentation, there are 2970 segments for training data and 2376/2442/3366 segments for the three test data, respectively. \\
+11. In the field data, it is hard to quantify the quality of the labeling or the accuracy of the predicted event detection results. That's why we visualized the labeled training data and the predicted results in figure 8 and figure 11-13 to see the performance.}\\
+
+\end{enumerate}
+
+
+\section{REVIEWER 3}
+\begin{enumerate}
+\item \textsl{Overall, I felt that the paper could be improved by discussing the limitations of the method (or exploring these) and also some details were not well described or glossed over. }\\
+
+\textbf{Reply: This proposed workflow is based on traditional machine learning algorithm and you need to extract features by yourself, compared to deep learning algorithm like CNN. However, it performs better than the CNN when the amount of training data is limited. However, if the input training data is large. This workflow will be very slow and in this scenario, Deep learning algorithm will be the optimal choice.
+This is discussed in the DISCUSSION section, as follows: \\
+"Assuming that there are larger high-quality labeled training datasets available, the proposed workflow might not be the optimal choice, since the training time would be too large and an over-fitting issue might pop up. In this case, the use of neural-network-based methods, e.g. convolutional neural network is recommended."}\\
+
+\item \textsl{It was also unclear to me whether the method described is really ‘event detection’ rather than a ‘denoising’ method. I also had a question about the terminology of ‘event detection’ and would like to see this clarified. To me, event detection implies the binary yes/no process of detecting a possible event (and possibly locating it simultaneously). This method appears to have been applied rather to determine whether specific arrivals are detected (i.e., the distinction is that this method appears to be doing something like arrival detection rather than event detection).}\\
+
+\textbf{Reply: This is a "event detection" issue instead of "denoising" issue. As you said, we provide a binary yes/no mask which has the same size as the data in the end.}\\
+
+\item \textsl{I’d liked to have understood what the limit is for SNR (i.e., why stop at -13 dB?)}\\
+
+\textbf{Reply: The method fails when the events are not even visible by human eyes (professionals' performance is the upper limit of even the best machine learning/deep learning algorithm). We stop at -13 dB instead of doing more test is because of the limited space. }\\
+
+\item \textsl{ I also wondered how sensitive the method might be to the training events being located near the unknown events (e.g., in Figure 1 they are all in the same interval, is this a necessary limitation?) 
+In Figure 1. What are the parameters of the different layers in the model? Why are all the events in the same layer and what happens if one is outside that layer?}\\
+
+\textbf{Reply: The workflow is not sensitive to the locations of the cracks in the layers, because the segments of data do not contain any location information.}\\
+
+\item \textsl{ How much training data is needed for the method to work successfully?}\\
+
+\textbf{Reply: In both synthetic and field data example, only one training dataset is used. That's the advantage of the conventional machine learning method, the input datasets do not have to be too large, because human experiences are taken into account in the feature extraction process. }\\
+
+\item \textsl{In the description of the synthetics, there was no detail about the spectral content of the signal and noise. What band is the SNR estimate based on? Is white noise used? If so, is this reasonable? My experience is that most noise increases in power with wavelength.}\\
+
+\textbf{Reply: The noise is Gaussian noise, and the definition of SNR is as follows:
+"The definition of noise energy is as follows:
+\begin{equation}
+\begin{split}
+      SNR_{dB} = 10 log_{10}\left( \frac{P_{signal}}{P_{noise}} \right),
+\label{eq2}
+\end{split}
+\end{equation}
+where $P$ is average power."}\\
+
+\item \textsl{ I had a lot of trouble understanding Figure 3. In particular, why is the time axis going to 30 s (e.g., Figure 3) when the data is only going to 3 s?}\\
+
+\textbf{Reply: That was a typo and the figure is supposed to have the same size as the training data. We've fixed it.}\\
+
+\item \textsl{ In Figure 2 there are no units on the colorbar (this is an issue for many of the figures).
+}\\
+
+\textbf{Reply: We've added all the colorbars.}\\
+
+\end{enumerate}
+

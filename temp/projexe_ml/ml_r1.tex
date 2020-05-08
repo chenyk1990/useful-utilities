@@ -1,0 +1,303 @@
+
+\title{Automatic high-resolution microseismic event detection via supervised machine learning}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}} 
+
+
+\author{Shan Qu\footnotemark[1], Zhe Guan\footnotemark[2], Eric Verschuur\footnotemark[1],  Yangkang Chen\footnotemark[2]}
+\address{
+\footnotemark[1] Delft University of Technology, Delphi consortium \\
+\footnotemark[2] Rice University, Applied Physics Program \\
+\footnotemark[3] Zhejiang university, School of Earth Sciences
+}
+
+\lefthead{Qu et al.}
+\righthead{Microseismic event detection}
+
+\maketitle
+
+\begin{abstract}
+Microseismic methods are crucial for real-time monitoring of the hydraulic fracturing dynamic status during the development of unconventional reservoirs. However, unlike the active-source seismic events, the microseismic events usually have low signal-to-noise ratio (SNR), which makes its data processing challenging. To overcome the noise issue of the weak microseismic events, we propose a new workflow for high-resolution microseismic event detection\old{ based on the support vector machine (SVM) classification with a Gaussian kernel}. For the preprocessing, fix-sized segmentation with a length of $2*wavelength$ is used to divide the data into segments. Later on, 191 features have been extracted and used as the input data to train the SVM model. These features include 63 1D time/spectral-domain features, and 128 2D texture features, which indicate the continuity, smoothness, and irregularity of the events/noise. \old{By extracting both 1D and 2D features, the proposed method}\new{The proposed feature extraction} maximally exploits the limited information of each segment. \old{Afterwards}\new{Afterward}, we use a combination of univariate feature selection and random-forest-based recursive feature elimination for feature selection to avoid over-fitting. This feature selection strategy not only finds the best features, but also decides the optimal number of features that are needed for the best accuracy. \new{Regarding the training process, support vector machine (SVM) with a Gaussian kernel is used.}\old{Regarding the essential training process, a C-SVM model, in which the "C" represents a coefficient used to control the tolerance of error item, is considered.} In addition, a cross-validation (CV) process is implemented for automatic parameter setting. In the end, a group of synthetic and field microseismic data with different levels of complexity show\old{ the effectiveness of the proposed method.}\new{ that the proposed workflow is much more robust than the state-of-the-art short-term-average over long-term-average ratio (STA/LTA) method and also performs better than the convolutional-neural-networks (CNN), when the amount of training datasets is limited.} \par
+\textbf{Key words:} machine learning, high-resolution, 2D texture features, microseismic, event detection, SVM
+\end{abstract}
+
+\section{Introduction}
+It has been well known that microseismic monitoring plays a significant role in characterizing physical processes related to fluid injections and extractions in hydrocarbon and geothermal reservoirs \citep{shapiro2006hydraulic,xia2013twin,huang2017low,huang2017unveiling,yangkang2018gji,yangkang2018gji2,mousavi2017automatic,vera2012microseismic} In general the microseismic data are recorded by downhole or buried, shallow surface geophone arrays, which offer the significant advantages of being sufficiently close to the fracture and being unaffected by the free surface \citep{warpinski2000analytic}. However, the energy stimulated from the hydraulic fracturing is usually extremely weak. As a result, the weak signal is easily overwhelmed by the background noise, which may lead to unauthentic arrival time-picks and localization of microseismic events when no proper denoising algorithms or event detection techniques are applied. Therefore, prior to the localization and mechanism analysis of the source, the identification and detection of microseismic events or denoising process become an important challenge \citep{mousavi2016adaptive,mousavi2016hybrid,liu2016application,forghani2013effective}.
+
+The state-of-the-art denoising algorithms include \old{transform}\new{transforming} domain thresholding methods \citep{candes2006fast,zu2016periodically}, singular spectrum analysis \citep{vautard1992singular,chen2016simultaneous}, low-rank-approximation-based methods \citep{huang2016improved,xue2016simultaneous,shaohuan2017gji}, dictionary-learning-based methods \citep{elad2006image,chen2017fast}, empirical-mode-decomposition and empirical-mode-decomposition-like methods \citep{han2015microseismic,gomez2016simple,huang1998empirical}, etc. Denoising microseismic data will inevitably cause useful small-amplitude signal \old{damages}\new{damage}, which degrades the fidelity of the processed data. Moreover, the damaged waveform amplitude will greatly affect the subsequent source localization and mechanism analysis \citep{maxwell2010petroleum}. Considering the potential disadvantages caused by denoising, a robust event detection method is a strong demand in the microseismic community.
+
+Traditional event detection is based on energy analysis \citep{hatherly1982computer,allen1978automatic,vaezi2015comparison}, which is a widely used method due to few assumptions about the data based on some statistic \old{criteria}\new{criterion}. For example, a popular \old{criteria}\new{criterion} is the short-term average over long-term average (STA/LTA) ratio, in which the ratio of \new{the} continuously calculated average energy of the data in two consecutive moving-time windows, a short-term window and a subsequent long-term window, is used as a statistical \old{criteria}\new{criterion}  \citep{allen1982automatic,allen1978automatic,vaezi2015comparison}. However, this method has some disadvantages. It requires \new{a} careful setting of parameters (threshold and window lengths) \citep{trnkoczy1999topic}. Moreover, these algorithms are sensitive to sudden amplitude increases, therefore the noise whose energy is comparable to or greater than microseismic events may be detected as \new{a} microseismic event \citep{withers1998comparison}. In order to mitigate this noise issue, another event detection method that is based on template matching was proposed by \cite{gibbons2006detection}. It takes advantage of predetermined events, known as the master event, and cross-correlates them with continuous recordings to detect events with high similarities \citep{gibbons2006detection,song2010improved,senkaya2014semi}. The template-matching-based method is sensitive to small amplitude events and therefore a typical way to detect weak events in earthquake seismology \citep{song2010improved}\new{ even in the presence of high background noise}. These detection methods are especially useful to lower the detection threshold and increase the detection sensitivity. \cite{michelet2007fracture,arrowsmith2006technique} have also shown that these methods can be effective as long as the separation between the master event and target event is less than the dominant wavelength. \cite{gelchinsky1983automatic} proposed a hybrid method which combines the benefits of template-matching-based methods and the energy-analysis-based methods. However, the template-matching-based method requires a master \old{event}\new{(or known) events} as the input, which is not always available. In addition, \old{ it tends to detect events that are similar to the master event, therefore, leading to biased results.}\new{it is limited to detect events that are similar to the master event, which means might have high false negative rate, and are computationally expensive methods.}
+
+In recent years, some researchers have already done investigations on supervised machine learning based event detection or event picking \old{\hbox{\citep{akram2017robust,zheng2017automatic,yangkang2017seg,zhao2017using,
+knapmeyer2015identification,mccormack1993first,provost2017automatic,rouet2017machine}}}\new{\citep{zhao2017using,yangkang2017seg,mousavi2018earthquake,mousavi2018cred,
+perol2018convolutional,zhu2018phasenet,zheng2017automatic,dokht2019seismic,akram2017robust,
+knapmeyer2015identification,mccormack1993first,provost2017automatic,rouet2017machine}}\old{ akram2017robust proposed a neural-network-based approach for event detection and showed one synthetic example. The input features including \new{an} average of absolute amplitudes, variance, energy-ratio and polarization rectilinearity.} \cite{zhao2017using} trained a support vector machine (SVM) model with 1D features of the segments to distinguish microseismic from noise events. However, these methods require \new{a} longer length of segmentation ($\sim 15*wavelength$) for providing sufficient information for each segment to provide a stable prediction. The results, therefore, have \new{a} coarse vertical resolution. \cite{yangkang2018gji} proposed a microseismic picking algorithm based on unsupervised machine learning that utilizes fuzzy clustering to identify signal onsets. As shown in the experiment\old{ of \hbox{\cite{yangkang2018gji}}}, this clustering-based method is sensitive to the noise level. When the noise level becomes extremely strong, the clustering method may make some mistakes.  \new{\cite{mousavi2018earthquake,mousavi2018cred}, \cite{perol2018convolutional}, \cite{dokht2019seismic}, \cite{zhu2018phasenet}, and \cite{zheng2017automatic} have showed successful and promising performances of deep learning for the event detection. However, the deep-learning-based seismic event detection methods usually require much larger training datasets compared to the traditional-machine-learning-based methods like SVM.}
+
+In this work, we propose a \old{high-resolution method for }\new{new workflow for high-resolution }microseismic event detection\old{ based on support vector classification with a Gaussian kernel}. \old{After an introduction of SVM, d}\new{D}etails of the workflow are presented step by step: \textcircled{\raisebox{-0.9pt}{1}} Fix-sized segmentation, with a length of $2*wavelength$, is used to divide the data into segments; \textcircled{\raisebox{-0.9pt}{2}} 191 features have been extracted in total, including 63 1D time/spectral-domain features, and 128 2D texture features indicating the continuity, smoothness, and irregularity of the events/noise; \textcircled{\raisebox{-0.9pt}{3}} A combination of univariate feature selection and random-forest-based recursive feature elimination is implemented for feature selection, which not only finds the best features but also the number of features that are needed for the best accuracy; \textcircled{\raisebox{-0.9pt}{4}} A C-SVM model, where the "C" represents a coefficient used to control the tolerance of error item, is considered in the essential training process. In addition, \old{a }cross-validation (CV) process is implemented for \new{the} automatic parameter setting; \textcircled{\raisebox{-0.9pt}{5}} The trained model is then applied to detect events of the test data. In the end, a group of synthetic and real microseismic data with different levels of complexity \old{show the effectiveness of the proposed method.}\new{shows that the proposed workflow is much more robust than the state-of-the-art STA/LTA method and also performs better than the CNN, in the case when the amount of training datasets is limited.} Note that this paper is an extended version of work published in \cite{qu2018automatic}.
+
+\old{Support Vector Classification \\
+Recently, support vector machine has been an effective classification method by constructing hyperplanes with the maximal margin in a multi-dimensional space, which separates different cases of different class labels \mbox{\citep{cortes1995support,boser1992training}}. To construct an optimal hyperplane, SVM employs an iterative training algorithm, which is used to minimize an error function. In this work, given training vectors $x_i \in R^n, i=1, ..., N$ in two classes, and a vector of labels $y_i \in \left\{1, -1\right\}$, we use the C-SVM model \mbox{\citep{hsu2003practical}}, where a coefficient $C$ is used to control the tolerance of the systematic outliers that allows fewer outliers to exist in the opponent class. This model solves a quadratic optimization problem:\\
+$\min_{\mathbf{\omega}, b, \xi} = \frac{1}{2} \mathbf{\omega}^{T} \mathbf{\omega} + C \sum\limits_{i=1} ^{N} \xi_i$ \\
+$\text{subject to the constraints:}, $\\
+$y_i \left( \mathbf{\omega}^{T} \phi \left( x_i \right)+b \right) \geq 1 - \xi_i \text{~and~} \xi_i \geq 0, i=1, ..., N,$\\
+where $\mathbf{\omega}$ represents the normal vector to the hyperplane, $b$ is a constant, and $C$ is a penalty parameter on the training error, which is chosen to avoid over-fitting. Note that $\xi_i$ is the smallest non-negative number satisfying $y_i \left( \mathbf{\omega}^{T} \phi \left( x_i \right)+b \right) \geq 1 - \xi_i$. The kernel $\phi$ is used to transform the input data into the feature space. \\
+By solving for the Lagrangian dual of the primal problem in equation~\ref{eq1}, a simplified problem is obtained:\\
+$\max_{\mathbf{a}} = \sum\limits_{i=1} ^{N} a_i - \frac{1}{2} \sum\limits_{i=1} ^{N} \sum\limits_{j=1} ^{N} a_i a_j y_i y_j K\left( x_i, x_j\right),$ \\
+$\sum\limits_{i=1} ^{N} a_i y_i = 0, C \geq a_i \geq 0,~~~ i=1, ..., N,~ j=1, ..., N,$\\
+where, $\mathbf{a}$ is introduced by Lagrangian multiplier. This dual formulation only depends on dot-products of the features, which is the kernel function $K\left( x_i, x_j\right)=\phi(x_i)\cdot\phi(x_j)$ to map into the higher dimensional feature space by transformation $\phi$.}
+
+\section{Microseismic event detection as a \old{Support Vector }Classification problem}
+\old{The workflow of the proposed method}\new{The proposed workflow} for microseismic event detection can be summarized as the following steps: \textcircled{\raisebox{-0.9pt}{1}} Segmentation and \old{labelling}\new{labeling}; \textcircled{\raisebox{-0.9pt}{2}} Feature extraction and normalization; \textcircled{\raisebox{-0.9pt}{3}} feature selection; \textcircled{\raisebox{-0.9pt}{4}} \old{SVM classification}\new{Support Vector Classification}; \textcircled{\raisebox{-0.9pt}{5}} Test on new data. To clearly demonstrate the whole \old{procedure of SVM classification}\new{workflow} for event detection, a group of synthetic microseismic datasets is used. The synthetic microseismic datasets are simulated from the three-layer velocity model shown in figure~\ref{fig:acq1} and \ref{fig:acq2}. The \old{modelled}\new{modeled} training data with $SNR=-13$ is shown in figure~\ref{fig:d1_noise_n005}. The \old{modelled}\new{modeled} test datasets are in figure~\ref{fig:d2_noise_n01} and figure~\ref{fig:d2_noise_n005}, including $SNR=-13$ and $SNR=-10$ level of noise energy, respectively. \new{The definition of noise energy is as follows:
+\begin{equation}
+\begin{split}
+      SNR_{dB} = 10 log_{10}\left( \frac{P_{signal}}{P_{noise}} \right),
+\label{eq2}
+\end{split}
+\end{equation}
+where $P$ is average power.} In all the datasets, the noise level is much stronger than the signal level. The receivers are located along the full surface with a spacing of $7.5m$ and a time duration is $3.1s$. In addition, five different traces of clean and noisy test data 2 ($SNR=-10$) are demonstrated in figure~\ref{fig:profile}. We can see that the signal is masked by the strong background noise and hard to detect.
+
+\subsection{1. Segmentation and \old{labelling}\new{labeling}}
+Segmentation is a very important preprocessing stage, where the microseismic data are split into segments\old{ of signal}. Fix-sized segmentation is used in this work and we set the length of each segment as $2*wavelength$\new{, which is $0.058s$ in the synthetic example}. In this way, the vertical resolution of event detection results is higher, however, each segment contains very limited information, which makes the problem tougher to solve.
+
+After the segmentation, the training data segments are \old{labelled}\new{labeled} into two classes: events and noise. For the synthetic example, a total of 12960 segments are extracted, including 4853 segments of \new{the }microseismic event and 8107 segments of noise. The \old{labelled}\new{labeled} training synthetic data is shown in figure~\ref{fig:d1_label_noise_n005}. As is well-known, supervised classification is largely dependent on the \old{labelled}\new{labeled} training datasets, which are usually done based on different \old{criteria}\new{criterion} of different users. Please note that we will \old{ show the predicted results based on different \old{criteria}\new{criterion} of the \old{labelling}\new{labeling} step}\new{discuss how different labeling criterion affects the final prediction} in the \textbf{Discussion} section later on. 
+
+\subsection{2. Feature extraction and normalization}
+The purpose of feature extraction is to convert all the segments into relevant features, which are served as input training vectors for \old{SVM }\new{the }classification. \new{The dimension of the data is reduced in the feature extraction step, which improves classifier's performance. Many researchers have already done investigations on the feature extraction for seismic event detection \citep{zhao2017using,mousavi2016seismic}. They extracted 1D features of the segments in time, frequency and time-frequency domains. However, as we have mentioned, due to the high resolution of segmentation, each segment contains very limited information. Only extracting 1D features is not enough.}\old{ As we have mentioned, due to the resolution of segmentation, each segment contains very limited information.} In order to maximize the information per segment, we propose to extract both 1D time/frequency-domain features and 2D texture features for each segment. 191 features have been extracted, including 63 1D features, and 128 2D features. The 1D features consist of both time-domain features and spectral features and are listed in Table~\ref{tbl:table1} with description. By only considering the 1D features of the seismic data, the 2D features (for example, continuity, smoothness, and irregularity of the events) are ignored, which is obviously a waste of information. Therefore, 128 extra 2D texture features are considered in our feature extraction. \old{Regarding the extraction of texture features, t}\old{In the 2D feature extraction step, t}he microseismic data are first converted into a grey-scale image. After that, local grey-level co-occurrence matrices (GLCM) in a moving window are calculated. The GLCM characterizes the texture of an image by calculating how often pairs of pixel with specific values and in a specified spatial relationship occur in an image \citep{haralick1973textural}. Certain features that characterize texture properties of the image are then calculated from this matrix, which are \textit{Contrast}, \textit{Correlation}, \textit{Energy}, and \textit{Homogeneity}. In addition, $0^o$, $45^o$, $135^o$, and $90^o$ orientation and distance of $1-8$ \old{neighbouring}\new{neighboring} voxels are considered. \new{Please note that a range of orientation and distance is considered here is to make the feature extraction process more general, however, causes feature redundancy, which will be discussed with details in the \textbf{3. Feature selection}.} The calculated 2D texture parameters within the moving window are severed as the features of the segment in the center of the window. Details of the texture features are \old{shown}\new{described} in Table~\ref{tbl:table2}. Part of the 2D texture features extracted from the training data are demonstrated in figure~\ref{fig:traindata_2dfeature}, being the \textit{Contrast}, \textit{Correlation}, \textit{Energy}, and \textit{Homogeneity} of GLCM, for $0^o$, $45^o$, $135^o$, and $90^o$ orientations, with distance of $3$ \old{neighbouring}\new{neighboring} voxels. In this figure, we can see that the 2D features can properly indicate most of the events even when the noise level is high. 
+
+After feature extraction, feature normalization, which is used to standardize the range of independent features of data, is a common requirement for most machine learning estimators. Without standardization, the estimators might behave badly. We normalize the features by removing the mean and scaling to unit variance in this work.
+
+\subsection{3. Feature selection}
+In machine learning, feature selection is the process of selecting a subset of most relevant features for use in model training. \old{It can save training time and enhance the generalization by reducing over-fitting.}\new{It can reduce over-fitting, as well as the training time.} \old{In Figure \ref{fig:CorrMatrix}, we plot the correlation matrix of all 1D and 2D features. }\new{Since we extract the 2D features with a range of orientation and distance for the sake of generalization, there exist highly correlated 2D feature clusters, as shown in Figure \ref{fig:CorrMatrix}. In this simple synthetic scenario, many 2D features share similar values with each other. Therefore, those clustering features provide redundant information and feature selection is needed to compensate this side-effect.}\old{Apparently, there exist highly correlated 2D feature clusters (feature ID 64-191), which is due to the nature of the GLCM characteristics, hence those clustering features could provide redundant information and we need to do feature selection to reduce the total number of features.} 
+
+Univariate feature selection is a simple technique where a statistical test is applied to each feature individually to determine the strength of the relationship of the feature with the outcome variable. One simple \old{criteria}\new{criterion} is the F-value of ANOVA (Analysis of variance) \citep{scheffe1967analysis}. We choose the 30\% most significant features in this case. The corresponding \old{$-log \left( pvalue \right)$}\new{F-value} as a function of feature ID is shown in figure~\ref{fig:fvalues}, in which we can see that the 2D texture features are informative features and show large relevance with respect to different classes.  
+
+Univariate feature selection is simple to run and relatively good at gaining a better understanding of data. However, it does not reveal mutual information among features \citep{chen2006combining}. Random forest (RF) is a classification method and \old{it also provides feature importance}\new{it also provides the branch weights that can represent feature importance} \citep{breiman2001random}. A forest consists of a number of decision trees, each of which is constructed with randomly sampled features. Every node in the trees is designed to split the training sets into two parts, therefore similar response values end up in the same set. For one feature, we randomly permute its values in the second dataset and obtain another accuracy. The difference between the two numbers can indicate the feature importance. RF is robust easy to use and has relatively good accuracy, which makes it \old{a good feature importance indicator}\new{an appealing tool for feature selection}. However, RF cannot handle too many features \citep{chen2006combining}. Therefore, a combination of univariate feature selection and Random forest is a good choice. In practice, we first use univariate feature selection to reduce the number of features, then apply random-forest-based recursive feature elimination to further find the optimal number of features in a cross-validation loop. In the end, 51 features are selected in the synthetic example.
+
+\subsection{4. Support Vector Classification}
+\new{Recently, support vector machine has been an effective classification method by constructing hyperplanes with the maximal margin in a multi-dimensional space, which separates different cases of different class labels \citep{cortes1995support,boser1992training}. Therefore, we choose SVM as the machine learning algorithm in our proposed workflow. \\
+To construct an optimal hyperplane, SVM employs an iterative training algorithm, which is used to minimize an error function. In this work, given training vectors $x_i \in R^n, i=1, ..., N$ in two classes, and a vector of labels $y_i \in \left\{1, -1\right\}$, we use the C-SVM model \citep{hsu2003practical}, where a coefficient $C$ is used to control the tolerance of the systematic outliers that allows fewer outliers to exist in the opponent class. This model solves a quadratic optimization problem:
+\begin{equation}
+\begin{split}
+      &\min_{\mathbf{\omega}, b, \xi} = \frac{1}{2} \mathbf{\omega}^{T} \mathbf{\omega} + C \sum\limits_{i=1} ^{N} \xi_i \\
+        &\text{subject to the constraints:}, \\
+        &y_i \left( \mathbf{\omega}^{T} \phi \left( x_i \right)+b \right) \geq 1 - \xi_i \text{~and~} \xi_i \geq 0, i=1, ..., N,
+\label{eq1}
+\end{split}
+\end{equation}
+where $\mathbf{\omega}$ represents the normal vector to the hyperplane, $b$ is a constant, and $C$ is a penalty parameter on the training error, which is chosen to avoid over-fitting. Note that $\xi_i$ is the smallest non-negative number satisfying $y_i \left( \mathbf{\omega}^{T} \phi \left( x_i \right)+b \right) \geq 1 - \xi_i$. The kernel $\phi$ is used to transform the input data into the feature space. \\
+By solving for the Lagrangian dual of the primal problem in equation~\ref{eq1}, a simplified problem is obtained:
+\begin{equation}
+\begin{split}
+      &\max_{\mathbf{a}} = \sum\limits_{i=1} ^{N} a_i - \frac{1}{2} \sum\limits_{i=1} ^{N} \sum\limits_{j=1} ^{N} a_i a_j y_i y_j K\left( x_i, x_j\right), \\
+      &\sum\limits_{i=1} ^{N} a_i y_i = 0, C \geq a_i \geq 0,~~~ i=1, ..., N,~ j=1, ..., N,
+\label{eq2}
+\end{split}
+\end{equation}
+where, $\mathbf{a}$ is introduced by Lagrangian multiplier. This dual formulation only depends on dot-products of the features, which is the kernel function $K\left( x_i, x_j\right)=\phi(x_i)\cdot\phi(x_j)$ to map into the higher dimensional feature space by transformation $\phi$. }The radial basis function (RBF) in equation~\ref{eq2} is used as the kernel function for SVM: 
+\begin{equation}
+\begin{split}
+      K\left( x_i, x_j\right) = \text{exp}\left( -\gamma || x_i-x_j||^2 \right),~~~ i=1, ..., N,~ j=1, ..., N,
+\label{eq3}
+\end{split}
+\end{equation}
+where, $\gamma$ is an adjustable parameter of certain kernel functions. In this case, we set it as $1/{N}$. With the C-SVM model, there is only one parameter to be determined: $C$, which tells the SVM optimization how much you want to avoid mis-classifying the data. We conduct a cross-validation (CV) process to decide it. Considering a grid space of $\{C\}$ with $\log_2 C \in \{-3, -2.5, ..., 2.5, 3 \}$, we apply 5-fold CV on the training data to each $C$, and then choose the specific $C$ that leads to the lowest CV balanced error. In the synthetic example, $C=2.1544$ is selected with a score of $0.96$. In addition, the size of the noise class is normally different from the size of the event class. This data imbalance could lead to bias. In order to compensate this, we adjust weights inversely proportional to class frequencies in the input data.
+
+\subsection{5. Test on new data}
+After obtaining the trained SVM model, we apply it to the test data 1 and 2 in figure~\ref{fig:d2_noise_n01} and \ref{fig:d2_noise_n005}\old{, which are not part of the training data}. The predicted event detection results considering both 1D and 2D features are shown in figure~\ref{fig:d2_pred_noise_n01} and \ref{fig:d2_pred_noise_n005} and the results considering only 1D features are shown in figure~\ref{fig:d2_pred_noise_n01_no2d} and \ref{fig:d2_pred_noise_n005_no2d}. We can see that, when the noise level is $SNR=-10dB$, both of them result in reasonable prediction with $95\%$ (figure~\ref{fig:d2_pred_noise_n01}) and $90\%$ (figure~\ref{fig:d2_pred_noise_n01_no2d}) accuracy, respectively. There is an obvious improvement in the prediction accuracy by considering \old{extra }2D texture features. When the noise level reaches $SNR=-13dB$, the predicted result in figure~\ref{fig:d2_pred_noise_n005_no2d} is quite noisy with a prediction accuracy of $82\%$. However, by maximizing the information per segment with extracting extra 2D texture features, the proposed workflow still ends up with reasonably good results with $93\%$ accuracy (figure~\ref{fig:d2_pred_noise_n005}).
+Furthermore, five different traces (at $150,~525,~900,~1275,~1650m$) of clean, noisy, and predicted detection of test data ($SNR=-10dB$) are demonstrated in figure~\ref{fig:profile}. It can be seen that the events smeared in the strong ambient noise are also able to be detected using our proposed workflow.
+
+\new{Moreover, we also compare the proposed workflow to the state-of-the-art STA/LTA method and convolutional-neural-networks (CNN). The STA/LTA parameter is measured in the time domain and defined as follows:
+\begin{equation}
+\begin{split}
+      STA\left( i \right) = \frac{1}{NSTA} \sum_{j=i-NSTA}^{i} d\left(j\right),\\
+      LTA\left( i \right) = \frac{1}{NLTA} \sum_{j=i-NLTA}^{i} d\left(j\right),\\
+      R_{STA/LTA}\left( i \right) = \frac{STA\left( i \right)}{LTA\left( i \right)},
+\label{eq3}
+\end{split}
+\end{equation}
+$d\left(i\right)$ denotes the input microseismic data and $NSTA$ and $NLTA$ denote short-term and long-term periods, respectively. We use $NSTA=2*wavelength$ and $NLTA=8*wavelength$ in this example. The results using STA/LTA method are shown in figure~\ref{fig:d2_ltasta_noise_n01} and \ref{fig:d2_ltasta_noise_n005}. It is obvious that STA/LTA method cannot perform well when strong noise exists. It is worth mentioning that the STA/LTA method is usually implemented after an initial denoising preprocess to the raw data. \\
+Regarding the CNN, we design a six-layer architecture, which is adopted from LeNet \citep{lecun1990handwritten}: two convolutional layers with 32 kernels ($3\times3$) to learn the local features; followed by one max pooling layer with ($10\times10$) to reduce the number of parameters; after flattening process, two fully connected layers with 128 kernels are followed; a softmaxing layer is added in the end to generate the final classification. The results using CNN are shown in figure~\ref{fig:d2_pred_CNN_noise_n01} and \ref{fig:d2_pred_CNN_noise_n005}. We can see that it works well in detecting events, even though not as good as the proposed workflow in figure~\ref{fig:d2_pred_noise_n01} and \ref{fig:d2_pred_noise_n005}. Some useful events, which are pointed with red arrows, are damaged. It is well-known that CNN is not able to show its privilege over the traditional machine learning algorithms when very limited training data is available.  \\
+The classification metrics of different strategies for the test data 2 ($SNR=-13dB$) are written in Table \ref{tbl:table3}
+}
+
+\section{Field data example}
+We consider a group of surface-recorded microseismic data in a field data example. The receiver spacing is $7.5m$ and the time duration is $2s$. \old{The raw training datasets are shown in figure~\ref{fig:d6} and figure~\ref{fig:d8}.}\new{In this example, only one raw training data, which is shown in figure~\ref{fig:d8}, is considered. The corresponding labeled training data is shown in figure~\ref{fig:d8_label_strict_test}. We labeled the datasets based on a relatively strict criterion. With "strict" we mean that only the very clear events are selected. Afterward, the training data is split into segments with a length of $0.062s$, which is approximately twice wavelength. There are $2970$ segments in total. Part of the extracted 2D texture features is demonstrated in figure~\ref{fig:2dfeature_field}. We can see that the 2D features show large relevance with the events. The correlation matrix of the features is shown in Figure \ref{fig:real_CorrMatrix}. Compared to Figure \ref{fig:CorrMatrix}, the correlation between 2D feature clusters is reduced, because in this more complex scenario, different 2D features (\textit{Contrast}, \textit{Correlation}, \textit{Energy}, and \textit{Homogeneity} with $0^o$, $45^o$, $135^o$, and $90^o$ orientation and distance of $1-8$) start to make a difference, instead of just creating redundancy. Furthermore, the univariate score (F-value) is shown in figure~\ref{fig:fvalues_real}. It is obvious that the 2D texture features play a more important role in the real case, compared to the synthetic example. After feature extraction, 49 features are selected using a combination of univariate feature selection and Random forest. In the SVM classification step, $C=12.74$ turns out to be the optimal value based on the CV experiment. Finally, the raw test datasets are shown in figure~\ref{fig:d5}, \ref{fig:d7}, and \ref{fig:d9}. The predicted event detection results considering both 1D and 2D features are shown in figure~\ref{fig:d5_pred_add2d_strict_test}, \ref{fig:d7_pred_add2d_strict_test}, and \ref{fig:d9_pred_add2d_strict_test}. The predicted event detection results considering only 1D features are shown in figure~\ref{fig:d5_pred_no2d_strict_test}, \ref{fig:d7_pred_no2d_strict_test}, and \ref{fig:d9_pred_no2d_strict_test}. We can clearly see the improvement of accuracy by using both 1D and 2D features, because the continuity, smoothness, and regularity of the events are largely emphasized when we label the training datasets, however, being ignored with only 1D feature extraction. In addition, the predicted results using CNN are shown in figure~\ref{fig:real_d5_pred_CNN}, \ref{fig:real_d7_pred_CNN}, and \ref{fig:real_d9_pred_CNN}. We can see that CNN results in a reasonable prediction, albeit not as good as the proposed workflow, because CNN is not able to show its privilege over the traditional machine learning algorithms when only one training dataset is fed in. \\
+}
+\old{First, all the microseismic datasets are split into segments with \old{the}\new{a} length of $0.062s$, which is approximately twice wavelength. After that, in order to demonstrate how the \old{labelling}\new{labeling} of the training datasets based on different \old{criteria}\new{criterion} affects the final prediction, we implement two types of \old{labelling}\new{labeling} for the training datasets: based on a relaxed \old{criteria}\new{criterion} (scenario 1) and strict \old{criteria}\new{criterion} (scenario 2). With "strict" we mean that only the very clear events are selected. The corresponding \old{labelled}\new{labeled} training datasets are shown in figure~\ref{fig:real-02}a,b and figure~\ref{fig:real-02}c,d, respectively. Part of the 2D texture features extracted from the training data 1 is demonstrated in figure~\ref{fig:2dfeature_field1}. We can see that the 2D features show large relevance with the events.  Furthermore, the univariate score for scenario 1 and 2 are shown in figure~\ref{fig:real_pvalues}a and figure~\ref{fig:real_pvalues}b, respectively. It is obvious that the 2D texture features play a more important role in the real case, compared to the synthetic example, especially for the strict \old{criteria}\new{criterion} scenario, where the continuity, smoothness, and regularity of the events are taken more into account while being \old{labelled}\new{labeled}. After feature extraction, 44 features in scenario 1 and 49 features in scenario 2 are selected using a combination of univariate feature selection and Random forest. In the SVM classification step, $C=12.74$ in scenario 1 and $C=1.16$ in scenario 2 turn out to be the optimal values based on the CV experiment. Finally, the raw test datasets are shown in figure~\ref{fig:real-03} for the relaxed and strict \old{criteria}\new{criterion}, respectively. The predicted event detection results considering both 1D and 2D features are shown in figure~\ref{fig:real-04} and figure~\ref{fig:real-06}. The predicted event detection results considering only 1D features are shown in figure~\ref{fig:real-05} and figure~\ref{fig:real-07}. We can clearly see the improvement of accuracy by using both 1D and 2D features. Moreover, all the results are consistent with the \old{labelling}\new{labeling} \old{criteria}\new{criterion}. In particular, for the strict \old{labelling}\new{labeling} \old{criteria}\new{criterion}, using only 1D features leads to erroneous prediction, because in this case the continuity, smoothness, and regularity of the events are largely emphasized when we label the training datasets, however, being ignored during the classification.} 
+
+\section{Discussion}
+\subsection{Feature importance and sensitivity analysis}
+With the high classification accuracy achieved by the C-SVM model, we are also interested in the prediction power of the individual features and their corresponding importance. Here, we adopt the best random forest model trained during the recursive feature elimination process in the feature selection section using the synthetic dataset. The random forest estimator automatically computes the normalized feature importance metric, and the top ten most important features are listed in Table \ref{tbl:table4}. We notice that the top nine features are 2D features, which is in accordance with expectation, since 2D features carry more information than 1D features. Furthermore, for the most important feature, being the $135^{\circ}$ orientation correlation with distance of 2 \old{neighbouring}\new{neighboring} voxels (ID $121$), we plot its partial dependence in Figure \ref{fig:PartialPlot}. The partial plot here essentially fixes other features and repeatedly alters the value of feature $\#121$ to make a series of predictions for all of the instances in the test dataset. Here the $y$ axis is interpreted as the change in the prediction from what it would be predicted at the baseline value. We see that with a positive feature $\#121$ value it would substantially increase the possibility of detecting a microseismic event and this feature is indeed a robust predictor as the area of confidence level is quite a bit above 0.
+
+\subsection{Parameter setting and data quality}
+The implementation of the proposed workflow is quite straightforward. Except for the \old{labelling}\new{labeling} step, this algorithm is fully automatic and hands-off. Once the feature vectors are fixed, only two parameters are needed: the length of segmentation and regularization parameter $C$. In this work, $~2*wavelength$ is used as \new{a} segment length for high vertical resolution. The regularization parameter $C$ is selected automatically using a cross-validation process to avoid over-fitting. 
+
+Regarding the \old{labelling}\new{labeling} step, the predicted results\new{ largely} depend on the \old{labelling}\new{labeling} \old{criteria}\new{criterion}. \new{The labeled training data based on a relaxed labeling criterion is shown in figure~\ref{fig:d8_label_loose_test} and the corresponding predicted results are shown in figure~\ref{fig:d5_pred_add2d_loose_test}-\ref{fig:d9_pred_add2d_loose_test}. We can see that the results are consistent with the labeling criterion. }Therefore, a consistency of the \old{labelling}\new{labeling} step, which makes sure that the training datasets have a clear classification boundary, is required. In addition, the proposed workflow works well on small datasets, because once a boundary is established during the training, inputting more training datasets \old{is}\new{are} redundant and might even cost over-fitting issue. \new{In this work, only one training dataset in both synthetic and real case is \old{labelled}\new{labeled} and used to train the model.} Using smaller datasets also makes the prediction and \old{labelling}\new{labeling} process very efficient. The bottom line is that the quality of \old{labelling}\new{labeling} process is much more important than the quantity.
+
+Assuming that there are larger high-quality \old{labelled}\new{labeled} training datasets available, the proposed workflow might not be the optimal choice, since the training time would be too large and an over-fitting issue might pop up. In this case, the use of neural-network-based methods, e.g. convolutional-neural-networks \citep{krizhevsky2012imagenet}, is recommended.
+
+\subsection{Machine learning algorithm}
+\new{In this work, we choose SVM as the machine learning algorithm in the workflow, due to its high accuracy and nice theoretical guarantees regarding over-fitting. Compared to the other popular classification algorithm, like random forests, SVM is more memory-intensive and time-consuming. It is possible to replace SVM with random forests in this workflow for the sake of efficiency. The propositions in this paper still stand.}
+
+\section{Conclusions}
+In order to overcome the noise issue of microseismic data, we proposed a new workflow for high-resolution event detection based on support vector machine classification with a Gaussian kernel. The proposed workflow is demonstrated in details. For the segmentation step, a length of $2*wavelength$ is used, which then provides the vertical resolution of the event detection. For the feature extraction step, 191 features including both 1D time/spectral-domain features and 2D texture features are calculated. A combination of univariate feature selection and random-forest-based recursive feature elimination is chosen for feature selection, which finds both the best features and the best number of features needed for the best accuracy. In the training process, the C-SVM model is used and a cross-validation process is conducted for \new{an} automatic parameter setting. Finally, a group of synthetic and real microseismic datasets with different levels of complexity show\old{ the effectiveness of the proposed method.}\new{that the proposed workflow is much more robust than the state-of-the-art STA/LTA method and also performs better than the CNN, when the amount of training datasets is limited.}
+
+\section{ACKNOWLEDGEMENTS}
+Shan Qu and Eric Verschuur thank the sponsors of the Delphi consortium for their support. Yangkang Chen is financially supported by the “Thousand Youth Talents Plan”, and the Starting Funds from Zhejiang University. The authors appreciate Wei Chen for providing the field datasets from a shale play inside Sichuan Basin. The authors thank Scikit-learn for providing free machine learning library in Python (scikit-learn.org). 
+
+\tabl{table1}{The list of the extracted 1D time/spectral-domain features}
+{
+  \scriptsize
+  \begin{center}
+    \label{tab:table1}
+    \begin{tabular}{|l|p{35mm}|p{110mm}|} 
+      \hline
+      \textbf{ID} & \textbf{Feature Name} & \textbf{Description}\\
+      \hline
+      \hline
+      1 & Mean & \\
+      \hline
+      2 & Median & \\
+      \hline
+      3 & STD & Standard deviation\\
+      \hline
+      4 & MAD & Median Absolute Deviation \\
+      \hline
+      5 & 25th percentile &  The value below which $25\%$ of observations fall \\
+      \hline
+      6 & 75th percentile &  The value below which $75\%$ of observations fall \\
+      \hline
+      7 & Inter quantile range & The difference between 25th percentile and 75th percentile \\
+      \hline
+      8 & Skewness &  A measure of symmetry relative to a normal distribution \\
+      \hline
+      9 & Kurtosis &  A measure of whether the data are heavy-tailed or light-tailed relative to a normal distribution \\
+      \hline
+      10 & Zero-crossing rate & \\
+      \hline
+      11 & Energy & The sum of squares of the signal values \\
+      \hline
+ 	  12 & Entropy of energy & The entropy of normalized energies, a measure of abrupt changes \\ 
+ 	  \hline
+      13-25 & MFCC & Mel Frequency Cepstral Coefficients, form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale \\
+      \hline
+      26 & Dominant frequency magnitude & The energy of a spectrum is centered upon\\
+      \hline
+      27 & Spectral Centroid & Indice of the dominant frequency \\
+      \hline
+      28 & Spectral Spread & The second central moment of the spectrum \\
+      \hline
+      29 & Spectral Entropy & Entropy of the normalized spectral energies \\
+      \hline
+      30 & Spectral Roll-off & The frequency below which $85\%$ of the total spectral energy lies \\    
+      \hline    
+ 	  31 & RMS energy & Root-mean-square energy \\      
+      \hline
+      32 & Spectral bandwidth & The 2rd order spectral bandwidth \\
+      \hline
+ 	  33-36 & Polynomial features & Coefficients of fitting an 3rd-order polynomial to the spectrum \\      
+      \hline
+      37-48 & Chroma vector & A 12-element feature vector indicating how much energy of each pitch class is present in the data \\     
+      \hline 
+      49 & Chroma Deviation & The STD of the 12 chroma coefficients \\
+      \hline
+      50-56 & Spectral contrast & It considers the spectral peak, the spectral valley, and their difference in each frequency subband \\
+      \hline
+      57 & Spectral flatness & A measure to quantify how much noise-like a sound is (High value indicates the spectrum is similar to white noise) \\      
+      \hline
+      58-63 & Tonnetz & The tonal centroid features \\
+      \hline
+    \end{tabular}
+  \end{center}
+}
+
+\tabl{table2}{The list of the extracted 2D texture features}
+{
+  \scriptsize
+  \begin{center}
+    \label{tab:table2}
+    \begin{tabular}{|l|l|p{110mm}|}  
+      \hline
+      \textbf{ID} & \textbf{Feature Name} & \textbf{Description}\\
+      \hline
+      \hline
+      64-95 & Contrast & Measures the local variations in the GLCM, for $0^o$, $45^o$, $135^o$, and $90^o$ orientation, with distance of $1-8$ of neighboring voxels \\
+      \hline
+      96-127 & Correlation & Measures the joint probability occurrence of the specified pixel pairs in the GLCM, for $0^o$, $45^o$, $135^o$, and $90^o$ orientation, with distance of $1-8$ of neighboring voxels \\
+      \hline   
+      128-159 & Energy & Provides the sum of squared elements in the GLCM. Also known as uniformity or the angular second moment, for $0^o$, $45^o$, $135^o$, and $90^o$ orientation, with distance of $1-8$ of neighboring voxels \\
+      \hline       
+      160-191 & Homogeneity & Measures the closeness of the distribution of elements in the GLCM to the GLCM diagonal, for $0^o$, $45^o$, $135^o$, and $90^o$ orientation, with distance of $1-8$ of neighboring voxels \\
+      \hline    
+    \end{tabular}
+  \end{center}
+}
+
+\tabl{table3}{Classification metrics}
+{
+  \scriptsize
+  \begin{center}
+    \label{tab:table4}
+		\begin{tabular}{|l|l|l|l|}
+		\hline
+      	\textbf{Parameters} & \textbf{SVM+1D/2Dfeatures} & \textbf{SVM+1Dfeatures} & \textbf{CNN} \\
+      	\hline
+        \hline
+      	\textbf{precision} & 0.93 & 0.82 & 0.91 \\ \hline
+      	\textbf{recall}    & 0.92 & 0.82 & 0.90 \\ \hline   
+      	\textbf{F1-score}  & 0.92 & 0.82 & 0.90 \\ \hline 
+		\end{tabular}
+  \end{center}
+}
+  
+\tabl{table4}{Top 10 most important features, with their normalized importance scores summing up to 0.665.}
+{
+  \scriptsize
+  \begin{center}
+    \label{tab:table4}
+		\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+		\hline
+		\textbf{ID}         & 121   & 184   & 168   & 122   & 104   & 176   & 127    & 186   & 72    & 36   & \textbf{Sum} 		\\ \hline
+		\textbf{Importance} & 0.3545 & 0.1255 & 0.1194 & 0.0463 & 0.0345 & 0.0188 & 0.0144 & 0.0124 & 0.0092 & 0.0090 & 0.7440        		\\ \hline
+		\end{tabular}
+  \end{center}
+}
+  
+
+\inputdir{./}% figure directory
+\multiplot{2}{acq1,acq2}{width=0.45\textwidth}{Synthetic example: the geometry and velocity model for the modeling of (a) raw training data, (b) raw test data.}
+
+\multiplot{2}{d1_noise_n005,d1_label_noise_n005}{width=0.45\textwidth}{Synthetic example: (a) raw training data, (b) labeled training data.}
+
+\plot{traindata_2dfeature}{width=1\textwidth}{Synthetic example: 2D texture features of the training data: Contrast, Correlation, Energy, Homogeneity, for $0^o$, $45^o$, $90^o$, and $135^o$ orientations, with the distance of $3$ neighboring voxels.}
+
+\multiplot{2}{CorrMatrix,fvalues}{width=0.45\textwidth}{Synthetic example: (a) correlation matrix of the 191 1D and 2D features. Note that 2D features (ID range 64 - 191) are correlated due to the nature of the GLCM characteristics, (b) the univariate score (F-value) as a function of feature ID, the feature ID corresponds to table~\ref{tbl:table1} and table~\ref{tbl:table2}.}
+
+\multiplot{5}{d2_noise_n01,d2_pred_noise_n01,d2_pred_noise_n01_no2d,d2_ltasta_noise_n01,d2_pred_CNN_noise_n01}{width=0.3\textwidth}{Synthetic example: (a) raw test data 1 ($SNR=-10dB$); predicted event detection of the test data 1 ($SNR=-10dB$) using (b) both 1D and 2D features, (c) only 1D features, (d) conventional LTA/STA method, (e) CNN.}
+
+\multiplot{5}{d2_noise_n005,d2_pred_noise_n005,d2_pred_noise_n005_no2d,d2_ltasta_noise_n005,d2_pred_CNN_noise_n005}{width=0.3\textwidth}{Synthetic example: (a) raw test data 1 ($SNR=-13dB$); predicted event detection of the test data 2 ($SNR=-10dB$) using (b) both 1D and 2D features, (c) only 1D features, (d) conventional LTA/STA method, (e) CNN.}
+
+\plot{profile}{width=1\textwidth}{Synthetic example: Five traces (at $150,~525,~900,~1275,~1650m$) of clean (red) and noisy (blue) test data 2 and the predicted event detection (yellow; 0-noise, 1-event).}
+
+\multiplot{2}{d8,d8_label_strict_test}{width=0.45\textwidth}{Field data example: (a) raw training data, (b) labeled training data.}
+
+\plot{2dfeature_field}{width=1\textwidth}{Field data example: 2D texture features of the training data: Contrast, Correlation, Energy, Homogeneity, for $0^o$, $45^o$, and $90^o$, and $135^o$ orientations, with distance of $3$ neighboring voxels.}
+
+\multiplot{2}{real_CorrMatrix,fvalues_real}{width=0.45\textwidth}{Field data example: (a) correlation matrix of the 191 1D and 2D features. Note that 2D features (ID range 64 - 191) are correlated due to the nature of the GLCM characteristics, (b) The univariate score (F-value) as a function of feature ID.}
+
+\multiplot{4}{d5,d5_pred_add2d_strict_test,d5_pred_no2d_strict_test,real_d5_pred_CNN}{width=0.45\textwidth}{Field data example: (a) raw test data 1, (a) predicted event detection using (b) both 1D and 2D features, (c) only 1D features, (d) CNN. }
+
+\multiplot{4}{d7,d7_pred_add2d_strict_test,d7_pred_no2d_strict_test,real_d7_pred_CNN}{width=0.45\textwidth}{Field data example: (a) raw test data 2, (a) predicted event detection using (b) both 1D and 2D features, (c) only 1D features, (d) CNN. }
+
+\multiplot{4}{d9,d9_pred_add2d_strict_test,d9_pred_no2d_strict_test,real_d9_pred_CNN}{width=0.45\textwidth}{Field data example: (a) raw test data 3, (a) predicted event detection using (b) both 1D and 2D features, (c) only 1D features, (d) CNN. }
+
+\plot{PartialPlot}{width=1\textwidth}{Partial dependence plot for feature $\#121$. Positive feature $\#121$ value would substantially increase the possibility of detecting a microseismic event, and the shaped area denotes the level of confidence.}
+
+\multiplot{4}{d8_label_loose_test,d5_pred_add2d_loose_test,d7_pred_add2d_loose_test,d9_pred_add2d_loose_test}{width=0.45\textwidth}{Field data example: (a) labeled training data based on a relaxed criterion; (b-d)predicted event detection of raw test data 1-3 based on a relaxed labeling criterion using both 1D and 2D features.}
+
+%\append{The source of the bibliography}
+%\verbatiminput{2016_seg.bib}
+
+\bibliographystyle{seg}  % style file is seg.bst
+\bibliography{ml}
+
