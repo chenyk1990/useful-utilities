@@ -447,21 +447,34 @@ and the phases according to Algorithm \ref{pro:pronyalgorithm}.
 After all the parameters are computed, we then
 compute the components of the input signal. For details see 
 Algorithm \ref{pro:pronyalgorithm} as follows:
-\begin{algorithm}
-    \caption{Prony method} 
-    \label{pro:pronyalgorithm}
-  \begin{algorithmic}[1]
-      \State \textit{Find coefficients:} $\displaystyle a_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mx[n-m] = 0.$
-      \State \textit{Find roots:} $\displaystyle z_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mz^{M-m}= 0.$
-      \State \textit{Compute frequencies:} $\displaystyle
-      \omega_k, k=1,2,\cdots,M \gets \Re\left\{\mathbf{arg}\left(\frac{z_k}{(k-1)\Delta t}\right)\right\}, k=1,2,\cdots,M.$
-      \State \textit{Compute:} $\displaystyle
-      A_k e^{\alpha_k (n-1)\Delta t + j\phi_k}, k=1,2,\cdots,M \gets 
-      x[n] = \sum_{k=1}^{M}A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.$
-      \State \textit{Compute components:} $\displaystyle
-      A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.$
-  \end{algorithmic}
+%\begin{algorithm}
+%   \caption{Prony method} 
+%   \label{pro:pronyalgorithm}
+% \begin{algorithmic}[1]
+%     \State \textit{Find coefficients:} $\displaystyle a_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mx[n-m] = 0.$
+%     \State \textit{Find roots:} $\displaystyle z_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mz^{M-m}= 0.$
+%     \State \textit{Compute frequencies:} $\displaystyle
+%     \omega_k, k=1,2,\cdots,M \gets \Re\left\{\mathbf{arg}\left(\frac{z_k}{(k-1)\Delta t}\right)\right\}, k=1,2,\cdots,M.$
+%     \State \textit{Compute:} $\displaystyle
+%     A_k e^{\alpha_k (n-1)\Delta t + j\phi_k}, k=1,2,\cdots,M \gets 
+%     x[n] = \sum_{k=1}^{M}A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.$
+%     \State \textit{Compute components:} $\displaystyle
+%     A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.$
+% \end{algorithmic}
+%\end{algorithm}
+
+\begin{algorithm}{Algorithm 1: Prony method}{}
+     \text{Find coefficients:} \displaystyle a_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mx[n-m] = 0.
+     \text{Find roots:} \displaystyle z_k,k=1,2,\cdots,M \gets \sum_{m=0}^{M}a_mz^{M-m}= 0.
+     \text{Compute frequencies:} \displaystyle
+     \omega_k, k=1,2,\cdots,M \gets \Re\left\{\mathbf{arg}\left(\frac{z_k}{(k-1)\Delta t}\right)\right\}, k=1,2,\cdots,M.
+     \text{Compute:} \displaystyle
+     A_k e^{\alpha_k (n-1)\Delta t + j\phi_k}, k=1,2,\cdots,M \gets 
+     x[n] = \sum_{k=1}^{M}A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.
+     \text{Compute components:} \displaystyle
+     A_k e^{(\alpha_k + j\omega_k)(n-1)\Delta t + j\phi_k}.
 \end{algorithm}
+
 
 \section{non-stationary Prony method and shaping regularization}
 The equation\textbf{~\ref{eqa:eq8}} can be rewritten as
@@ -563,22 +576,41 @@ where $\sigma$ is the regularization parameter, $\mathbf{S}$ is a shaping operat
 and $\mathbf{x}_i^*(t)$ stands for the complex conjugate of $\mathbf{x}_i(t)$.
 We can use the conjugate gradient method to find the solution of the linear system.
 The NPM \cite[]{fomel2013} can be summarized as follows:
-\begin{algorithm}
-    \caption{non-stationary Prony method} 
-    \label{pro:nopronyalgorithm}
-  \begin{algorithmic}[1]
-      \State \textit{Find time dependent coefficients using auto-regression method:} 
-        $\displaystyle \hat{a}_k[n],k=1,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]x[n-m] = 0.$
-      \State \textit{Find time dependent roots:} 
-         $\displaystyle \hat{z}_k[n],k=1,2,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]z^{M-m}= 0.$
-      \State \textit{Compute time dependent frequencies:}
-         $\displaystyle \hat{\omega}_k[n], k=1,\cdots,M\gets\Re\left\{\mathbf{arg}\left(\frac{\hat{z}_k[n]}{\Delta t}\right)\right\}, k=1,\cdots,M.$
-      \State \textit{Compute the time dependent phase:} 
-       $\displaystyle \hat{\phi}_k[n] = \sum_{k=0}^{n}\hat{\omega}_k[n]\Delta t.$ 
-      \State \textit{Compute components using auto-regression method:} 
-        $\displaystyle \hat{c}_m[n], m=1,\cdots M \gets \mathbf{x}[n] \approx \sum_{m=1}^M \hat{A}_m[n]e^{j\hat{\phi}_m[n]}=\sum_{m=1}^M\hat{c}_m[n]$
-  \end{algorithmic}
+%\begin{algorithm}
+%   \caption{non-stationary Prony method} 
+%   \label{pro:nopronyalgorithm}
+% \begin{algorithmic}[1]
+%     \State \textit{Find time dependent coefficients using auto-regression method:} 
+%       $\displaystyle \hat{a}_k[n],k=1,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]x[n-m] = 0.$
+%     \State \textit{Find time dependent roots:} 
+%        $\displaystyle \hat{z}_k[n],k=1,2,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]z^{M-m}= 0.$
+%     \State \textit{Compute time dependent frequencies:}
+%        $\displaystyle \hat{\omega}_k[n], k=1,\cdots,M\gets\Re\left\{\mathbf{arg}\left(\frac{\hat{z}_k[n]}{\Delta t}\right)\right\}, k=1,\cdots,M.$
+%     \State \textit{Compute the time dependent phase:} 
+%      $\displaystyle \hat{\phi}_k[n] = \sum_{k=0}^{n}\hat{\omega}_k[n]\Delta t.$ 
+%     \State \textit{Compute components using auto-regression method:} 
+%       $\displaystyle \hat{c}_m[n], m=1,\cdots M \gets \mathbf{x}[n] \approx \sum_{m=1}^M \hat{A}_m[n]e^{j\hat{\phi}_m[n]}=\sum_{m=1}^M\hat{c}_m[n]$
+% \end{algorithmic}
+%\end{algorithm}
+
+
+\begin{algorithm}{Algorithm 2: non-stationary Prony method}{}
+     \text{Find time dependent coefficients using auto-regression method:} 
+     \displaystyle \hat{a}_k[n],k=1,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]x[n-m] = 0. \\
+     \text{Find time dependent roots:} 
+     \displaystyle \hat{z}_k[n],k=1,2,\cdots,M \gets \sum_{m=0}^{M}\hat{a}_m[n]z^{M-m}= 0.\\
+     \text{Compute time dependent frequencies:} 
+     \displaystyle \hat{\omega}_k[n], k=1,\cdots,M\gets\Re\left\{\mathbf{arg}\left(\frac{\hat{z}_k[n]}{\Delta t}\right)\right\}, k=1,\cdots,M.\\
+     \text{Compute the time dependent phase:}  
+     \displaystyle \hat{\phi}_k[n] = \sum_{k=0}^{n}\hat{\omega}_k[n]\Delta t.\\
+     \text{Compute components using auto-regression method:}  
+     \displaystyle \hat{c}_m[n], m=1,\cdots M \gets \mathbf{x}[n] \approx \sum_{m=1}^M \hat{A}_m[n]e^{j\hat{\phi}_m[n]}=\sum_{m=1}^M\hat{c}_m[n]
 \end{algorithm}
+
+
+
+
+
 After we decompose the input signal into narrow-band components, 
 we compute the time-frequency distribution of the input signal 
 using the Hilbert transform of the intrinsic mode functions.
