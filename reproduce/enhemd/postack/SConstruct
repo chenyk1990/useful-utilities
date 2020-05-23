@@ -49,8 +49,8 @@ Plot('post-gath-rec','grey labelsz=12 titlesz=12.5 title="Mapped back" ')
 # INITIALIZATION
 ########################################################################
 matlab         = WhereIs('matlab')
-matROOT = '/home/chenyk/chenyk/matlibcyk/Mada_matlab'
-matfun = 'FXEMD'
+matROOT = '../matfun'
+matfun = 'FX_EMD'
 matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
 if not matlab:
