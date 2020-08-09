@@ -11,7 +11,7 @@ Paper('seg_projname',lclass='segabs',use='amsmath,listings')
 env.Command('seg_projname_final.pdf','seg_projname_final.tex','pdflatex $SOURCE')
 
 # EAGE (change lclass)
-Paper('eage_projname',lclass='cph18',use='listings, amsmath')
+Paper('eage_projname',lclass='paris17',use='listings, amsmath')
 
 # GEO first submission
 Paper('projname',options='manuscript',use='amsmath,listings')
