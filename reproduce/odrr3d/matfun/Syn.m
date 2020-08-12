@@ -132,7 +132,7 @@ rsf_create(odrr,size(d3)');
 rsf_write(d3,odrr);
 
 rsf_create(fk,size(d4)');
-rsf_write(d3,fk);
+rsf_write(d4,fk);
 
 
 
