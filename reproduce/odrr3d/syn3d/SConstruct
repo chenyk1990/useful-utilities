@@ -77,40 +77,35 @@ def Wig(data,other):
 ########################################################################
 # INITIALIZATION
 ########################################################################
-#matlab         = WhereIs('matlab')
-#matROOT = '../matfun'
-#matfun = 'FIELDTEST'
-#matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
+matlab         = WhereIs('matlab')
+matROOT = '../matfun'
+matfun = 'Syn'
+matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
 
-#if not matlab:
-#    sys.stderr.write('\nCannot find Matlab.\n')
-#    sys.exit(1)
+if not matlab:
+   sys.stderr.write('\nCannot find Matlab.\n')
+   sys.exit(1)
 
 ############################################################
 ## generate and process synthetic data
 ############################################################
-#Flow('field field-obs field-ranksparsity field-lr',[os.path.join(matROOT,matfun+'.m')],
-#     '''MATLABPATH=%(matlabpath)s %(matlab)s 
-#     -nosplash -nojvm -r "addp;addpath %(matROOT)s;%(matfun)s('${TARGETS[0]}','${TARGETS[1]}','${TARGETS[2]}','${TARGETS[3]}');quit"
-#     '''%vars(),stdin=0,stdout=-1)
+Flow('syn-c syn-n syn-fk syn-lr syn-dlr syn-olr',[os.path.join(matROOT,matfun+'.m')],
+    '''MATLABPATH=%(matlabpath)s %(matlab)s 
+    -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${TARGETS[0]}','${TARGETS[1]}','${TARGETS[2]}','${TARGETS[3]}','${TARGETS[4]}','${TARGETS[5]}');quit"
+    '''%vars(),stdin=0,stdout=-1)
 
-
-Flow('syn3d-c','../data/syn1_c_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-n','../data/syn1_n_300_20_20.bin ','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-obs','../data/syn1_d_300_20_20.bin ','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-mask','../data/syn1_m_300_20_20.bin ','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-fk','../data/syn1_dn_fk_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-lr','../data/syn1_dn_mssa_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-dlr','../data/syn1_dn_dlr_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-olr','../data/syn1_dn_olr_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-mc','../data/syn1_dn_mc_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
-Flow('syn3d-rsvd','../data/syn1_dn_rsvd_300_20_20.bin','bin2rsf n1=300 n2=400 | put n1=300 n2=20 n3=20')
+Flow('syn3d-c','syn-c','put n1=300 n2=20 n3=20')
+Flow('syn3d-n','syn-n','put n1=300 n2=20 n3=20')
+Flow('syn3d-fk','syn-fk','put n1=300 n2=20 n3=20')
+Flow('syn3d-lr','syn-lr','put n1=300 n2=20 n3=20')
+Flow('syn3d-dlr','syn-dlr','put n1=300 n2=20 n3=20')
+Flow('syn3d-olr','syn-olr','put n1=300 n2=20 n3=20')
 
 
 Flow('syn3d-simi1','syn3d-n-fk syn3d-fk','similarity other=${SOURCES[1]} niter=20 rect1=3 rect2=3 rect3=3')
 Flow('syn3d-simi2','syn3d-n-lr syn3d-lr','similarity other=${SOURCES[1]} niter=20 rect1=3 rect2=3 rect3=3')
 Flow('syn3d-simi3','syn3d-n-dlr syn3d-dlr','similarity other=${SOURCES[1]} niter=20 rect1=3 rect2=3 rect3=3 ')
-Flow('syn3d-simi4','syn3d-n-olr syn3d-olr','similarity other=${SOURCES[1]} niter=20 rect1=3 rect2=3 rect3=3 |math output="input*0.8"')
+Flow('syn3d-simi4','syn3d-n-olr syn3d-olr','similarity other=${SOURCES[1]} niter=20 rect1=3 rect2=3 rect3=3 ')
 Greys('syn3d-simi1','color=j scalebar=y clip=0.8 minval=0 maxval=0.6 title="FK" barlabel="Similarity"')
 Greys('syn3d-simi2','color=j scalebar=y clip=0.8 minval=0 maxval=0.6 title="RR" barlabel="Similarity"')
 Greys('syn3d-simi3','color=j scalebar=y clip=0.8 minval=0 maxval=0.6 title="DRR" barlabel="Similarity"')
@@ -121,24 +116,18 @@ Flow('syn3d-n-fk','syn3d-n syn3d-fk',' add scale=1,-1 ${SOURCES[1]}')
 Flow('syn3d-n-lr','syn3d-n syn3d-lr',' add scale=1,-1 ${SOURCES[1]}')
 Flow('syn3d-n-dlr','syn3d-n syn3d-dlr',' add scale=1,-1 ${SOURCES[1]}')
 Flow('syn3d-n-olr','syn3d-n syn3d-olr',' add scale=1,-1 ${SOURCES[1]}')
-Flow('syn3d-n-mc','syn3d-n syn3d-mc',' add scale=1,-1 ${SOURCES[1]}')
-Flow('syn3d-n-rsvd','syn3d-n syn3d-rsvd',' add scale=1,-1 ${SOURCES[1]}')
 
 
 Grey3('syn3d-c','color=g color=b title=Clean')
 Grey3('syn3d-n','color=g color=b title=Noisy')
-Grey3('syn3d-obs','color=g color=b title=Decimated')
 Grey3('syn3d-lr','color=g color=b title=RR')
 Grey3('syn3d-dlr','color=g color=b title=DRR')
 Grey3('syn3d-olr','color=g color=b title=ODRR')
-Grey3('syn3d-mc','color=g color=b title=GROUSE')
-Grey3('syn3d-rsvd','color=g color=b title=RSVD')
 Grey3('syn3d-fk','color=g color=b title=FK')
 
 
 Greyfk('syn3d-c-fkk','syn3d-c','title=Clean')
 Greyfk('syn3d-n-fkk','syn3d-n','title=Noisy')
-Greyfk('syn3d-obs-fkk','syn3d-obs','title=Decimated')
 Greyfk('syn3d-lr-fkk','syn3d-lr','title=RR')
 Greyfk('syn3d-dlr-fkk','syn3d-dlr','title=DRR')
 Greyfk('syn3d-olr-fkk','syn3d-olr','title=ODRR')
@@ -148,23 +137,17 @@ Grey3('syn3d-n-lr','color=g color=b title=RR')
 Grey3('syn3d-n-dlr','color=g color=b title=DRR')
 Grey3('syn3d-n-olr','color=g color=b title=ODRR')
 Grey3('syn3d-n-fk','color=g color=b title=FK')
-Grey3('syn3d-n-mc','color=g color=b title=GROUSE')
-Grey3('syn3d-n-rsvd','color=g color=b title=RSVD')
 
 Flow('syn3d-c-s','syn3d-c','window n3=1 f3=5')
 Flow('syn3d-n-s','syn3d-n','window n3=1 f3=5')
 Flow('syn3d-lr-s','syn3d-lr','window n3=1 f3=5')
 Flow('syn3d-dlr-s','syn3d-dlr','window n3=1 f3=5')
 Flow('syn3d-olr-s','syn3d-olr','window n3=1 f3=5')
-Flow('syn3d-mc-s','syn3d-mc','window n3=1 f3=5')
-Flow('syn3d-rsvd-s','syn3d-rsvd','window n3=1 f3=5')
 Flow('syn3d-fk-s','syn3d-fk','window n3=1 f3=5')
 
 Flow('syn3d-n-lr-s','syn3d-n-lr','window n3=1 f3=5')
 Flow('syn3d-n-dlr-s','syn3d-n-dlr','window n3=1 f3=5')
 Flow('syn3d-n-olr-s','syn3d-n-olr','window n3=1 f3=5')
-Flow('syn3d-n-mc-s','syn3d-n-mc','window n3=1 f3=5')
-Flow('syn3d-n-rsvd-s','syn3d-n-rsvd','window n3=1 f3=5')
 Flow('syn3d-n-fk-s','syn3d-n-fk','window n3=1 f3=5')
 
 Wig('syn3d-c-s','title=Clean')
@@ -172,14 +155,10 @@ Wig('syn3d-n-s','title=Noisy')
 Wig('syn3d-lr-s','title=RR')
 Wig('syn3d-dlr-s','title=DRR')
 Wig('syn3d-olr-s','title=ODRR')
-Wig('syn3d-mc-s','title=GROUSE')
-Wig('syn3d-rsvd-s','title=RSVD')
 Wig('syn3d-fk-s','title=FK')
 Wig('syn3d-n-lr-s','title=RR')
 Wig('syn3d-n-dlr-s','title=DRR')
 Wig('syn3d-n-olr-s','title=ODRR')
-Wig('syn3d-n-mc-s','title=GROUSE')
-Wig('syn3d-n-rsvd-s','title=RSVD')
 Wig('syn3d-n-fk-s','title=FK')
 
 

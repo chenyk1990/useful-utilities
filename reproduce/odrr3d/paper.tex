@@ -251,11 +251,11 @@ The algorithm workflow for the optimally damped rank-reduction method (ODRR) is 
 \caption{\wen{Comparison of computational costs in seconds for different rank-reduction based methods.}}
 \begin{center}
      \begin{tabular}{|c|c|c|c|c|c|c|} 
-	  \hline Tests  & FK (s) & Seislet (s) & RR (s)  &  DRR (s) &  \dlo{Proposed}\wen{ODRR} (s) \\ 
-	  \hline \dlo{First example}\wen{Linear synthetic} (N=3) & 0.13 &0.53 & 2.27 & 2.45 & 2.43 \\
-      \hline \dlo{First example}\wen{Linear synthetic} (N=6) & 0.17 &0.60 &3.02 & 3.04 & 3.17 \\
-	  \hline \dlo{Second example}\wen{Hyperbolic synthetic} (N=10)  & 0.09 &0.43 &1.69 & 1.71 & 1.83 \\
-      \hline \dlo{Second example}\wen{Hyperbolic synthetic} (N=20)  & 0.11 &0.49 & 2.75 & 2.69 & 2.83\\
+	  \hline Tests  & FK (s) & RR (s)  &  DRR (s) &  \dlo{Proposed}\wen{ODRR} (s) \\ 
+	  \hline \dlo{First example}\wen{Linear synthetic} (N=3) & 0.13 & 2.27 & 2.45 & 2.43 \\
+      \hline \dlo{First example}\wen{Linear synthetic} (N=6) & 0.17  &3.02 & 3.04 & 3.17 \\
+	  \hline \dlo{Second example}\wen{Hyperbolic synthetic} (N=10)   &0.43 &1.69 & 1.71 & 1.83 \\
+      \hline \dlo{Second example}\wen{Hyperbolic synthetic} (N=20)   &0.49 & 2.75 & 2.69 & 2.83\\
           \hline
     \end{tabular} 
 \end{center}
@@ -330,7 +330,7 @@ For a better comparison, we extract the 5th Xline slice from Figures \ref{fig:sy
 
 \wen{To test the performance of the proposed method in denoising high-frequency band. We create a slightly different example shown in Figure \ref{fig:syn3dhf-cn}. We increase the dominant frequency of the Ricker wavelet to 60 Hz and then extract the frequency band of 60-100 Hz. We also extract the same frequency band of the Gaussian white noise, and add the high-frequency noise to the clean data to generate the noisy data. The denoising comparison of different methods for the high-frequency band is shown in Figure \ref{fig:syn3dhf-comp}. The spectrum comparison is shown in Figure \ref{fig:syn3dhf-comp-fk}. This test demonstrates the lowrank methods also work well in high-frequency band. }
 
-The next example is a synthetic dataset with hyperbolic events. \wen{In this example, we use the Ricker wavelet with a dominant frequency of 10 Hz to generate the clean data. We add Gaussian white noise with variance of 0.2 (as compared with the normalized clean data).} The clean and noisy data are shown in Figures \ref{fig:hyp3d-c} and \ref{fig:hyp3d-n}, respectively. The SNR of the noisy data is \dlo{4.29}\wen{-2.17} dB. We apply FK thresholding method and the three rank-reduction based methods to this example and show the results in Figure \ref{fig:hyp3d-comp}. For the FK thresholding method, we preserve 20\% largest coefficients in the transformed domain. For all the rank-reduction based methods, we use \dlo{$N=3$}\wen{$N=10$}. Since the hyperbolic events no longer \dlo{meet}\wen{satisfy} the assumption, i.e., \dlo{bing}\wen{being} lowrank, the hyperbolic events in this example are \dlo{obviously }over-smoothed when \dlo{$N=3$}\wen{$N=10$}. It is also clear that both FK thresholding and the rank-reduction \dlo{method}\wen{methods} have significant residual noise. The damped rank-reduction method and the proposed method are both very clean, but the proposed method is slightly smoother. In this example, because of the hyperbolic events and \dlo{the}\wen{their} small rank, the removed noise cubes as shown in the bottom row of Figure \ref{fig:hyp3d-comp} contain \dlo{small}\wen{a small amount of} spatially coherent energy, which indicates \dlo{the }signal leakage \cite[]{yangkang2015ortho}.  The calculated SNRs in this example are \dlo{10.86}\wen{7.05} dB for the FK thresholding method, \dlo{11.05}\wen{8.27} dB for the \dlo{traditional }rank-reduction method, \dlo{11.08}\wen{9.58} dB for the damped rank-reduction method, and \dlo{11.64}\wen{9.65} dB for the \dlo{new method}\wen{proposed method}. \wen{In this example, we do not use local windows to locally pretend that hyperbolic events act as linear events. When applying local windows, \dlo{more}\wen{additional} parameters (e.g., the window size) need to be compared and considered. To avoid the this step, we can use a relatively large rank to avoid the signal damage.} From the comparison of local similarity, significant \dlo{damages are}\wen{damage is} highlighted as \dlo{the }high similarity anomalies. \dlo{Then we}\wen{We} increase the rank from \dlo{$N=3$}\wen{$N=10$} to \dlo{$N=9$}\wen{$N=20$} and show the results in Figure \ref{fig:hyp3d-9-comp}. For the FK thresholding method, we increase the threshold percentage from 20\% to 40\%. We find that in this test, both FK thresholding method and the \dlo{traditional }rank-reduction method \dlo{cause}\wen{leave} more residual noise while the results from the damped rank-reduction method and the proposed method are still very smooth.  However, when \dlo{$N=9$}\wen{$N=20$}, \dlo{none of the rank-reduction methods cause damages to useful signals}\wen{the rank-reduction methods do not produce significant damage to useful signals} \wen{but they also do not attenuate the noise very well}. In addition, when \dlo{$N=9$}\wen{$N=20$}, the proposed method becomes obviously smoother than the damped rank-reduction method. The comparison \dlo{if}\wen{is} more noticeable when observing the local similarity maps. The calculated SNRs in this example are \dlo{13.43}\wen{5.85} dB for the FK thresholding method, \dlo{15.36}\wen{7.04} dB for the \dlo{traditional }rank-reduction method, \dlo{20.06}\wen{10.08} dB for the damped rank-reduction method, and \dlo{21.25}\wen{11.00} dB for the proposed method.  \wen{Figure \ref{fig:hyp3d-9-comp-s} shows a} single slice comparison of this example (5th Xline slice) when \dlo{$N=9$}\wen{$N=20$}, where it is more \dlo{salient}\wen{noticeable} that the proposed method obtains the best result.  \dlo{Besides, the}\wen{The} SNRs for all the aforementioned tests are \wen{given} in Table \ref{tbl:snrs} for a detailed comparison. %\wen{Based on this example, we test the performance of different methods in the presence of band-limited noise. The added noise has been bandpass filtered within the frequency range of 0-40 Hz. The calculated SNRs of the noisy data, FK method, RR method, DRR method, and the proposed method are 9.15 dB, 19.97 dB, 21.21 dB, and 21.91 dB, respectively. Though the proposed method is derived based on the assumption of white noise, it can also adapt to band-limited noise.}
+The next example is a synthetic dataset with hyperbolic events. \wen{In this example, we use the Ricker wavelet with a dominant frequency of 10 Hz to generate the clean data. We add Gaussian white noise with variance of 0.2 (as compared with the normalized clean data).} The clean and noisy data are shown in Figures \ref{fig:hyp3d-c} and \ref{fig:hyp3d-n}, respectively. The SNR of the noisy data is \dlo{4.29}\wen{-2.17} dB. We apply FK thresholding method and the three rank-reduction based methods to this example and show the results in Figure \ref{fig:hyp3d-comp}. For the FK thresholding method, we preserve 20\% largest coefficients in the transformed domain. For all the rank-reduction based methods, we use \dlo{$N=3$}\wen{$N=10$}. Since the hyperbolic events no longer \dlo{meet}\wen{satisfy} the assumption, i.e., \dlo{bing}\wen{being} lowrank, the hyperbolic events in this example are \dlo{obviously }over-smoothed when \dlo{$N=3$}\wen{$N=10$}. It is also clear that both FK thresholding and the rank-reduction \dlo{method}\wen{methods} have significant residual noise. The damped rank-reduction method and the proposed method are both very clean, but the proposed method is slightly smoother. In this example, because of the hyperbolic events and \dlo{the}\wen{their} small rank, the removed noise cubes as shown in the bottom row of Figure \ref{fig:hyp3d-comp} contain \dlo{small}\wen{a small amount of} spatially coherent energy, which indicates \dlo{the }signal leakage \cite[]{yangkang2015ortho}.  The calculated SNRs in this example are \dlo{10.86}\wen{7.05} dB for the FK thresholding method, \dlo{11.05}\wen{8.27} dB for the \dlo{traditional }rank-reduction method, \dlo{11.08}\wen{9.58} dB for the damped rank-reduction method, and \dlo{11.64}\wen{9.65} dB for the \dlo{new method}\wen{proposed method}. \wen{In this example, we do not use local windows to locally pretend that hyperbolic events act as linear events. When applying local windows, \dlo{more}\wen{additional} parameters (e.g., the window size) need to be compared and considered. To avoid the this step, we can use a relatively large rank to avoid the signal damage.} From the comparison of local similarity, significant \dlo{damages are}\wen{damage is} highlighted as \dlo{the }high similarity anomalies. \dlo{Then we}\wen{We} increase the rank from \dlo{$N=3$}\wen{$N=10$} to \dlo{$N=9$}\wen{$N=20$} and show the results in Figure \ref{fig:hyp3d-20-comp}. For the FK thresholding method, we increase the threshold percentage from 20\% to 40\%. We find that in this test, both FK thresholding method and the \dlo{traditional }rank-reduction method \dlo{cause}\wen{leave} more residual noise while the results from the damped rank-reduction method and the proposed method are still very smooth.  However, when \dlo{$N=9$}\wen{$N=20$}, \dlo{none of the rank-reduction methods cause damages to useful signals}\wen{the rank-reduction methods do not produce significant damage to useful signals} \wen{but they also do not attenuate the noise very well}. In addition, when \dlo{$N=9$}\wen{$N=20$}, the proposed method becomes obviously smoother than the damped rank-reduction method. The comparison \dlo{if}\wen{is} more noticeable when observing the local similarity maps. The calculated SNRs in this example are \dlo{13.43}\wen{5.85} dB for the FK thresholding method, \dlo{15.36}\wen{7.04} dB for the \dlo{traditional }rank-reduction method, \dlo{20.06}\wen{10.08} dB for the damped rank-reduction method, and \dlo{21.25}\wen{11.00} dB for the proposed method.  \wen{Figure \ref{fig:hyp3d-20-comp-s} shows a} single slice comparison of this example (5th Xline slice) when \dlo{$N=9$}\wen{$N=20$}, where it is more \dlo{salient}\wen{noticeable} that the proposed method obtains the best result.  \dlo{Besides, the}\wen{The} SNRs for all the aforementioned tests are \wen{given} in Table \ref{tbl:snrs} for a detailed comparison. %\wen{Based on this example, we test the performance of different methods in the presence of band-limited noise. The added noise has been bandpass filtered within the frequency range of 0-40 Hz. The calculated SNRs of the noisy data, FK method, RR method, DRR method, and the proposed method are 9.15 dB, 19.97 dB, 21.21 dB, and 21.91 dB, respectively. Though the proposed method is derived based on the assumption of white noise, it can also adapt to band-limited noise.}
 Figure \ref{fig:snrs_hyp} plots the SNR diagrams of \wen{the} different \dlo{approaches}\wen{methods} with respect to the input parameters for the hyperbolic example. When the rank is sufficiently large, e.g., larger than 18, the proposed approach is clearly more insensitive to the rank when compared to the other rank-reduction based methods \wen{due to the calculation of adaptive weights for the singular-values}. \dlo{We}\wen{Table \ref{tbl:times}} compares the computational costs for all these tests. \dlo{ The three rank-reduction methods have similar computational costs, while the proposed method is slightly more expensive.}\wen{All three methods are comprable but the proposed method is slightly more expensive.}
 
 
@@ -521,91 +521,91 @@ Datasets and source codes associated with this research will be made available o
 
 \begin{figure}[htb!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.4\textwidth]{hyp3d_2/Fig/hyp3d-c}  \label{fig:hyp3d-c}}
-    \subfloat[]{\includegraphics[width=0.4\textwidth]{hyp3d_2/Fig/hyp3d-n}	\label{fig:hyp3d-n}}\\
-	\caption{Synthetic \wen{data} examples with hyperbolic events. (a) Clean \dlo{synthetic }data. (b) Noisy\dlo{ synthetic} data. \wen{The gray scales for all of the images shown in Figures \ref{fig:hyp3d-cn}-\ref{fig:hyp3d-9-comp-s} are the same.}}
+	\subfloat[]{\includegraphics[width=0.4\textwidth]{hyp3d/Fig/hyp3d-c}  \label{fig:hyp3d-c}}
+    \subfloat[]{\includegraphics[width=0.4\textwidth]{hyp3d/Fig/hyp3d-n}	\label{fig:hyp3d-n}}\\
+	\caption{Synthetic \wen{data} examples with hyperbolic events. (a) Clean \dlo{synthetic }data. (b) Noisy\dlo{ synthetic} data. \wen{The gray scales for all of the images shown in Figures \ref{fig:hyp3d-cn}-\ref{fig:hyp3d-20-comp-s} are the same.}}
 	\label{fig:hyp3d-cn}
 \end{figure}
 
 \begin{figure*}[ht!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-fk}   \label{fig:hyp3d-fk}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-lr}	  \label{fig:hyp3d-lr}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-dlr}  \label{fig:hyp3d-dlr}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-olr}  \label{fig:hyp3d-olr}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-n-fk}   \label{fig:hyp3d-fk}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-n-lr}	  \label{fig:hyp3d-lr}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-n-dlr}  \label{fig:hyp3d-dlr}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-n-olr}  \label{fig:hyp3d-olr}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-simi1}   \label{fig:hyp3d-simi1}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-simi2}	  \label{fig:hyp3d-simi2}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-simi3}  \label{fig:hyp3d-simi3}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_2/Fig/hyp3d-simi4}  \label{fig:hyp3d-simi4}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-fk}   \label{fig:hyp3d-fk}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-lr}	  \label{fig:hyp3d-lr}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-dlr}  \label{fig:hyp3d-dlr}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-olr}  \label{fig:hyp3d-olr}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-n-fk}   \label{fig:hyp3d-fk}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-n-lr}	  \label{fig:hyp3d-lr}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-n-dlr}  \label{fig:hyp3d-dlr}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-n-olr}  \label{fig:hyp3d-olr}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-simi1}   \label{fig:hyp3d-simi1}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-simi2}	  \label{fig:hyp3d-simi2}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-simi3}  \label{fig:hyp3d-simi3}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d/Fig/hyp3d-simi4}  \label{fig:hyp3d-simi4}}\\
 	\caption{Denoising comparison (\dlo{$N=3$}\wen{$N=10$}). \dlo{(a) Result  using the FK thresholding method. (b) Result using the rank-reduction method. (c) Result using the damped rank-reduction method. (d) Result using the proposed method. (d) Removed noise using the FK thresholding method. (e) Removed noise using the rank-reduction method. (f) Removed noise using the damped rank-reduction method. (g) Removed noise using the proposed method.}\wen{The top row: denoised results using (a) FK method, (b) rank-reduction method, (c) damped rank-reduction method, and (d) the proposed method. The middle row: separated noise corresponding to the top row. The bottom row: local similarity corresponding to the top row.}}
 	\label{fig:hyp3d-comp}
 \end{figure*}
 
 \begin{figure*}[ht!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-c-fkk}   \label{fig:hyp3d-c-fkk}}
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-n-fkk}   \label{fig:hyp3d-n-fkk}}
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-fk-fkk}	  \label{fig:hyp3d-fk-fkk}}\\
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-lr-fkk}	  \label{fig:hyp3d-lr-fkk}}
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-dlr-fkk}  \label{fig:hyp3d-dlr-fkk}}
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_2/Fig/hyp3d-olr-fkk}  \label{fig:hyp3d-olr-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-c-fkk}   \label{fig:hyp3d-c-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-n-fkk}   \label{fig:hyp3d-n-fkk}}
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-fk-fkk}	  \label{fig:hyp3d-fk-fkk}}\\
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-lr-fkk}	  \label{fig:hyp3d-lr-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-dlr-fkk}  \label{fig:hyp3d-dlr-fkk}}
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d/Fig/hyp3d-olr-fkk}  \label{fig:hyp3d-olr-fkk}}
 	\caption{\wen{Spectrum comparison ($N=10$). FK spectrum of (a) clean data, (b) noisy data, (c) FK method, (d) rank-reduction method, (e) damped rank-reduction method, and (f) the proposed method.}}
 	\label{fig:hyp3d-comp-fk}
 \end{figure*}
 
 \begin{figure*}[ht!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-fk}   \label{fig:hyp3d-9-fk}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-lr}	  \label{fig:hyp3d-9-lr}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-dlr}  \label{fig:hyp3d-9-dlr}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-olr}  \label{fig:hyp3d-9-olr}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-fk}   \label{fig:hyp3d-9-fk}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-lr}	  \label{fig:hyp3d-9-lr}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-dlr}  \label{fig:hyp3d-9-dlr}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-olr}  \label{fig:hyp3d-9-olr}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi1}   \label{fig:hyp3d-9-simi1}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi2}	  \label{fig:hyp3d-9-simi2}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi3}  \label{fig:hyp3d-9-simi3}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi4}  \label{fig:hyp3d-9-simi4}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-fk}   \label{fig:hyp3d-20-fk}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-lr}	  \label{fig:hyp3d-20-lr}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-dlr}  \label{fig:hyp3d-20-dlr}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-olr}  \label{fig:hyp3d-20-olr}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-fk}   \label{fig:hyp3d-20-fk}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-lr}	  \label{fig:hyp3d-20-lr}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-dlr}  \label{fig:hyp3d-20-dlr}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-olr}  \label{fig:hyp3d-20-olr}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi1}   \label{fig:hyp3d-20-simi1}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi2}	  \label{fig:hyp3d-20-simi2}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi3}  \label{fig:hyp3d-20-simi3}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi4}  \label{fig:hyp3d-20-simi4}}\\
 	\caption{Denoising comparison (\dlo{$N=10$}\wen{$N=20$}). \dlo{(a) Result using the FK thresholding method. (b) Result using the rank-reduction method. (c) Result using the damped rank-reduction method. (d) Result using the proposed method. (d) Removed noise using the FK thresholding method. (e) Removed noise using the rank-reduction method. (f) Removed noise using the damped rank-reduction method. (g) Removed noise using the proposed method.}\wen{The top row: denoised results using (a) FK method, (b) rank-reduction method, (c) damped rank-reduction method, and (d) the proposed method. The middle row: separated noise corresponding to the top row. The bottom row: local similarity corresponding to the top row.}}
-	\label{fig:hyp3d-9-comp}
+	\label{fig:hyp3d-20-comp}
 \end{figure*}
 
 \begin{figure*}[ht!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-c-fkk}   \label{fig:hyp3d-9-c-fkk}}
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-fkk}   \label{fig:hyp3d-9-n-fkk}}
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-fk-fkk}	  \label{fig:hyp3d-9-fk-fkk}}\\
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-lr-fkk}	  \label{fig:hyp3d-9-lr-fkk}}
-	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-dlr-fkk}  \label{fig:hyp3d-9-dlr-fkk}}
-    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-olr-fkk}  \label{fig:hyp3d-9-olr-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-c-fkk}   \label{fig:hyp3d-20-c-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-fkk}   \label{fig:hyp3d-20-n-fkk}}
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-fk-fkk}	  \label{fig:hyp3d-20-fk-fkk}}\\
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-lr-fkk}	  \label{fig:hyp3d-20-lr-fkk}}
+	\subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-dlr-fkk}  \label{fig:hyp3d-20-dlr-fkk}}
+    \subfloat[]{\includegraphics[width=0.3\textwidth]{hyp3d_N20/Fig/hyp3d-20-olr-fkk}  \label{fig:hyp3d-20-olr-fkk}}
 	\caption{\wen{Spectrum comparison ($N=20$). FK spectrum of (a) clean data, (b) noisy data, (c) FK method, (d) rank-reduction method, (e) damped rank-reduction method, and (f) the proposed method.}}
-	\label{fig:hyp3d-9-comp-fk}
+	\label{fig:hyp3d-20-comp-fk}
 \end{figure*}
 
 
 \begin{figure*}[ht!]
 	\centering
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-c-s}   \label{fig:hyp3d-9-c-s}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-fk-s}   \label{fig:hyp3d-9-fk-s}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-lr-s}	  \label{fig:hyp3d-9-lr-s}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-dlr-s}  \label{fig:hyp3d-9-dlr-s}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-olr-s}  \label{fig:hyp3d-9-olr-s}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-s}   \label{fig:hyp3d-9-n-s}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-fk-s}   \label{fig:hyp3d-9-fk-s}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-lr-s}	  \label{fig:hyp3d-9-lr-s}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-dlr-s}  \label{fig:hyp3d-9-dlr}-s}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-n-olr-s}  \label{fig:hyp3d-9-olr-s}}\\
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi1-s}   \label{fig:hyp3d-9-simi1-s}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi2-s}	  \label{fig:hyp3d-9-simi2-s}}
-	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi3-s}  \label{fig:hyp3d-9-simi3-s}}
-    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N9_2/Fig/hyp3d-9-simi4-s}  \label{fig:hyp3d-9-simi4-s}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-c-s}   \label{fig:hyp3d-20-c-s}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-fk-s}   \label{fig:hyp3d-20-fk-s}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-lr-s}	  \label{fig:hyp3d-20-lr-s}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-dlr-s}  \label{fig:hyp3d-20-dlr-s}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-olr-s}  \label{fig:hyp3d-20-olr-s}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-s}   \label{fig:hyp3d-20-n-s}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-fk-s}   \label{fig:hyp3d-20-fk-s}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-lr-s}	  \label{fig:hyp3d-20-lr-s}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-dlr-s}  \label{fig:hyp3d-20-dlr}-s}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-n-olr-s}  \label{fig:hyp3d-20-olr-s}}\\
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi1-s}   \label{fig:hyp3d-20-simi1-s}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi2-s}	  \label{fig:hyp3d-20-simi2-s}}
+	\subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi3-s}  \label{fig:hyp3d-20-simi3-s}}
+    \subfloat[]{\includegraphics[width=0.18\textwidth]{hyp3d_N20/Fig/hyp3d-20-simi4-s}  \label{fig:hyp3d-20-simi4-s}}\\
 	\caption{Denoising comparison (\dlo{$N=10$}\wen{$N=20$}). \dlo{(a) Clean data. (b) Result using the FK thresholding method. (c) Result using the rank-reduction method. (d) Result using the damped rank-reduction method. (e) Result using the proposed method. (f) Noisy data. (g) Removed noise using the FK thresholding method. (h) Removed noise using the rank-reduction method. (i) Removed noise using the damped rank-reduction method. (j) Removed noise using the proposed method.}\wen{(b)-(e): denoised results using FK method, (b) rank-reduction method, (c) damped rank-reduction method, and the proposed method, respectively. (f) Noisy data. (g)-(j) Separated noise corresponding to (b)-(e), respectively. (k)-(n) Local similarity corresponding to (b)-(e), respectively. }}
-	\label{fig:hyp3d-9-comp-s}
+	\label{fig:hyp3d-20-comp-s}
 \end{figure*}
 
 \begin{figure}[htb!]
