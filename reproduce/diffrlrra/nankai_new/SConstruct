@@ -1,6 +1,403 @@
 from rsf.proj import *
 from rsf.prog import RSFROOT
 
+from rsf.recipes.tpx import FPX
+
+### plotting functions
+
+
+def section(title,label1='Time',unit1='s',min1=5.8,max1=8.0,extra=" "):
+    return '''
+    window min1=%g max1=%g |
+    grey title="%s"
+    label1="%s" unit1="%s" label2=Distance unit2=m %s
+    ''' % (min1,max1,title,label1,unit1,extra)
+
+def sectionw(title,label1='Time',unit1='s',min1=5.5,max1=7.0):
+    return '''
+    window min1=%g max1=%g max2=5500 |
+    grey title="%s"
+    label1="%s" unit1="%s" label2=Distance unit2=m
+    ''' % (min1,max1,title,label1,unit1)
+
+def plotvel(title,min1=5.5,max1=8.0):
+    return '''
+    grey min1=%g max1=%g minval=1480 maxval=2000 bias=1700 
+    clip=200 allpos=n color=j scalebar=y barreverse=y barunit=m/s barlabel="Velocity"
+    title="%s" label2="Distance" unit2=m 
+    ''' %(min1,max1,title)
+
+def plotdip(title,min1=5.5,max1=8.0):
+    return '''
+    grey min1=%g max1=%g color=j scalebar=y barlabel="Dip"
+    title="%s" label2="Distance" unit2=m 
+    ''' %(min1,max1,title)
+
+def plotdipw(title,label1='Time',unit1='s',min1=5.5,max1=7.0):
+    return '''
+    window min1=%g max1=%g max2=5500 |
+    grey title="%s" color=j scalebar=y barlabel="Dip"
+    label1="%s" unit1="%s" label2=Distance unit2=m
+    ''' % (min1,max1,title,label1,unit1)
+
+frame1=(int)( (7.0-5.5)/0.002 )
+frame2=(int)( (2000)/16.667 )
+frame3=(int)( (1500-1400)/20 )
+
+print frame1
+print frame2
+print frame3
+
+def plotdip3d(title,min1=5.5,max1=8.0,fr1=frame1,fr2=frame2,fr3=frame3):
+    return '''
+    window min1=%g max1=%g max2=5500 | byte | grey3 flat=n color=j scalebar=n barlabel="Dip"
+    title="%s" label2="Distance" label3="Velocity" unit3="m/s" unit2=m frame1=%d frame2=%d frame3=%d
+    point1=.6 point2=.7
+    ''' %(min1,max1,title,fr1,fr2,fr3)
+
+def plotpick(min2=1400,max2=2600):
+    return '''
+    graph yreverse=y transp=y plotcol=7 plotfat=7 
+    pad=n min2=%g max2=%g wantaxis=n wanttitle=n
+    '''%(min2,max2)
+
+def plot3d(title,min1=5.5,max1=8.0,fr1=frame1,fr2=frame2,fr3=frame3):
+    return '''
+    window min1=%g max1=%g max2=5500 | byte | grey3 flat=n scalebar=n barlabel="Dip"
+    title="%s" label2="Distance" label3="Velocity" unit3="m/s" unit2=m frame1=%d frame2=%d frame3=%d
+    point1=.6 point2=.7
+    ''' %(min1,max1,title,fr1,fr2,fr3)
+
+####### Download data
+
+Fetch('Nshots.su','nankai')
+
+####### Convert to RSF
+
+Flow('shots tshots','Nshots.su',
+     'suread suxdr=y tfile=${TARGETS[1]}')
+
+####### DC Removal
+
+Flow('mean','shots','stack axis=1 | spray axis=1 n=5500 o=0.0 d1=0.002')
+
+Flow('shotsdc','shots mean','add scale=1,-1 ${SOURCES[1]}')
+
+####### Bandpass Filtering
+
+Flow('shotsf','shotsdc','bandpass flo=10')
+
+####### Windowing Data
+
+Flow('shotsw','shotsf','window min1=5.5')
+
+# windowing 5.5 and bandpass filtering significantly
+# improves surface-consistent analysis
+
+####### Mask zero traces
+
+Flow('mask0','shotsw','mul $SOURCE | stack axis=1 | mask min=1e-20')
+
+Flow('shots0','shotsw mask0','headerwindow mask=${SOURCES[1]}')
+
+# update a database
+Flow('tshots0','tshots mask0','headerwindow mask=${SOURCES[1]}')
+
+####### Surface consistent
+
+# Average trace amplitude
+Flow('arms','shots0',
+     'mul $SOURCE | stack axis=1 | math output="log(input)"')
+
+# shot/offset indeces: fldr and tracf
+
+Flow('indexshot','tshots0','window n1=1 f1=2')
+
+Flow('offsets4index','tshots0',' headermath output=offset | dd type=float | window')
+
+Flow('offsetindex','offsets4index','math output="abs(input) - 170" | dd type=int')
+
+# receiver/midpoint
+
+Flow('midpoint','tshots0','window n1=1 f1=5')
+
+Flow('cmps4index','tshots0',' headermath output=cdp | dd type=float | math output="input*16.667" | window')
+
+Flow('recv','cmps4index offsets4index','add scale=1,0.5 ${SOURCES[1]} | math output="input - 13799" | dd type=int')
+
+Flow('index','indexshot offsetindex',
+        '''
+        cat axis=2 ${SOURCES[1]}
+        ''')
+
+Flow('extindex','index midpoint',
+        '''
+        cat axis=2 ${SOURCES[1]}
+        ''')
+
+Flow('extindrecv','extindex recv',
+        '''
+        cat axis=2 ${SOURCES[1]}
+        ''')
+
+def plot(title):
+    return '''
+    spray axis=1 n=1 | 
+    intbin head=${SOURCES[1]} yk=fldr xk=tracf | window | 
+    grey title="%s" label2="Shot Number" unit2= 
+    label1="Offset Number" unit1= scalebar=y
+    ''' % (title)
+
+def plotb(title,bias=-5):
+    return '''
+    spray axis=1 n=1 | 
+    intbin head=${SOURCES[1]} yk=fldr xk=tracf | window | 
+    grey title="%s" label2="Shot Number" unit2= 
+    label1="Offset Number" unit1= scalebar=y clip=3 bias=%g
+    ''' % (title,bias)
+
+# Display in shot/offset coordinates
+Flow('varms','arms tshots0','spray axis=1 n=1 | intbin head=${SOURCES[1]} yk=fldr xk=tracf | window')
+Plot('varms','arms tshots0',plotb('Log-Amplitude'))
+
+prog = Program('surface-consistent.c')
+sc = str(prog[0])
+
+# recv index
+
+# get model dimensions
+Flow('recvmodel',['arms','extindrecv',sc],
+     './${SOURCES[2]} index=${SOURCES[1]} verb=y')
+
+# find a term
+Flow('recvsc',['arms','extindrecv',sc,'recvmodel'],
+     '''
+     conjgrad ./${SOURCES[2]} index=${SOURCES[1]} 
+     mod=${SOURCES[3]} niter=150
+     ''')
+
+# project to a data space
+Flow('recvscarms',['recvsc','extindrecv',sc],
+     './${SOURCES[2]} index=${SOURCES[1]} adj=n')
+
+Plot('recvvscarms','recvscarms tshots0',
+       plotb('Source, Offset, CDP, Recv S-C Log(A)'))
+
+# compute difference
+Flow('recvadiff','arms recvscarms','add scale=1,-1 ${SOURCES[1]}')
+
+Plot('recvadiff','recvadiff tshots0',plot('s,h,cdp,r difference'))
+
+### apply to traces to all times - no windowing is considered
+
+Flow('ampl','recvscarms',
+     'math output="exp(-input/2)" | spray axis=1 n=5500 d=0.002 o=0')
+
+Flow('shotsf0','shotsf mask0','headerwindow mask=${SOURCES[1]}')
+
+Flow('shots-preproc','shotsf0 ampl','mul ${SOURCES[1]}')
+
+Plot('shots-preproc','shots-preproc','window n2=100 | grey min1=6.0 max1=8.0 title="Shots Preproc"')
+
+Plot('shots-raw','shots0','window n2=100 | grey min1=6.0 max1=8.0 title="Shots Raw"')
+
+### make stack figures to compare
+
+# Resample to 4 ms
+
+Flow('subsampled','shots-preproc',
+     '''
+     bandpass fhi=125 | window j1=2
+     ''')
+
+#Result('spectra','subsampled',
+#       'spectra all=y | graph title="Subsampled Spectra"')
+
+#Result('spectra-check','shots-preproc',
+#       'spectra all=y | graph max1=160 title="Spectra Check"')
+
+Flow('cmps mask','subsampled tshots0',
+        '''
+        intbin xk=tracf yk=cdp head=${SOURCES[1]} mask=${TARGETS[1]} |
+        put o3=900 d3=16.667 label3=Distance unit3=m |
+        pow pow1=2
+        ''')
+
+Flow('cmps-raw mask-raw','shots0 tshots0',
+        '''
+        intbin xk=tracf yk=cdp head=${SOURCES[1]} mask=${TARGETS[1]} |
+        put o3=900 d3=16.667 label3=Distance unit3=m
+        ''')
+
+Flow('offset-file','tshots0',
+     '''
+     sfheadermath output=offset | dd type=float |
+     intbin xk=tracf yk=cdp head=$SOURCE
+     ''')
+
+Flow('watervel','cmps','window n2=1 | math output="1500"')
+
+Flow('nmo-wat-vel-preproc','cmps offset-file mask watervel',
+     '''
+     nmo half=n offset=${SOURCES[1]} mask=${SOURCES[2]}
+     velocity=${SOURCES[3]}
+     ''')
+
+Flow('nmo-wat-vel-raw','cmps-raw offset-file mask watervel',
+     '''
+     nmo half=n offset=${SOURCES[1]} mask=${SOURCES[2]}
+     velocity=${SOURCES[3]}
+     ''')
+
+Flow('stack-wat-vel-preproc','nmo-wat-vel-preproc','stack')
+
+Flow('stack-wat-vel-raw','nmo-wat-vel-raw','stack')
+
+#Result('stack-preproc','stack-wat-vel-preproc',section('Stack 1.5 km/s Preproc'))
+
+#Result('stack-raw','stack-wat-vel-raw',section('Stack 1.5 km/s Raw'))
+
+### DMO stacking 
+
+nv=60
+
+Flow('stacks','cmps offset-file mask',
+     '''
+     window min1=4 |
+     stacks half=n v0=1400 nv=%g dv=20 
+     offset=${SOURCES[1]} mask=${SOURCES[2]}
+     '''%nv,split=[3])
+
+#>>>
+# Consider stacking without time windowing to check
+# if slope decomposition is affected
+#Flow('nw-stacks','cmps offset-file mask',
+#     '''
+#     stacks half=n v0=1400 nv=%g dv=20 
+#     offset=${SOURCES[1]} mask=${SOURCES[2]}
+#     '''%nv,split=[3])
+
+### interface
+
+p = 100
+
+min1=5.5
+max1=8.0
+
+mute = '''
+        mutter v0=130 x0=1300 t0=4.0 half=n inner=n |
+        mutter x0=1400 v0=20 t0=5.0 half=n inner=y | 
+        mutter v0=2500 x0=1400 t0=5.8 half=n inner=n |
+        mutter v0=500 x0=1400 t0=7.0 half=n inner=y 
+        '''
+
+pick = '''
+        pick rect1=50 rect2=20 vel0=1480
+        '''
+
+mutec = '''
+        mutter v0=130 x0=1300 t0=4.0 half=n inner=n |
+        mutter x0=1400 v0=20 t0=5.0 half=n inner=y | 
+        mutter v0=2500 x0=1400 t0=5.8 half=n inner=n |
+        mutter v0=500 x0=1400 t0=7.0 half=n inner=y 
+        '''
+
+pickc = '''
+        pick rect1=80 rect2=20 vel0=1400
+        '''
+
+# Compute envelope for picking (stack without DMO)
+Flow('envelope-stacks','stacks','envelope | scale axis=2',split=[3])
+
+Flow('vpick-stacks','envelope-stacks',mutec + ' | ' + pickc)
+
+# Take a slice
+Flow('slice-stacks','stacks vpick-stacks','slice pick=${SOURCES[1]}')
+
+#Result('vpick-stacks',plotvel('NMO velocity'))
+
+#Result('stacks-check-w','stacks','window n2=1 min2=1499 | window max2=5500 | grey title="Stack 1500 m/s (extracted)" min1=5.5 max1=7.0')
+
+#Result('stacks-check','stacks','window n2=1 min2=1499 | grey title="Stack 1500 m/s (extracted)" min1=4.0')
+
+Flow('stackst','stacks','costaper nw3=20')
+
+# Apply double Fourier transform (cosine transform)
+# pad n3=601 | 
+Flow('cosft','stackst','cosft sign1=1 sign3=1')
+
+# Transpose f-v-k to v-f-k
+Flow('transp','cosft','transp',split=[3])
+
+# Fowler DMO: mapping velocities
+Flow('map','transp',
+     '''
+     math output="x1/sqrt(1+0.25*x3*x3*x1*x1/(x2*x2))" | 
+     cut n2=1
+     ''')
+
+Flow('fowler','transp map','iwarp warp=${SOURCES[1]} | transp',
+     split=[3])
+
+# Inverse Fourier transform
+# | window n3=401 # does not improve the result severely
+
+Flow('dmo','fowler','cosft sign1=-1 sign3=-1')
+
+#>>>
+#Flow('nw-stackst','nw-stacks','costaper nw3=20')
+#Flow('nw-cosft','nw-stackst','cosft sign1=1 sign3=1')
+#Flow('nw-transp','nw-cosft','transp',split=[3])
+#Flow('nw-map','nw-transp',
+#     '''
+#     math output="x1/sqrt(1+0.25*x3*x3*x1*x1/(x2*x2))" | 
+#     cut n2=1
+#     ''')
+#Flow('nw-fowler','nw-transp nw-map','iwarp warp=${SOURCES[1]} | transp',
+#     split=[3])
+#Flow('nw-dmo','nw-fowler','cosft sign1=-1 sign3=-1')
+
+# Looks like DMO helps to preserve diffractions 
+# dipping flanks from right to left right part of a section
+
+#Result('dmo-wat-vel','dmo','window n2=1 min2=1500 | ' + section('DMO 1500 m/s (extracted)'))
+
+#Result('dmo-wat-vel-w','dmo','window n2=1 min2=1500 | ' + sectionw('DMO 1500 m/s (extracted)'))         
+
+# Compute envelope for picking
+Flow('envelope','dmo','envelope | scale axis=2',split=[3])
+
+Flow('vpick','envelope',mutec + ' | ' + pickc)
+
+#Result('vpick',plotvel('DMO velocity'))
+
+# Take a slice
+Flow('slice','dmo vpick','slice pick=${SOURCES[1]}')
+
+# 'grey title="Nankai DMO Stack" '
+Result('slice',section('DMO stack'))
+
+# 'window max2=5500 | grey title="DMO stack (extracted)" min1=5.5 max1=7.0'
+#Result('slice-w','slice',sectionw('DMO Stacked Data'))
+
+#>>>
+#Flow('nw-envelope','nw-dmo','envelope | scale axis=2',split=[3])
+#Flow('nw-vpick','nw-envelope',mutec + ' | ' + pickc)
+#Result('nw-vpick',plotvel('nw DMO velocity'))
+#Flow('nw-slice','nw-dmo nw-vpick','slice pick=${SOURCES[1]}')
+#Result('nw-slice',section('nw DMO stack'))
+
+### PWD on 1.5 km/s image
+
+Flow('vc15','slice',
+        '''
+        cosft sign2=1 |
+        vczo v0=0.0 nv=1 dv=1500 |
+        window |
+        cosft sign2=-1
+        ''')
+        
+
 def Grey1(data,data0,other):
     Result(data,data0,'''
     put d2=1 o2=1|grey 
@@ -27,8 +424,8 @@ def Greyv(data,data0,other):
         barreverse=y %s
         ''' % (v0+0.5*nv*dv,other))
 
-#Flow('k-post','../nankai/vc15.rsf','cp|scale axis=2')
-Flow('k-post','vc15.rsf','cp|scale axis=2')
+#Flow('k-post','vc15','cp|scale axis=2')
+Flow('k-post','vc15','cp|scale axis=2')
 
 Grey('k-post','')
 
