@@ -1,0 +1,437 @@
+from rsf.proj import *
+from rsf.prog import RSFROOT
+
+def Grey1(data,data0,other):
+    Result(data,data0,'''
+    put d2=1 o2=1|grey 
+    label1=Time unit1=s color=g label2=Distance unit2=m clip=0.1 wanttitle=n title= screenratio=1.2 min1=5.5 max1=8.5 label2=Trace unit2= max2=300
+    %s ''' % (other))
+    
+def Grey(data,other):
+    Result(data,'''
+    put d2=1 o2=1|grey
+    label1=Time unit1=s color=g label2=Distance unit2=m clip=0.1 wanttitle=n title= screenratio=1.2 min1=5.5 max1=8.5 label2=Trace unit2= max2=300
+    %s ''' % (other))
+
+def Greyz(data,other):
+    Result(data,'''
+    grey
+    label1=Time unit1=s color=g label2=Distance unit2=m clip=0.1 wanttitle=n title= screenratio=1.2 label2=Trace unit2= screenratio=1.0
+    %s ''' % (other))
+        
+def Greyv(data,data0,other):
+    Result(data,data0,
+    	'''
+    	grey 
+        color=j scalebar=y bias=%g barlabel=Velocity 
+        barreverse=y %s
+        ''' % (v0+0.5*nv*dv,other))
+
+#Flow('k-post','../nankai/vc15.rsf','cp|scale axis=2')
+Flow('k-post','vc15.rsf','cp|scale axis=2')
+
+Grey('k-post','')
+
+Flow('k-dip','k-post','dip rect1=10 rect2=10')
+Flow('k-pwd-n','k-post k-dip','pwd dip=${SOURCES[1]}')
+Flow('k-pwd-s','k-post k-pwd-n','add scale=1,1 ${SOURCES[1]}')
+
+Grey('k-pwd-s','')
+Grey('k-pwd-n','clip=0.05')
+
+########################################################################
+# INITIALIZATION
+########################################################################
+matlab         = WhereIs('matlab')
+matROOT = '../matfun/'
+matfun = 'LDRR'
+matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
+
+if not matlab:
+    sys.stderr.write('\nCannot find Matlab.\n')
+    sys.exit(1)
+
+n1=1750
+n2=401
+n3=1
+d1=0.004
+d2=16.667
+d3=1
+o1=4
+o2=900
+o3=0
+lf=0
+hf=120
+N=5
+verb=0
+
+n1win=100
+n2win=20
+n3win=1
+r1=0.5
+r2=0.5
+r3=0.5
+
+put='n1=%d n2=%d n3=%d d1=%g d2=%g d3=%g o1=%g o2=%g o3=%g'%(n1,n2,n3,d1,d2,d3,o1,o2,o3)
+
+N=5
+NN=3
+ifdamp=0
+############################################################
+## with parameter
+############################################################
+Flow('k-lrr0 k-lrra0',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-lrr','k-lrr0','put %s'%put)
+Flow('k-lrra','k-lrra0','put %s'%put)
+Flow('k-lrr-n','k-post k-lrr','add scale=1,-1 ${SOURCES[1]}')
+Flow('k-lrra-n','k-post k-lrra','add scale=1,-1 ${SOURCES[1]}')
+
+
+NN=3
+ifdamp=1
+Flow('k-ldrr0 k-ldrra0',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-ldrr','k-ldrr0','put %s'%put)
+Flow('k-ldrra','k-ldrra0','put %s'%put)
+Flow('k-ldrr-n','k-post k-ldrr','add scale=1,-1 ${SOURCES[1]}')
+Flow('k-ldrra-n','k-post k-ldrra','add scale=1,-1 ${SOURCES[1]}')
+
+Grey('k-lrr','title="LRR"')
+Grey('k-lrra','title="LRRA"')
+Grey('k-ldrr','title="LDRR"')
+Grey('k-ldrra','title="LDRRA"')
+
+Grey('k-lrr-n','title="LRR" clip=0.05')
+Grey('k-lrra-n','title="LRRA" clip=0.05')
+Grey('k-ldrr-n','title="LDRR" clip=0.05')
+Grey('k-ldrra-n','title="LDRRA" clip=0.05')
+
+# LRR with fixed N
+N=1
+ifdamp=0
+Flow('k-lrr-N1-0 k-lrra0-tmp1',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-lrr-N1','k-lrr-N1-0','put %s'%put)
+Flow('k-lrr-N1-n','k-post k-lrr-N1','add scale=1,-1 ${SOURCES[1]}')
+
+N=2
+ifdamp=0
+Flow('k-lrr-N2-0 k-lrra0-tmp2',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-lrr-N2','k-lrr-N2-0','put %s'%put)
+Flow('k-lrr-N2-n','k-post k-lrr-N2','add scale=1,-1 ${SOURCES[1]}')
+
+N=3
+ifdamp=0
+Flow('k-lrr-N3-0 k-lrra0-tmp3',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-lrr-N3','k-lrr-N3-0','put %s'%put)
+Flow('k-lrr-N3-n','k-post k-lrr-N3','add scale=1,-1 ${SOURCES[1]}')
+
+N=4
+ifdamp=0
+Flow('k-lrr-N4-0 k-lrra0-tmp4',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}','${TARGETS[1]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(NN)d,%(n1win)d,%(n2win)d,%(n3win)d,%(r1)g,%(r2)g,%(r3)g,%(ifdamp)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-lrr-N4','k-lrr-N4-0','put %s'%put)
+Flow('k-lrr-N4-n','k-post k-lrr-N4','add scale=1,-1 ${SOURCES[1]}')
+
+Grey('k-lrr-N1-n','title="LRR (N=1)" clip=0.05')
+Grey('k-lrr-N2-n','title="LRR (N=2)" clip=0.05')
+Grey('k-lrr-N3-n','title="LRR (N=3)" clip=0.05')
+Grey('k-lrr-N4-n','title="LRR (N=4)" clip=0.05')
+
+
+#Global
+N=30
+matROOT = '/Users/chenyk/chenyk/matlibcyk/Mada_matlab/'
+matfun = 'FXY_MSSA'
+Flow('k-grr0-N30',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-grr-N30','k-grr0-N30','put %s'%put)
+Flow('k-grr-N30-n','k-post k-grr-N30','add scale=1,-1 ${SOURCES[1]}')
+Grey('k-grr-N30','title="GRR (N=30)"')
+Grey('k-grr-N30-n','title="GRR (N=30)" clip=0.05')
+
+N=20
+matROOT = '/Users/chenyk/chenyk/matlibcyk/Mada_matlab/'
+matfun = 'FXY_MSSA'
+Flow('k-grr0-N20',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-grr-N20','k-grr0-N20','put %s'%put)
+Flow('k-grr-N20-n','k-post k-grr-N20','add scale=1,-1 ${SOURCES[1]}')
+Grey('k-grr-N20','title="GRR (N=20)"')
+Grey('k-grr-N20-n','title="GRR (N=20)" clip=0.05')
+
+N=10
+matROOT = '/Users/chenyk/chenyk/matlibcyk/Mada_matlab/'
+matfun = 'FXY_MSSA'
+Flow('k-grr0-N10',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-grr-N10','k-grr0-N10','put %s'%put)
+Flow('k-grr-N10-n','k-post k-grr-N10','add scale=1,-1 ${SOURCES[1]}')
+Grey('k-grr-N10','title="GRR (N=10)"')
+Grey('k-grr-N10-n','title="GRR (N=10)" clip=0.05')
+
+N=5
+matROOT = '/Users/chenyk/chenyk/matlibcyk/Mada_matlab/'
+matfun = 'FXY_MSSA'
+Flow('k-grr0-N5',[os.path.join(matROOT,matfun+'.m'),'k-post'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}',%(n1)d,%(n2)d,%(n3)d,%(d1)g,%(lf)g,%(hf)g,%(N)d,%(verb)d);quit"
+     '''%vars(),stdin=0,stdout=-1)
+Flow('k-grr-N5','k-grr0-N5','put %s'%put)
+Flow('k-grr-N5-n','k-post k-grr-N5','add scale=1,-1 ${SOURCES[1]}')
+Grey('k-grr-N5','title="GRR (N=5)"')
+Grey('k-grr-N5-n','title="GRR (N=5)" clip=0.05')
+
+
+
+# parameterization
+
+# 
+# 
+# padx=401
+# beg1=0
+# v0=1400
+# nv=51
+# dv=25
+# nx=401
+# beg1=0
+# x0=900
+# vx0=1500
+# vslope=0.67
+# an=2
+# 
+# Flow('k-tra-vlf','k-pwd-n',
+# 	'''
+# 	pad n2=%d beg1=%d | cosft sign2=1 | put o3=0 | 
+# 	stolt vel=%g | 
+# 	vczo nv=%d dv=%g v0=%g |
+# 	transp plane=23 |
+# 	cosft sign2=-1 | 
+# 	window n2=%d f1=%d |
+# 	put o2=%g |
+# 	transp plane=23'''%(padx,beg1,v0,nv,dv,v0,nx,beg1,x0))
+# 
+# Flow('k-tra-vlfq','k-pwd-n',
+#      '''
+#     math output="input*input" | 
+#     pad n2=%d beg1=%d | cosft sign2=1 | put o3=0 | 
+# 	stolt vel=%g | 
+# 	vczo nv=%d dv=%g v0=%g |
+# 	transp plane=23 |
+# 	cosft sign2=-1 | 
+# 	window n2=%d f1=%d |
+# 	put o2=%g |
+# 	transp plane=23 | clip2 lower=0
+#      ''' %(padx,beg1,v0,nv,dv,v0,nx,beg1,x0))
+# Flow('k-tra-sem',['k-tra-vlf','k-tra-vlfq'],
+#      '''
+#      mul $SOURCE |
+#      divn den=${SOURCES[1]} rect1=10 rect3=10
+#      ''' )
+# # Flow('k-tra-pik','k-tra-sem','mutter x0=%g v0=%g half=n | scale axis=2 | pick an=%g rect1=%d rect2=%d | window' % (vx0,vslope,an,30,30))
+# Flow('k-tra-pik','k-tra-sem','scale axis=2 | pick an=%g rect1=%d rect2=%d | window' % (an,30,30))
+# # Flow('k-tra-pik0','k-tra-sem','mutter x0=%g v0=%g half=n | scale axis=2 | window' % (vx0,vslope*1000.0))
+# 
+# Flow('k-tra-slc',['k-tra-vlf','k-tra-pik'],'slice pick=${SOURCES[1]}')
+# Grey1('k-tra-slc','k-tra-slc','title="Migrated Diffractions PWD"')
+# Greyv('k-tra-pik','k-tra-pik','title="Velocity of PWD"')
+# 
+
+Flow('k-dmo','k-post',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+        
+Flow('k-pwd-dif','k-pwd-n',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+Flow('k-pwd-ref','k-pwd-s',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+Flow('k-ldrra-dif','k-ldrra-n',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+Flow('k-lrra-dif','k-lrra-n',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+Flow('k-lrra-ref','k-lrra',
+        '''
+        cosft sign2=1 |
+        vczo v0=1500.0 nv=1 dv=-1500 |
+        window |
+        cosft sign2=-1
+        ''')
+Grey('k-dmo','title="DMO" clip=0.05')
+Grey('k-pwd-dif','title="Diffraction by PWD" clip=0.05')
+Grey('k-pwd-ref','title="Reflection by PWD" clip=0.05')
+
+Grey('k-ldrra-dif','title="Diffraction by LDRRA" clip=0.05')
+Grey('k-lrra-dif','title="Diffraction by LRRA" clip=0.05')
+Grey('k-lrra-ref','title="Reflection by LRRA" clip=0.05')
+
+Plot('label01',None,
+	'''
+	box x0=1.55 y0=6.75 label="Reflection" xt=0.5 yt=0.5 length=1.5 
+	''')
+Plot('label02',None,
+	'''
+	box x0=3.4 y0=3.95 label="Reflection" xt=0.5 yt=0.5 length=1.8 
+	''')	
+Plot('label03',None,
+	'''
+	box x0=5.0 y0=3.9 label="Reflection" xt=0.5 yt=0.5 length=0.75 
+	''')
+Plot('label001',None,
+	'''
+	box x0=1.55 y0=6.75 label="" xt=0.5 yt=0.5 length=1.5 
+	''')
+Plot('label002',None,
+	'''
+	box x0=3.4 y0=3.95 label="" xt=0.5 yt=0.5 length=1.8 
+	''')	
+Plot('label003',None,
+	'''
+	box x0=5.0 y0=3.9 label="" xt=0.5 yt=0.5 length=0.75 
+	''')
+Result('k-pwd-dif0','Fig/k-pwd-dif.vpl label01 label02 label03','Overlay')
+Result('k-lrra-dif0','Fig/k-lrra-dif.vpl label001 label002 label003','Overlay')
+
+
+### zoom 
+# compare k-lrra-n and k-pwd-n
+# 
+## framebox A
+x=50
+y=6.5
+w=50
+w1=0.5
+
+Flow('frame1.asc',None,'echo %s n1=10 data_format=ascii_float in=$TARGET'% \
+	string.join(map(str,(x,y,x+w,y,x+w,y+w1,x,y+w1,x,y))))
+Plot('frame1','frame1.asc',
+	'''
+	dd type=complex form=native |
+	graph  min1=1 max1=300 min2=5.5 max2=8.5 pad=n plotfat=15 plotcol=4 
+	wantaxis=n wanttitle=n yreverse=y scalebar=n screenratio=1.2
+	''')
+Flow('k-pwd-n-z1','k-pwd-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-n-z1','k-lrra-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-pwd-s-z1','k-pwd-s','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-s-z1','k-lrra','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+
+## framebox B
+x=125
+y=6.4
+w=50
+w1=0.3
+
+Flow('frame2.asc',None,'echo %s n1=10 data_format=ascii_float in=$TARGET'% \
+	string.join(map(str,(x,y,x+w,y,x+w,y+w1,x,y+w1,x,y))))
+Plot('frame2','frame2.asc',
+	'''
+	dd type=complex form=native |
+	graph min1=1 max1=300 min2=5.5 max2=8.5 pad=n plotfat=15 plotcol=4 
+	wantaxis=n wanttitle=n yreverse=y scalebar=n screenratio=1.2
+	''')
+Flow('k-pwd-n-z2','k-pwd-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-n-z2','k-lrra-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-pwd-s-z2','k-pwd-s','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-s-z2','k-lrra','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+
+## framebox C
+x=200
+y=6.25
+w=40
+w1=0.25
+
+Flow('frame3.asc',None,'echo %s n1=10 data_format=ascii_float in=$TARGET'% \
+	string.join(map(str,(x,y,x+w,y,x+w,y+w1,x,y+w1,x,y))))
+Plot('frame3','frame3.asc',
+	'''
+	dd type=complex form=native |
+	graph min1=1 max1=300 min2=5.5 max2=8.5 pad=n plotfat=15 plotcol=4 
+	wantaxis=n wanttitle=n yreverse=y scalebar=n screenratio=1.2
+	''')
+Flow('k-pwd-n-z3','k-pwd-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-n-z3','k-lrra-n','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-pwd-s-z3','k-pwd-s','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+Flow('k-lrra-s-z3','k-lrra','put o2=1 d2=1 | window min2=%g max2=%g min1=%g max1=%g'%(x,x+w,y,y+w1))
+
+## Create label A
+Plot('label1',None,
+	'''
+	box x0=3.0 y0=6.45 label="A" xt=0.5 yt=0.5 length=0.75 
+	''')
+
+Plot('label2',None,
+	'''
+	box x0=4.6 y0=6.65 label="B" xt=0.5 yt=0.5 length=0.75 
+	''')
+
+Plot('label3',None,
+	'''
+	box x0=6.0 y0=7.05 label="C" xt=0.5 yt=0.5 length=0.75 
+	''')
+		
+Result('k-pwd-n0','Fig/k-pwd-n.vpl frame1 frame2 frame3 label1 label2 label3','Overlay')
+Result('k-lrra-n0','Fig/k-lrra-n.vpl frame1 frame2 frame3 label1 label2 label3','Overlay')
+Result('k-pwd-s0','Fig/k-pwd-s.vpl frame1 frame2 frame3 label1 label2 label3','Overlay')
+Result('k-lrra-s0','Fig/k-lrra.vpl frame1 frame2 frame3 label1 label2 label3','Overlay')
+
+
+Greyz('k-pwd-n-z1','title="PWD" clip=0.05')
+Greyz('k-pwd-n-z2','title="PWD" clip=0.05')
+Greyz('k-pwd-n-z3','title="PWD" clip=0.05')
+Greyz('k-pwd-s-z1','title="PWD"')
+Greyz('k-pwd-s-z2','title="PWD"')
+Greyz('k-pwd-s-z3','title="PWD"')
+
+Greyz('k-lrra-n-z1','title="LRRA" clip=0.05')
+Greyz('k-lrra-n-z2','title="LRRA" clip=0.05')
+Greyz('k-lrra-n-z3','title="LRRA" clip=0.05')
+Greyz('k-lrra-s-z1','title="LRRA"')
+Greyz('k-lrra-s-z2','title="LRRA"')
+Greyz('k-lrra-s-z3','title="LRRA"')
+
+
+End()
