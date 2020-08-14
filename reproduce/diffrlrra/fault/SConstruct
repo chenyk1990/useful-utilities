@@ -1,5 +1,6 @@
 from rsf.proj import *
 import rsf.recipes.stack as stack
+from rsf.prog import RSFROOT
 
 name='bei'
 v0=1.4
@@ -255,7 +256,30 @@ Result('bei-shp',grey('Diffractions'))
 # Result('pred','stk pred','Overlay')
 
 
-Flow('bei-rr','bei-rr.bin','bin2rsf bfile=${SOURCES[0]} n1=1000 n2=250 d1=0.004 d2=0.0334 o1=0 o2=7.705')
+
+
+########################################################################
+# INITIALIZATION
+########################################################################
+matlab         = WhereIs('matlab')
+matROOT = '../matfun'
+matfun = 'FAULTS'
+matlabpath = os.environ.get('MATLABPATH',os.path.join(RSFROOT,'lib'))
+
+if not matlab:
+    sys.stderr.write('\nCannot find Matlab.\n')
+    sys.exit(1)
+
+############################################################
+## with parameter
+############################################################
+Flow('bei-rr-t',[os.path.join(matROOT,matfun+'.m'),'bei-stk2'],
+     '''MATLABPATH=%(matlabpath)s %(matlab)s 
+     -nosplash -nojvm -r "addpath %(matROOT)s;%(matfun)s('${SOURCES[1]}','${TARGETS[0]}');quit"
+     '''%vars(),stdin=0,stdout=-1)
+
+# Flow('bei-rr','bei-rr.bin','bin2rsf bfile=${SOURCES[0]} n1=1000 n2=250 d1=0.004 d2=0.0334 o1=0 o2=7.705')
+Flow('bei-rr','bei-rr-t','put n1=1000 n2=250 d1=0.004 d2=0.0334 o1=0 o2=7.705')
 Flow('bei-rrf','bei-stk2 bei-rr','add scale=1,-1 ${SOURCES[1]}')
 
 Grey('bei-rr','bei-rr','title="Separated reflections by LRRA"')
