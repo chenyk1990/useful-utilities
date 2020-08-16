@@ -1,0 +1,104 @@
+%\title{Interpolation for sparse data using structural smoothness constrained inversion}
+
+\documentclass[preprint,amsmath,authoryear,12pt,manuscript]{elsarticle}
+\usepackage{amsmath}
+\usepackage{lineno}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage{ulem}
+\usepackage{color}
+\usepackage{morefloats}
+
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+%\DeclareRobustCommand{\old}[1]{\color{blue}{\sout{#1}}\color{black}{}}
+%\DeclareRobustCommand{\new}[1]{\color{red}{\textit{#1}}\color{black}{}} 
+\journal{Computers and Geosciences}
+\linenumbers
+\doublespacing
+\begin{document}
+
+
+
+\begin{frontmatter}
+\title{\dlo{Structural smoothness constrained sparse-data interpolation}\wen{The interpolation of sparse geophysical data}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\author{Yangkang Chen\footnotemark[1], Xiaohong Chen\footnotemark[2], Yufeng Wang\footnotemark[2] and Shaohuan Zu\footnotemark[2]}
+
+%\ms{GJI-2018}
+
+\address{
+\footnotemark[1]
+School of Earth Sciences\\
+Zhejiang University\\
+Hangzhou, Zhejiang Province, China, 310027\\
+chenyk2016@gmail.com \\
+\footnotemark[2] State Key Laboratory of Petroleum Resources and Prospecting \\
+China University of Petroleum \\
+Fuxue Road 18th\\
+Beijing, China, 102200 \\
+chenxh@cup.edu \& hellowangyf@163.com \& zushaohuan@qq.com  \\
+%+86-18810415565 
+}
+
+
+
+%\lefthead{Chen et al. }
+%\righthead{Structural smoothness constrained inversion}
+
+%\maketitle
+
+\begin{abstract}
+\dlo{Seismic}\wen{Geophysical} data interpolation has attracted much attention in the past decades. While a variety of methods are \dlo{proposed}\wen{well established} for either regularly sampled or irregularly sampled multi-channel data, \dlo{there are almost no}\wen{an} effective method\dlo{s existing } for interpolating extremely sparse data samples\wen{ is still highly demanded}. In this paper, we first review the state-of-the-art models for geophysical data interpolation\wen{, focusing specifically on the three main types of geophysical interpolation problems, i.e., for irregularly sampled data, regularly sampled data, and sparse geophysical data. We also review the theoretical implications for different interpolation models, i.e., the sparsity based and the rank based regularized interpolation approaches}. Then, we address the challenge for interpolating highly incomplete low-dimensional data by developing a novel shaping regularization based inversion algorithm. The interpolation can be formulated as an inverse problem. Due to the ill-posedness of the inversion problem, an effective regularization approach is very necessary. \dlo{The constraints used in traditional interpolation methods all fail in interpolating highly insufficient samples. }We develop a structural smoothness constraint for regularizing the inverse problem based on the shaping regularization framework. The shaping regularization framework offers a flexible way for constraining the model behavior. The proposed method can be easily applied to interpolate incomplete \wen{reflection} seismic data\wen{, ground-penetrating-radar (GPR) data, and earthquake data} with large gaps and also to interpolate sparse well-log data for preparing high-fidelity initial model for subsequent full waveform inversion (FWI).
+\end{abstract}
+
+%Geophysical data interpolation has attracted much attention in the past decades. While a variety of methods are proposed for either regularly sampled or irregularly sampled multi-channel data, there are almost no effective methods existing for interpolating extremely sparse data samples. In this paper, we first review the state-of-the-art models for geophysical data interpolation. Then, we address the challenge for interpolating highly incomplete low-dimensional data by developing a novel shaping regularization based inversion algorithm. The interpolation can be formulated as an inverse problem. Due to the ill-posedness of the inversion problem, an effective regularization approach is very necessary. The constraints used in traditional interpolation methods all fail in interpolating highly insufficient samples. We develop a structural smoothness constraint for regularizing the inverse problem based on the shaping regularization framework. The shaping regularization framework offers a flexible way for constraining the model behavior. The proposed method can be easily applied to interpolate incomplete reflection seismic data, ground-penetrating-radar (GPR) data, and earthquake data with large gaps and also to interpolate sparse well-log data for preparing high-fidelity initial model for subsequent full waveform inversion (FWI).
+\begin{keyword}
+Interpolation, geophysical data processing, inverse problem, sparse data
+\end{keyword}
+
+\end{frontmatter}
+
+%\section{Introduction}
+\wen{\section{State-of-the-art interpolation methods}}
+Physical or economical limitations often cause seismic data to be under-sampled or aliased, so the interpolation or reconstruction is an important issue in seismic data processing \cite[]{trahanias1993vector,hongbo2015,hanxue2015,yufeng2017,schneider2017improvement}. The under-sampled data without reconstruction may suffer from degraded amplitude quality and pose sampling artifacts on subsequent processing workflows such as multichannel deconvolution \cite[]{kazemi2016}, surface-related multiple attenuation \cite[]{chenwei2017emd}, simultaneous-source separation \cite[]{yanhui2016,yatong2017}, and amplitude variation with offset analysis \cite[]{keys1981cubic,abma2006}. There are generally \dlo{two}\wen{three} types of data reconstruction, namely, \dlo{reconstruction for regularly sampled data and reconstruction for irregularly sampled data.}\wen{reconstruction for irregularly sampled data, regularly sampled data, and sparse geophysical data. }
+
+
+%\AtEndDocument{
+%\begin{figure}[htb!]
+%  \centering
+%  \subfigure[]{\includegraphics[width=0.45\columnwidth]{gpr/Fig/gpr-zero}
+%    \label{fig:gpr-zero}}      \\
+%  \subfigure[]{\includegraphics[width=0.45\columnwidth]{gpr/Fig/gpr-pws}
+%    \label{fig:gpr-pws}} 
+%     \caption{\wen{Application in interpolating GPR data in the archaeology community. (a) Incomplete GPR data. (b) Reconstructed GPR data.}} 
+%   \label{fig:gpr}  
+%\end{figure}
+%
+%\begin{figure}[htb!]
+%  \centering
+%  \subfigure[]{\includegraphics[width=0.8\columnwidth]{earthquake/Fig/ref-zero}
+%    \label{fig:ref-zero}}      \\
+%  \subfigure[]{\includegraphics[width=0.8\columnwidth]{earthquake/Fig/ref-inter}
+%    \label{fig:ref-inter}} 
+%     \caption{\wen{Application in interpolating earthquake data in the global seismology community. (a) Incomplete earthquake stack data. (b) Reconstructed earthquake stack data, with much clearly depicted seismic phases.}} 
+%   \label{fig:stack}  
+%\end{figure}
+%}
+
+
+\section{Acknowledgments}
+
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{temp}
+
+
+\newpage
+\listoffigures
+
+\end{document}
