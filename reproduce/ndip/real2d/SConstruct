@@ -20,7 +20,7 @@ def Greynoise(data,other):
 
 #----------------------------------------------dat
 
-#Fetch('image2d.rsf','cup',server)
+
 Flow('g',os.getenv('HOME')+'/chenyk.data4/gc/gc2.bin','dd form=native | put d2=1')
 
 # Flow('g','image2d','dd form=native')

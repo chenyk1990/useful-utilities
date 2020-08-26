@@ -5,6 +5,11 @@
 \thanks{The research is supported by the starting fund from Zhejiang University.}}
 \maketitle
 
+\DeclareRobustCommand{\old}[1]{}
+\DeclareRobustCommand{\new}[1]{#1}
+\DeclareRobustCommand{\dlo}[1]{}
+\DeclareRobustCommand{\wen}[1]{#1}
+
 \begin{abstract}
 The plane-wave destruction (PWD) method has been a widely used local slope estimation method in the seismic community. It is based on the discretization of the plane-wave partial differential equation (PWD) and the linearization of the PDE with respect to the local slope. Solving the linearized inverse problem for the slope perturbation is equivalent to solving a smoothness constrained optimization based on a shaping regularization method. The smoothness constraint in the shaping regularization is important in that it not only controls the stability and smoothness of the solution, i.e., slope perturbation, but also affects the accuracy and resolution of the solution. Traditional PWD algorithm is not easy to compromise the smoothness and resolution of the estimated local slope because it uses a stationary triangle smoothing operator as the shaping operator. Here, we propose to improve the robustness of the PWD algorithm by introducing a non-stationary triangle smoothing operator into the shaping regularization framework in order to adaptively constrain the solution according to the local signal reliability. The smoothing is weak in areas with a higher probability of signals and is strong in areas with a higher likelihood of noise. The smoothing radius can be adaptively estimated based on an optimization model, which is solved by a line-search method. The proposed new slope estimation method is referred to as a non-stationary method compared with the traditional stationary one. The effectiveness and benefits of the new slope estimation method are validated via several synthetic and field data examples.
 \end{abstract}
