@@ -1,3 +1,0 @@
-uses=['sfbin2rsf', 'sfput', 'sfadd', 'sfbyte', 'sfgrey3']
-data=[]
-size=   22400000

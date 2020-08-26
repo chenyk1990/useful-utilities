@@ -1,3 +1,0 @@
-uses=['sfbin2rsf', 'sfput', 'sfadd', 'sfbyte', 'sfgrey3', 'sfwindow', 'sfsimilarity', 'sfgrey', 'sfdd', 'sfgraph', 'sfbox']
-data=[]
-size=   18760512
