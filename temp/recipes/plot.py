@@ -65,7 +65,7 @@ def Pick(data,other):
        label1=Time unit1=s color=j
        label3=Velocity unit3=km/s 
        label2=Midpoint unit2=km
-       title="Velocity Scan" point1=0.8 point2=0.8 %s
+       title="Velocity Scan" point1=0.8 point2=0.8 scalebar=y %s
        '''%other)
 
 def Pickmovie(data,other):
