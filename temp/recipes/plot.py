@@ -6,7 +6,9 @@
 
 from rsf.proj import*
 def Grey(data,other): 
-	Result(data,'grey label2=Trace unit2="" label1=Time unit1="s" title="" labelsz=10 labelfat=4 font=2 titlesz=10 titlefat=4 screenht=10.24 screenratio=0.75 screenwd=13.65 wherexlabel=b wheretitle=t color=b bartype=v %s'%other)
+	Result(data,'grey label2=Trace unit2="" label1=Time unit1="s" title="" labelsz=10 labelfat=4 font=2 titlesz=10 titlefat=4 screenht=10.24 screenratio=0.75 screenwd=13.65 wherexlabel=b wheretitle=t color=b bartype=v %s'%other) 
+	
+#font=104
 
 def Greyplot(data,other): 
 	Plot(data,'grey label2=Trace unit2="" label1=Time unit1="s" title="" labelsz=10 labelfat=4 font=2 screenht=10.24 screenratio=0.75 screenwd=13.65 wherexlabel=b wheretitle=t color=b bartype=v %s'%other)
