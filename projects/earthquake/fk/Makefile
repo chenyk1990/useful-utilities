@@ -1,4 +1,4 @@
-FC=gfortran -ffixed-line-length-none
+FC=gfortran-mp-9 -ffixed-line-length-none
 optimize=-O
 FFLAGS=$(optimize)
 CFLAGS=$(optimize)
@@ -28,7 +28,7 @@ trav: trav.o tau_p.o
 	$(LINK.f) -o $@ trav.o tau_p.o
 
 bessel.f: bessel.FF
-	cpp-mp-5 -traditional-cpp $< > $@
+	gcc-mp-5 -traditional-cpp $< > $@
 
 clean:
 	rm -f *.o bessel.f

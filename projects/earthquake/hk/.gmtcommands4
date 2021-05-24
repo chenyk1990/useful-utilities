@@ -1,9 +1,7 @@
 # GMT common arguments shelf
 -Ba5f1:H (km):/a0.1f0.02:k:WSne
 -JX4i/2i
--R0/1/0/1
+-R20/60/1.5/2.0
 -Y2
 -jX4i/2i
-EOF
-i
 EOF

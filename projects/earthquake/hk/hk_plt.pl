@@ -10,8 +10,8 @@ while(<STDIN>) {
      open(AAA,">junk.cpt");
 	   printf AAA "%5.3f 100 100 100 0 255 255 255\n",$min;
      close(AAA);
-     system("grdimage -JX4i/2i $grd -Cjunk.cpt -Ba5f1:\"H (km)\":/a0.1f0.02:k:WSne -K");
-     $hk = `grdinfo $grd | grep Command | cut -d' ' -f 4`; chop($hk);
+     system("gmt grdimage -JX4i/2i $grd -Cjunk.cpt -Ba5f1:\"H (km)\":/a0.1f0.02:k:WSne -K");
+     $hk = `gmt grdinfo $grd | grep Command | cut -d' ' -f 4`; chop($hk);
      ($aa,$minH,$maxH,$mink,$maxk) = split(/[R\/]/,$hk);
      $ratioH=4/($maxH-$minH);$ratiok=2/($maxk-$mink);
      $cxx = $cxx/($ratioH*$ratioH);
