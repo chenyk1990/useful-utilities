@@ -148,6 +148,8 @@ int main(int argc, char **argv) {
        nFiles++;
     }
   }
+  
+  printf("Hello\n");
 
   if (argc == 1 || error || fd == NULL ) {
      fprintf(stderr,"usage: %s -Rx1/x2/y1/y2/z1/z2 -Idx/dy/dz -Vvelocity_model -Goutput_name -Clongitude/latitude -Aazimuth [-D -Es -F -Hfile -Nn -P -Q -SsmthX/smthY/[smtht] -T -X -Y RF_SAC_files] \n\
@@ -192,6 +194,7 @@ int main(int argc, char **argv) {
   unflat_h = 0.;
   flat_min = 0.; /* this is z_min after flattening */
   while ( fscanf(fd, "%f%f%f",&dpth[layer],&vp[layer],&vs[layer]) == 3 ) {
+     printf("dpth[%d]=%g,vp[%d]=%g,vs[%d]=%g\n",layer,dpth[layer],layer,vp[layer],layer,vs[layer]);
      vp[layer] = 1./(vp[layer]*vp[layer]);
      vs[layer] = vp[layer]*(vs[layer]*vs[layer]);
      h += dpth[layer];
@@ -208,6 +211,10 @@ int main(int argc, char **argv) {
      dpth[layer] = h;
      layer++;
   }
+  
+  
+  
+    printf("Hello2, h=%g\n",h);
   fclose(fd);
   fprintf(stderr,"model is terminated at depth %f %f %f\n",h,flat_min,unflat_h);
   dpth[layer-1] = 2*grd.max[2]; /* half space */
@@ -240,7 +247,7 @@ int main(int argc, char **argv) {
      }
      fclose(fd);
   }
-
+printf("Hello3\n");
   /* allocate memory and initializing */
   grd.n[0] = rint((grd.max[0]-grd.min[0])/grd.step[0])+1;
   grd.n[1] = rint((grd.max[1]-grd.min[1])/grd.step[1])+1;
@@ -266,7 +273,7 @@ int main(int argc, char **argv) {
      va[0][k] = 0.;
      nn[k] = 0;
   }
-
+printf("Hello4\n");
   /** input traces one by one and do stacking **/
   i=0;
   while ( (nFiles && ++i<argc) || (!nFiles && fgets(line,128,stdin)) ) {
@@ -411,7 +418,7 @@ int main(int argc, char **argv) {
          write_sac(strcat(fname,".map"), hd, rr);
       }
   }
-
+printf("Hello5\n");
   /* output result */
   for (k=0; k<n; k++) {
      if (nn[k]<1) continue;
@@ -426,6 +433,10 @@ int main(int argc, char **argv) {
         va[0][k] = nn[k];
      }
   }
+  
+  for(int j=0;j<n;j++)
+  printf("ss[%d]=%g\n",j,ss[j]);
+  
   /* write stacking */
   fd = fopen(outf,"wb");
   fwrite(&grd, sizeof(GRD3D), 1, fd);
