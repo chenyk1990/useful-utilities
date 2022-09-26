@@ -38,3 +38,8 @@ plt.savefig('test_pyseistr_somf3d.png',format='png',dpi=300)
 
 plt.show()
 
+## Important one
+plt.gca().set_yticks([]);
+
+
+
