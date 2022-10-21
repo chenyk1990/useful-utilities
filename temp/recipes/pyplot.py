@@ -1,3 +1,8 @@
+
+
+
+
+
 import matplotlib.pyplot as plt
 
 
@@ -40,6 +45,12 @@ plt.show()
 
 ## Important one
 plt.gca().set_yticks([]);
+
+
+
+e.write("test.qml",format="QUAKEML")
+
+
 
 
 
