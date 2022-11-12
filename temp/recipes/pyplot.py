@@ -4,7 +4,9 @@
 
 
 import matplotlib.pyplot as plt
-
+plt.imshow(time.transpose(),cmap=plt.cm.jet, interpolation='none', extent=[0,5,5,0]);
+plt.savefig('test_1_constv.png',format='png',dpi=300,bbox_inches='tight', pad_inches=0)
+plt.colorbar(orientation='horizontal',shrink=0.6,label='Traveltime (s)');
 
 fig = plt.figure(figsize=(16, 8))
 ax=plt.subplot(5,2,1)
@@ -22,6 +24,7 @@ plt.title('Filtered (SOMEAN)',color='k');ax.set_xticks([]);ax.set_yticks([]);
 ax=plt.subplot(5,2,9)
 plt.imshow((cmpn-cmpn_d1).reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect=0.8)
 plt.title('Noise (SOMEAN)',color='k');ax.set_xticks([]);ax.set_yticks([]);
+
 
 
 # ax=plt.subplot(5,2,2)
@@ -100,7 +103,7 @@ e.write("test.qml",format="QUAKEML")
 			if picks[ii]['S'] is not None:
 				ts=picks[ii]['S']-st[ii].stats.starttime
 				plt.vlines(ts, ymin, ymax, color = 'g', linewidth = 1) #for S
-# 		plt.text(2.5,(ymin+ymax)/2,staname)
+# 		plt.text(2.5,(ymin+ymax)/2,staname,fontsize=12,color='g')
 
 		if ptime is not None:
 			tp=ptime[ii]-st[ii].stats.starttime
