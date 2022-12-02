@@ -117,5 +117,13 @@ e.write("test.qml",format="QUAKEML")
 		plt.savefig(figname,**kwargs)
 		
 		
+## Save as binary files
+dn=np.float32(dn)
+fid = open ("syn3d_dn.bin", "wb") #binary file format, int
+fid.write(dn.flatten(order='F'))
+
+d0=np.float32(d0)
+fid = open ("syn3d_dc.bin", "wb") #binary file format, int
+fid.write(d0.flatten(order='F'))
 
 
