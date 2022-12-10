@@ -117,6 +117,10 @@ e.write("test.qml",format="QUAKEML")
 		plt.savefig(figname,**kwargs)
 		
 		
+## Read binary file
+fid=open("cchirps.bin","rb");
+din = np.fromfile(fid, dtype = np.float32, count = 512).reshape([512,1],order='F')
+
 ## Save as binary files
 dn=np.float32(dn)
 fid = open ("syn3d_dn.bin", "wb") #binary file format, int
@@ -125,5 +129,13 @@ fid.write(dn.flatten(order='F'))
 d0=np.float32(d0)
 fid = open ("syn3d_dc.bin", "wb") #binary file format, int
 fid.write(d0.flatten(order='F'))
+
+
+## compare with matlab
+import scipy
+from scipy import io
+datas = {"d0":d0,"dc":dc,"mask":mask,"dn": dn, "d1": d1, "noi1": noi1, "d2":d2, "noi2":noi2}
+scipy.io.savemat("datas3d.mat", datas)
+
 
 
