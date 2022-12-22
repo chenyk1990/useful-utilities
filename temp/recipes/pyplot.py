@@ -137,5 +137,18 @@ from scipy import io
 datas = {"d0":d0,"dc":dc,"mask":mask,"dn": dn, "d1": d1, "noi1": noi1, "d2":d2, "noi2":noi2}
 scipy.io.savemat("datas3d.mat", datas)
 
+plt.gca().set_ylim(ymin=0,ymax=40);
+plt.gca().invert_yaxis();
 
 
+
+## Histogram
+plt.figure;
+plt.hist(deps,10,label='EQCCT',color='b')
+plt.hist(deps2,10,label='Catalog',color='g')
+plt.gca().set_xlim(xmin=0,xmax=15);
+plt.gca().legend(loc='lower right');
+plt.gca().set_ylabel("Count",fontsize='large', fontweight='normal')
+plt.gca().set_xlabel("Depth (km)",fontsize='large', fontweight='normal')
+plt.savefig('continuous_dep_hist.png',format='png',dpi=300)
+plt.show() 
