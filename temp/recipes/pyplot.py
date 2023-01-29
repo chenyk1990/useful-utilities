@@ -152,3 +152,7 @@ plt.gca().set_ylabel("Count",fontsize='large', fontweight='normal')
 plt.gca().set_xlabel("Depth (km)",fontsize='large', fontweight='normal')
 plt.savefig('continuous_dep_hist.png',format='png',dpi=300)
 plt.show() 
+
+
+## 3D transpose
+np.transpose(a, (1, 0, 2)).shape
