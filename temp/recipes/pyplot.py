@@ -175,3 +175,10 @@ clevs = [0, 1 , 2]
 cb1 = plt.colorbar(hdl, cax=cbar_ax, orientation='horizontal', ticks=clevs)
 
 plt.show()
+
+print(plt.gca().get_xlim());
+
+from matplotlib.ticker import FormatStrFormatter
+plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+plt.gca().invert_yaxis()
+
