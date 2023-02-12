@@ -182,3 +182,14 @@ from matplotlib.ticker import FormatStrFormatter
 plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.gca().invert_yaxis()
 
+plt.axis('off')
+
+cax = fig.add_axes([0.15,0.9,0.2,0.2])
+plt.text(0,0, "a)", fontsize=28, color='k')
+plt.axis('off')
+## difference catalog (what is missing)
+eids2=[ii for ii in eids if ii not in eids0]#there are 703 events in eids,
+
+
+
+
