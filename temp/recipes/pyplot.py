@@ -56,7 +56,7 @@ plt.show()
 
 plot(x, y, 'go--', linewidth=2, markersize=12)
 plot(x, y, color='green', marker='o', linestyle='dashed',
-     linewidth=2, markersize=12)
+     linewidth=2, markersize=12, fillstyle='none')
      
      
 
@@ -214,5 +214,9 @@ plt.axis('off')
 eids2=[ii for ii in eids if ii not in eids0]#there are 703 events in eids,
 
 
+if os.path.isdir('./newevents') == False:  
+	os.makedirs('./newevents',exist_ok=True)
+	
+	
 
 
