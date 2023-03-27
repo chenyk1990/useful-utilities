@@ -218,5 +218,26 @@ if os.path.isdir('./newevents') == False:
 	os.makedirs('./newevents',exist_ok=True)
 	
 	
+import obspy.core.utcdatetime as utc
+utc.UTCDateTime(year, month, day, 00, 00, 00, 000000)+86400)
+	
+
+TypeError("Only integers are allowed")
+
+Exception("Sorry, no numbers below zero")
 
 
+from pylib.texnet import read_events
+e=read_events(['texnet2020galz'])
+
+from pylib.texnet import eventlist
+e=eventlist(['texnet2020galz'])
+
+from pylib.texnet import cityloc
+cityloc('Midland')
+	
+
+## add a scalebar
+pip install matplotlib-scalebar
+
+	
