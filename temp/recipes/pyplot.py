@@ -1,7 +1,7 @@
 
 
 
-
+plt.imshow(cmpn.reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect='auto')
 
 import matplotlib.pyplot as plt
 plt.imshow(time.transpose(),cmap=plt.cm.jet, interpolation='none', extent=[0,5,5,0]);
@@ -240,4 +240,7 @@ cityloc('Midland')
 ## add a scalebar
 pip install matplotlib-scalebar
 
+	
+datan=np.load('data.npy')
+np.save('data.npy',data)
 	
