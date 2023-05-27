@@ -216,8 +216,9 @@ eids2=[ii for ii in eids if ii not in eids0]#there are 703 events in eids,
 
 if os.path.isdir('./newevents') == False:  
 	os.makedirs('./newevents',exist_ok=True)
-	
-	
+os.path.isfile('test.dat')
+
+
 import obspy.core.utcdatetime as utc
 utc.UTCDateTime(year, month, day, 00, 00, 00, 000000)+86400)
 	
