@@ -26,6 +26,7 @@ plt.imshow((cmpn-cmpn_d1).reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2)
 plt.title('Noise (SOMEAN)',color='k');ax.set_xticks([]);ax.set_yticks([]);
 
 
+datan=np.concatenate(datan,axis=2)
 
 # ax=plt.subplot(5,2,2)
 # plt.imshow(cmpn.reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect=0.8)
@@ -159,6 +160,8 @@ import scipy
 from scipy import io
 datas = {"d0":d0,"dc":dc,"mask":mask,"dn": dn, "d1": d1, "noi1": noi1, "d2":d2, "noi2":noi2}
 scipy.io.savemat("datas3d.mat", datas)
+
+datas=scipy.io.loadmat("event_6~16.mat") (dict type)
 
 plt.gca().set_ylim(ymin=0,ymax=40);
 plt.gca().invert_yaxis();
