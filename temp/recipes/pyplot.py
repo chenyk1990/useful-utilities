@@ -25,6 +25,8 @@ ax=plt.subplot(5,2,9)
 plt.imshow((cmpn-cmpn_d1).reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect=0.8)
 plt.title('Noise (SOMEAN)',color='k');ax.set_xticks([]);ax.set_yticks([]);
 
+#imshow with axis scale  ax=plt.imshow(self.vp[:,:,ii],extent=[self.minx,self.maxx,self.maxz,self.minz],aspect='auto');
+        
 
 datan=np.concatenate(datan,axis=2)
 
