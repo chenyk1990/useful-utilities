@@ -249,4 +249,7 @@ pip install matplotlib-scalebar
 	
 datan=np.load('data.npy')
 np.save('data.npy',data)
+
+ot='2016-10-26T03:15:36.000000Z'
+str(ot).replace("-","").replace(":","") 
 	
