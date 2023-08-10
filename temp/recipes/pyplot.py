@@ -252,4 +252,12 @@ np.save('data.npy',data)
 
 ot='2016-10-26T03:15:36.000000Z'
 str(ot).replace("-","").replace(":","") 
+
+
+	from pyseistr import cseis
+	import numpy as np
+	from matplotlib import pyplot as plt
+	plt.imshow(np.random.randn(100,100),cmap=cseis())
+	plt.show()
 	
+
