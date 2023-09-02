@@ -260,4 +260,12 @@ str(ot).replace("-","").replace(":","")
 	plt.imshow(np.random.randn(100,100),cmap=cseis())
 	plt.show()
 	
+		try:
+			e = cl.get_events(eventid=eids[ie], includearrivals=True)
+			s=get_streams_frompicks(e[0],tbefore=180,tafter=-120);
+			s.write(filename='./allnoise/'+eids[ie]+'_1.mseed', format="MSEED")
 
+		except:
+			print("Event ID %s is wrong !!!!!!!!"%(eids[ie]))
+		else:
+			pass
