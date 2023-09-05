@@ -269,3 +269,8 @@ str(ot).replace("-","").replace(":","")
 			print("Event ID %s is wrong !!!!!!!!"%(eids[ie]))
 		else:
 			pass
+			
+#hide legend
+plt.hist(mags,40,range=(np.min(mags),np.max(mags)),label=None,color='lightgray',edgecolor='black',log=True)
+plt.gca().legend().set_visible(False)
+
