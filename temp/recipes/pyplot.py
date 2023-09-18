@@ -274,3 +274,13 @@ str(ot).replace("-","").replace(":","")
 plt.hist(mags,40,range=(np.min(mags),np.max(mags)),label=None,color='lightgray',edgecolor='black',log=True)
 plt.gca().legend().set_visible(False)
 
+Bbox=plt.gca().get_position()
+
+xmin,ymin=plt.gca().get_position().get_points()[0]
+ymax,ymax=plt.gca().get_position().get_points()[1]
+plt.setp(ax.get_xticklabels(), visible=False)
+plt.setp(ax.get_yticklabels(), visible=False)
+plt.gca().axis('off')
+
+plt.gcf().add_axes([xmin,ymin,0.2,0.2])
+
