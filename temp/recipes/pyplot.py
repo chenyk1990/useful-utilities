@@ -284,3 +284,20 @@ plt.gca().axis('off')
 
 plt.gcf().add_axes([xmin,ymin,0.2,0.2])
 
+
+## 3D scatter
+import numpy
+from numpy.random import rand
+
+xs = rand(10)
+ys = rand(10)
+zs = rand(10)
+amps = rand(10)
+
+import matplotlib.pyplot as plt
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.scatter(xs, ys, zs, c=amps)
+plt.show()
+
+
