@@ -1,4 +1,5 @@
-
+import sys
+sys.path.append('.')
 
 
 plt.imshow(cmpn.reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect='auto')
