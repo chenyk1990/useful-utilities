@@ -60,7 +60,7 @@ plt.show()
 
 plot(x, y, 'go--', linewidth=2, markersize=12)
 plot(x, y, color='green', marker='o', linestyle='dashed',
-     linewidth=2, markersize=12, fillstyle='none')
+     linewidth=2, markersize=12, fillstyle='none') #fillstyle='full'
      
      
 
@@ -214,7 +214,8 @@ plt.gca().invert_yaxis()
 plt.axis('off')
 
 cax = fig.add_axes([0.15,0.9,0.2,0.2])
-plt.text(0,0, "a)", fontsize=28, color='k')
+plt.text(0,0, "a)", fontsize=28, color='k') 
+plt.gca().text(-0.15,1,'(a)',transform=plt.gca().transAxes,size=20,weight='normal')
 plt.axis('off')
 ## difference catalog (what is missing)
 eids2=[ii for ii in eids if ii not in eids0]#there are 703 events in eids,
@@ -312,5 +313,12 @@ ax.plot([0, 10],[0, 10])
 ax.add_patch(Rectangle((1, 1), 2, 6, alpha=0.5)) #xy,width,height
 #display plot
 plt.show()
+
+
+#save pandas frame to csv
+df.to_csv('test.csv')
+
+import pandas as pd
+df2=pd.read_csv("test.csv")
 
 
