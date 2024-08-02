@@ -345,3 +345,16 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.show()
 
 
+## pandas
+df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0]
+
+df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0:3,3:4]
+
+df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0:3,3:4]['mag']
+
+
+tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
+
+
+
+
