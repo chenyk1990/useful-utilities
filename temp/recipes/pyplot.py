@@ -1,3 +1,6 @@
+import warnings
+warnings.simplefilter("ignore")
+
 import sys
 sys.path.append('.')
 
