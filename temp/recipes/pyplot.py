@@ -251,9 +251,7 @@ cityloc('Midland')
 ## add a scalebar
 pip install matplotlib-scalebar
 
-	
-datan=np.load('data.npy')
-np.save('data.npy',data)
+
 
 ot='2016-10-26T03:15:36.000000Z'
 str(ot).replace("-","").replace(":","") 
@@ -355,6 +353,12 @@ df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0:3,3:4]['mag']
 
 tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
 
+
+#numpy 
+np.array_equal(dataall,dd)
+
+datan=np.load('data.npy')
+np.save('data.npy',data)
 
 
 
