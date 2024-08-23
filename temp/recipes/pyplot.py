@@ -360,6 +360,8 @@ np.array_equal(dataall,dd)
 datan=np.load('data.npy')
 np.save('data.npy',data)
 
+np.expand_dims(data,1)
+
 #numpy 
 #pandas,dataframe
 df.reset_index(drop=True)
