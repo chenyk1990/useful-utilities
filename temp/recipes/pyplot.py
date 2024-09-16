@@ -343,6 +343,11 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.show()
 
 
+ax.xaxis.set_tick_params(labelsize=20)
+ax.yaxis.set_tick_params(labelsize=20)
+  
+  
+
 ## pandas
 df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0]
 
@@ -354,6 +359,9 @@ df[df['Week'] == 'Week7'].sort_values(by=['Time']).iloc[0:3,3:4]['mag']
 tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
 
 
+
+  
+  
 #numpy 
 np.array_equal(dataall,dd)
 
@@ -365,4 +373,87 @@ np.expand_dims(data,1)
 #numpy 
 #pandas,dataframe
 df.reset_index(drop=True)
+
+
+
+
+
+import matplotlib.pyplot as plt
+from pyseistr import framebox
+
+x1=200
+x2=400
+y1=1500
+y2=5000
+
+plt.figure(figsize=(25, 16))
+plt.subplot(231)
+plt.imshow(data[:,:],aspect='auto',vmin=-20,vmax=20,cmap="seismic");
+plt.xlabel('Channel',size=16,weight='bold');plt.ylabel('Sample',size=16,weight='bold');
+plt.title('Original (115.2 Mb)',size=16, weight='bold');
+framebox(x1,x2,y1,y2);
+plt.gca().text(-0.17,1,'a)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.subplot(232)
+plt.imshow(outB[:,:],aspect='auto',vmin=-20,vmax=20,cmap="seismic")
+plt.xlabel('Channel',size=16,weight='bold');
+plt.title('Reconstructed (19.14 Mb)',size=16, weight='bold');
+framebox(x1,x2,y1,y2);
+plt.gca().text(-0.17,1,'b)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.subplot(233)
+plt.imshow(data[:,:]-outB[:,:],aspect='auto',vmin=-20,vmax=20,cmap="seismic")
+plt.xlabel('Channel',size=16,weight='bold');
+plt.title('Error',size=16, weight='bold');
+framebox(x1,x2,y1,y2);
+plt.gca().text(-0.17,1,'c)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.subplot(234)
+plt.imshow(data[y1:y2,x1:x2],aspect='auto',vmin=-100,vmax=100,cmap="seismic",extent=[x1,x2,y2,y1]);
+plt.xlabel('Channel',size=16,weight='bold');plt.ylabel('Sample',size=16,weight='bold');#plt.title('Original (115.2 Mb)')
+plt.gca().spines['bottom'].set_color('red')
+plt.gca().spines['top'].set_color('red') 
+plt.gca().spines['right'].set_color('red')
+plt.gca().spines['left'].set_color('red')
+plt.gca().text(-0.17,1,'d)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.subplot(235)
+plt.imshow(outB[y1:y2,x1:x2],aspect='auto',vmin=-100,vmax=100,cmap="seismic")
+plt.xlabel('Channel',size=16,weight='bold');#plt.title('Reconstructed (19.14 Mb)');
+plt.gca().spines['bottom'].set_color('red')
+plt.gca().spines['top'].set_color('red') 
+plt.gca().spines['right'].set_color('red')
+plt.gca().spines['left'].set_color('red')
+plt.gca().text(-0.17,1,'e)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.subplot(236)
+plt.imshow(data[y1:y2,x1:x2]-outB[y1:y2,x1:x2],aspect='auto',vmin=-100,vmax=100,cmap="seismic")
+plt.xlabel('Channel',size=16,weight='bold');#plt.title('Error')
+plt.gca().text(-0.17,1,'f)',transform=plt.gca().transAxes,size=20,weight='bold')
+plt.gca().spines['bottom'].set_color('red')
+plt.gca().spines['top'].set_color('red') 
+plt.gca().spines['right'].set_color('red')
+plt.gca().spines['left'].set_color('red')
+plt.gca().xaxis.set_tick_params(labelsize=16)
+plt.gca().yaxis.set_tick_params(labelsize=16)
+plt.rc('font', weight='bold');
+
+plt.savefig('forge1.png',dpi=300)
+plt.savefig('forge1.pdf',dpi=300)
+plt.show()
 
