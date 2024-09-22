@@ -457,3 +457,39 @@ plt.savefig('forge1.png',dpi=300)
 plt.savefig('forge1.pdf',dpi=300)
 plt.show()
 
+
+def calculate_mse(original, reconstructed):
+    """Calculate Mean Squared Error"""
+    return np.mean((original - reconstructed) ** 2)
+
+def calculate_rmse(original, reconstructed):
+    """Calculate Root Mean Square Error"""
+    return np.sqrt(calculate_mse(original, reconstructed))
+
+def calculate_psnr(original, reconstructed):
+    """Calculate Peak Signal-to-Noise Ratio"""
+    # Add a small constant to avoid division by zero
+    mse = calculate_mse(original, reconstructed)
+    if mse == 0:
+        return np.inf  # If MSE is zero, PSNR is infinite
+    max_pixel = np.max(original)
+    return 20 * np.log10(max_pixel / np.sqrt(mse))
+
+def calculate_ssim(original, reconstructed):
+    """Calculate Structural Similarity Index (SSIM)"""
+    from skimage.metrics import structural_similarity as ssim
+    ssim_value, _ = ssim(original, reconstructed, full=True)
+    return ssim_value
+
+
+# Generate synthetic data
+original_data = data_dphase_bp
+reconstructed_data = wav1
+# Calculate metrics
+mse_value = calculate_mse(original_data, reconstructed_data)
+rmse_value = calculate_rmse(original_data, reconstructed_data)
+psnr_value = calculate_psnr(original_data, reconstructed_data)
+ssim_value = calculate_ssim(original_data, reconstructed_data)
+
+
+
