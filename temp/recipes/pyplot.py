@@ -492,4 +492,12 @@ psnr_value = calculate_psnr(original_data, reconstructed_data)
 ssim_value = calculate_ssim(original_data, reconstructed_data)
 
 
+#tensorflow
+tf.placeholder() is not compatible with eager execution.
+Solution: 
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf 
+tf.compat.v1.disable_eager_execution() 
+
+
 
