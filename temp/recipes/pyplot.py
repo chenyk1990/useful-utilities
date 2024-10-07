@@ -216,6 +216,15 @@ plt.gca().invert_yaxis()
 
 plt.axis('off')
 
+string='hanning{0}.pdf'.format(2.0,'3',5)
+string='hanning{1}.pdf'.format(2.0,'3',5)
+
+txt = "For only {price:.2f} dollars!"
+print(txt.format(price = 49))
+
+plt.title('Clean:Noisy:Denoised:Noise {SNR:.2f}'.format(SNR=snr(data,denoised)))
+
+
 cax = fig.add_axes([0.15,0.9,0.2,0.2])
 plt.text(0,0, "a)", fontsize=28, color='k') 
 plt.gca().text(-0.15,1,'(a)',transform=plt.gca().transAxes,size=20,weight='normal')
@@ -369,6 +378,9 @@ datan=np.load('data.npy')
 np.save('data.npy',data)
 
 np.expand_dims(data,1)
+
+np.linalg.svd
+np.linalg.norm
 
 #numpy 
 #pandas,dataframe
