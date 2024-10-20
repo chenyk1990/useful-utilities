@@ -382,6 +382,10 @@ np.expand_dims(data,1)
 np.linalg.svd
 np.linalg.norm
 
+# a is an numpy array
+print(np.isrealobj(a)) # -> True 
+print(np.iscomplexobj(a)) # -> False
+
 #numpy 
 #pandas,dataframe
 df.reset_index(drop=True)
