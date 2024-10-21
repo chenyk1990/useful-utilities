@@ -386,11 +386,19 @@ np.linalg.norm
 print(np.isrealobj(a)) # -> True 
 print(np.iscomplexobj(a)) # -> False
 
+scalogram2 = np.empty(dout.shape[0:2], dtype=np.complex64)
+scalogram2.real = dout[:,:,0]
+scalogram2.imag = dout[:,:,1]
+
 #numpy 
 #pandas,dataframe
 df.reset_index(drop=True)
 
-
+#numpy thresholding
+tmp=dout[:,:,0]*dout[:,:,0]+dout[:,:,1]*dout[:,:,1]
+tmp=tmp/tmp.max()
+tmp[tmp<0.05]=0
+tmp[tmp>=0.05]=1
 
 
 
