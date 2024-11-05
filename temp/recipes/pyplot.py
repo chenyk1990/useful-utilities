@@ -524,4 +524,33 @@ import tensorflow.compat.v1 as tf
 tf.compat.v1.disable_eager_execution() 
 
 
+#github readme
+<p align="center">
+<img src='https://github.com/chenyk1990/gallery/blob/main/pywave/vel3d.png' alt='comp' width=960/>
+<img src='https://github.com/chenyk1990/gallery/blob/main/pywave/data3d.png' alt='comp' width=640/>
+</p>
+
+#GIF/gif file from pngs
+# more detailed example in pywave/demo/test_second.py
+from PIL import Image
+
+def create_gif(image_paths, output_gif_path, duration=500):
+    """Creates a GIF from a list of PNG images."""
+
+    images = [Image.open(image_path) for image_path in image_paths]
+
+    images[0].save(
+        output_gif_path,
+        save_all=True,
+        append_images=images[1:],
+        optimize=False,
+        duration=duration,
+        loop=0  # 0 means infinite loop
+    )
+
+## create GIF/gif
+inpath=fignames
+outpath='wfd3ds.gif'
+create_gif(inpath,outpath)
+    
 
