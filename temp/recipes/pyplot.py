@@ -400,6 +400,9 @@ tmp=tmp/tmp.max()
 tmp[tmp<0.05]=0
 tmp[tmp>=0.05]=1
 
+#numpy index
+dtf0[:,np.linspace(100,300,nf,dtype='int')].reshape([1,n1,nf,1])
+
 
 
 import matplotlib.pyplot as plt
@@ -553,4 +556,7 @@ inpath=fignames
 outpath='wfd3ds.gif'
 create_gif(inpath,outpath)
     
+
+
+
 
