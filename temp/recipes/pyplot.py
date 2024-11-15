@@ -333,6 +333,7 @@ df2=pd.read_csv("test.csv")
 
 
 ## plot loss
+history = model.fit(X_train,y_train,epochs=niter,validation_data=([X_test],y_test), shuffle=True, batch_size=32)
 print(history.history.keys())
 #  "Accuracy"
 plt.plot(history.history['acc'])
