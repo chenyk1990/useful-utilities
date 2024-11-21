@@ -454,7 +454,8 @@ tmp[tmp>=0.05]=1
 #numpy index
 dtf0[:,np.linspace(100,300,nf,dtype='int')].reshape([1,n1,nf,1])
 
-
+#
+np.bool -> np.bool_ #module 'numpy' has no attribute 'bool'.
 
 import matplotlib.pyplot as plt
 from pyseistr import framebox
@@ -577,6 +578,18 @@ Solution:
 import tensorflow.compat.v1 as tf 
 tf.compat.v1.disable_eager_execution() 
 
+#ML
+import numpy as np;import keras;
+inputs = np.random.random((32, 10, 8))
+lstm = keras.layers.LSTM(4)
+output = lstm(inputs)
+print('output.shape',output.shape)
+
+lstm = keras.layers.LSTM(4, return_sequences=True, return_state=True)
+whole_seq_output, final_memory_state, final_carry_state = lstm(inputs)
+print('whole_seq_output.shape',whole_seq_output.shape)
+print('final_memory_state.shape',final_memory_state.shape)
+print('final_carry_state.shape',final_carry_state.shape)
 
 #github readme
 <p align="center">
