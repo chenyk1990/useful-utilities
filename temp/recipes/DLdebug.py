@@ -16,6 +16,10 @@ from keras.layers.recurrent import LSTM
 -> from keras.layers import LSTM,RNN,GRU
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
 ###############################################################################################
+from keras.layers.advanced_activations import PReLU
+->from keras.layers import PReLU
+(p3.12,keras-3.6.0,tf-2.16.2,202411)
+###############################################################################################
 from keras.layers import recurrent (recurrent.JZS1)
 ->from keras.layers import RNN or ->from keras.src.layers import RNN
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
@@ -40,6 +44,10 @@ from keras.datasets.data_utils import get_file
 ->from keras.utils import get_file
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
 ###############################################################################################
+model.add(PReLU((512,)))->model.add(PReLU())
+model.add(BatchNormalization((512,))) -> model.add(BatchNormalization())
+(p3.12,keras-3.6.0,tf-2.16.2,202411)
+###############################################################################################
 model.add(Convolution2D(32, 1, 3, 3, border_mode='full'))
 ->model.add(Convolution2D(32, 3) or model.add(Convolution2D(32, 3, activation='relu'))
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
@@ -54,6 +62,10 @@ model.add(MaxPooling2D(poolsize=(2, 2)))
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
 ###############################################################################################
 model.add(Dense(1280,128))->model.add(Dense(128))
+(p3.12,keras-3.6.0,tf-2.16.2,202411)
+
+model.add(Dense(dims, 512, init='glorot_uniform'))
+->model.add(Dense(512))
 (p3.12,keras-3.6.0,tf-2.16.2,202411)
 ###############################################################################################
 model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, show_accuracy=True, verbose=1, validation_data=(X_test, Y_test))
@@ -95,8 +107,14 @@ a = np.log(a)/temperature;a = np.exp(a)/np.sum(np.exp(a));np.argmax(np.random.mu
 xrange -> range
 (p3.12)
 ###############################################################################################
+#downgrade
+from keras.src import ops
+ops.matmul -> import tensorflow as tf; tf.matmul
+(keras-3.6.0->keras-2.11.0) 
+###############################################################################################
 model.predict_classes->model.predict
-
+model.predict_proba -> model.predict
+###############################################################################################
 # Equal commands
 model.add(Convolution2D(32, 3));model.add(Activation('relu'))
 =model.add(Convolution2D(32, 3, activation='relu'))
@@ -108,10 +126,12 @@ model.add(Convolution2D(32, 3));model.add(Activation('relu'))
 # install
 pip install scikit-image  (skimage)
 pip install tensorflow
+pip install scikit-learn
 
 
 
 #common
+from sklearn.preprocessing import LabelEncoder,StandardScaler
 from keras.models import Sequential
 from keras.layers import Activation, Dense, RepeatVector, Input
 from keras.layers import RNN
@@ -151,8 +171,8 @@ checkpoint = ModelCheckpoint(filepath=weightname,monitor='val_loss',mode = 'min'
 lr_reducer = ReduceLROnPlateau(factor=0.1,cooldown=0,patience=50,min_lr=0.5e-6,monitor='val_loss',mode = 'min',verbose= 1)
 model.fit(Xnoisy,Xnoisy,batch_size=128,verbose=1,epochs=20,callbacks=[checkpoint,lr_reducer],validation_split=0.2)
 ###############################################################################################
-
-
+import os
+os.environ["KERAS_BACKEND"] = "tensorflow"
 
 
 
