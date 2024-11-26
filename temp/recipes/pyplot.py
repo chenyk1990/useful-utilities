@@ -312,6 +312,21 @@ ax = fig.add_subplot(projection='3d')
 ax.scatter(xs, ys, zs, c=amps)
 plt.show()
 
+## 
+np.random.seed(1337)
+numpy.random.seed(1337)
+numpy.random.shuffle()
+HFef=asciiread(os.getenv('HOME')+'/chenyk.hfswd/evetmp/eveHFef.dat')
+HFef=np.array(HFef)
+np.random.seed(20232425)
+print(HFef[0:2])
+np.random.shuffle(HFef)
+print(HFef[0:2])
+
+ind=int(len(HFef)*0.9)
+HFef1=HFef[0:ind]
+HFef2=HFef[ind:]
+
 %% add patch
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
