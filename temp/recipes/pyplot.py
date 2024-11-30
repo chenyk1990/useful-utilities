@@ -438,6 +438,9 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+np.arange(0, 5.1, 0.5)
+np.arange(10)
+
 np.array_equal(dataall,dd)
 
 datan=np.load('data.npy')
