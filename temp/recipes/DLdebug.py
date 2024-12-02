@@ -123,12 +123,30 @@ model.add(Convolution2D(32, 3));model.add(Activation('relu'))
 
 
 
+
+#torch
+from torch.utils.tensorboard import SummaryWriter -> 
+(Using: conda install -c conda-forge tensorboard)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # install
 pip install scikit-image  (skimage)
 pip install tensorflow
 pip install scikit-learn
-
-
+pip install torchvision
+pip install h5py
 
 #common
 from sklearn.preprocessing import LabelEncoder,StandardScaler
