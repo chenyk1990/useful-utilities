@@ -438,6 +438,14 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+if id1.ndim==1:
+	id1[np.newaxis,:].shape #create the first axis [1xdim]
+	id1=np.repeat(id1[np.newaxis,:],size,axis=0) #spray vector id1/id2 along first axis
+t=t[:,:,np.newaxis] = np.expand_dims(t,2)
+
+np.repeat([1,2,3],3,axis=0)
+numpy.any([1,2,0,0]) #if any member of the list is >0 
+
 np.arange(0, 5.1, 0.5)
 np.arange(10)
 
