@@ -260,6 +260,13 @@ cityloc('Midland')
 ## add a scalebar
 pip install matplotlib-scalebar
 
+#matplotlib
+
+#remove margin
+	import matplotlib.pyplot as plt	
+	plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0); 
+	plt.imshow(dn,clim=(-1, 1),aspect='auto');plt.axis('off');plt.margins(0, 0);plt.savefig('dn.png')
+	plt.imshow(d1,clim=(-1, 1),aspect='auto');plt.margins(0, 0);plt.savefig('d1.png')
 
 
 ot='2016-10-26T03:15:36.000000Z'
@@ -647,6 +654,12 @@ outpath='wfd3ds.gif'
 create_gif(inpath,outpath)
     
 
+## play with the PIL, image to numpy coversion
+	import PIL
+	import numpy as np
+	I = np.asarray(PIL.Image.open('dn.png'))
+	im = PIL.Image.fromarray(np.uint8(I))
+	im.save('dn2.png')
 
 
 
