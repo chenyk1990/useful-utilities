@@ -445,6 +445,9 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+np.vstack #(Stack arrays in sequence vertically (row wise).)
+np.vstack((vmodel_depthvp,vmodel_depthvp[-1,:])
+
 if id1.ndim==1:
 	id1[np.newaxis,:].shape #create the first axis [1xdim]
 	id1=np.repeat(id1[np.newaxis,:],size,axis=0) #spray vector id1/id2 along first axis
