@@ -481,6 +481,10 @@ scalogram2.imag = dout[:,:,1]
 #pandas,dataframe
 df.reset_index(drop=True)
 
+a = [1,2,3,4,1,2,3,4,1,2,3,4]
+a[::2] #every two
+a[::3] #every three
+
 #numpy thresholding
 tmp=dout[:,:,0]*dout[:,:,0]+dout[:,:,1]*dout[:,:,1]
 tmp=tmp/tmp.max()
