@@ -669,4 +669,102 @@ create_gif(inpath,outpath)
 	im.save('dn2.png')
 
 
+### EQCCT
+def create_cct_modelP(inputs):
+
+    inputs1 = convF1(inputs,   10, 11, 0.1)
+    inputs1 = convF1(inputs1, 20, 11, 0.1)
+    inputs1 = convF1(inputs1, 40, 11, 0.1)
+    
+    inputreshaped = layers.Reshape((6000,1,40))(inputs1)
+
+    # Create patches.
+    patches = Patches(patch_size)(inputreshaped)
+    
+    # Encode patches.
+    encoded_patches = PatchEncoder(num_patches, projection_dim)(patches)
+        
+    # Calculate Stochastic Depth probabilities.
+    dpr = [x for x in np.linspace(0, stochastic_depth_rate, transformer_layers)]
+
+    # Create multiple layers of the Transformer block.
+    for i in range(transformer_layers):
+        # Layer normalization 1.
+        x1 = layers.LayerNormalization(epsilon=1e-6)(encoded_patches)
+
+        # Create a multi-head attention layer.
+        attention_output = layers.MultiHeadAttention(
+            num_heads=num_heads, key_dim=projection_dim, dropout=0.1
+        )(x1, x1)
+
+        # Skip connection 1.
+        attention_output = StochasticDepth(dpr[i])(attention_output)
+        x2 = layers.Add()([attention_output, encoded_patches])
+
+        # Layer normalization 2.
+        x3 = layers.LayerNormalization(epsilon=1e-6)(x2)
+
+        # MLP.
+        x3 = mlp(x3, hidden_units=transformer_units, dropout_rate=0.1)
+
+        # Skip connection 2.
+        x3 = StochasticDepth(dpr[i])(x3)
+        encoded_patches = layers.Add()([x3, x2])
+
+    # Apply sequence pooling.
+    representation = layers.LayerNormalization(epsilon=1e-6)(encoded_patches)
+
+    return representation
+
+
+def create_cct_modelS(inputs):
+
+    inputs1 = convF1(inputs,   10, 11, 0.1)
+    inputs1 = convF1(inputs1, 20, 11, 0.1)
+    inputs1 = convF1(inputs1, 40, 11, 0.1)
+    
+    inputreshaped = layers.Reshape((6000,1,40))(inputs1)
+
+    # Create patches.
+    patches = Patches(patch_size)(inputreshaped)
+    
+    # Encode patches.
+    encoded_patches = PatchEncoder(num_patches, projection_dim)(patches)
+        
+    # Calculate Stochastic Depth probabilities.
+    dpr = [x for x in np.linspace(0, stochastic_depth_rate, transformer_layers)]
+
+    # Create multiple layers of the Transformer block.
+    for i in range(transformer_layers):
+        encoded_patches = convF1(encoded_patches, 40,11, 0.1)
+        # Layer normalization 1.
+        x1 = layers.LayerNormalization(epsilon=1e-6)(encoded_patches)
+
+        # Create a multi-head attention layer.
+        attention_output = layers.MultiHeadAttention(
+            num_heads=num_heads, key_dim=projection_dim, dropout=0.1
+        )(x1, x1)
+        attention_output = convF1(attention_output, 40,11, 0.1)
+    
+        # Skip connection 1.
+        attention_output = StochasticDepth(dpr[i])(attention_output)
+        x2 = layers.Add()([attention_output, encoded_patches])
+
+        # Layer normalization 2.
+        x3 = layers.LayerNormalization(epsilon=1e-6)(x2)
+
+        # MLP.
+        x3 = mlp(x3, hidden_units=transformer_units, dropout_rate=0.1)
+
+        # Skip connection 2.
+        x3 = StochasticDepth(dpr[i])(x3)
+        encoded_patches = layers.Add()([x3, x2])
+
+    # Apply sequence pooling.
+    representation = layers.LayerNormalization(epsilon=1e-6)(encoded_patches)
+
+    return representation
+
+
+
 
