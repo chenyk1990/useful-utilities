@@ -445,8 +445,17 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+np.cross(a,b) = cross(a,b)
+
 np.vstack #(Stack arrays in sequence vertically (row wise).)
-np.vstack((vmodel_depthvp,vmodel_depthvp[-1,:])
+np.vstack((vmodel_depthvp,vmodel_depthvp[-1,:]) -> Matlab [vmodel_depthvp;vmodel_depthvp(end,:)]
+
+np.hstack #(Stack arrays in sequence horizontally (column wise).)
+
+np.insert #Insert values along the given axis before the given indices.
+#np.insert(z,i,z(i)) -> [z(1:i),z(i+1),z(i+1:end)];
+
+np.nansum #Return the sum of array elements over a given axis treating Not a Numbers (NaNs) as zero.
 
 if id1.ndim==1:
 	id1[np.newaxis,:].shape #create the first axis [1xdim]
