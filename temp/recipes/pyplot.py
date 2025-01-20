@@ -445,6 +445,10 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+ytop1=utop-ptab[:, np.newaxis] 
+#dimension: [1xn2] - [n1x1] -> [n1xn2] = Matlab: ones(n1,1)*utop(:)' - ptab(:)*ones(1,n2)
+ytop2=utop+ptab[:, np.newaxis] #dimension: [1xn2] - [n1x1] -> [n1xn2]
+
 np.cross(a,b) = cross(a,b)
 
 np.vstack #(Stack arrays in sequence vertically (row wise).)
@@ -461,6 +465,16 @@ if id1.ndim==1:
 	id1[np.newaxis,:].shape #create the first axis [1xdim]
 	id1=np.repeat(id1[np.newaxis,:],size,axis=0) #spray vector id1/id2 along first axis
 t=t[:,:,np.newaxis] = np.expand_dims(t,2)
+
+np.arctan2 = atan2
+ 
+x.argmax -> [~,t]=max(x)
+x.argmin -> [~,t]=min(x)
+
+np.diff = diff (matlab)
+np.cumsum=cumsum (matlab)
+
+np.isin (ismember(1,a)?)
 
 np.repeat([1,2,3],3,axis=0)
 numpy.any([1,2,0,0]) #if any member of the list is >0 
@@ -485,6 +499,8 @@ print(np.iscomplexobj(a)) # -> False
 scalogram2 = np.empty(dout.shape[0:2], dtype=np.complex64)
 scalogram2.real = dout[:,:,0]
 scalogram2.imag = dout[:,:,1]
+
+np.ma.divide -> Divide arguments element-wise. (Equivalent to ``x1`` / ``x2`` in terms of array-broadcasting.)
 
 #numpy 
 #pandas,dataframe
