@@ -445,6 +445,8 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+tmp=(x[idx,np.arange(n2)]==False) #This is very tricky, [x[idx,ii] for ii in range(n2)]
+	
 ytop1=utop-ptab[:, np.newaxis] 
 #dimension: [1xn2] - [n1x1] -> [n1xn2] = Matlab: ones(n1,1)*utop(:)' - ptab(:)*ones(1,n2)
 ytop2=utop+ptab[:, np.newaxis] #dimension: [1xn2] - [n1x1] -> [n1xn2]
