@@ -445,6 +445,8 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+.astype(int)
+
 tmp=(x[idx,np.arange(n2)]==False) #This is very tricky, [x[idx,ii] for ii in range(n2)]
 	
 ytop1=utop-ptab[:, np.newaxis] 
