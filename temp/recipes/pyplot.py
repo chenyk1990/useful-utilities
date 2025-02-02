@@ -190,6 +190,8 @@ plt.show()
 np.transpose(a, (1, 0, 2)).shape
 
 
+plt.colorbar(orientation='horizontal',cax=fig.add_axes([0.37,0.07,0.3,0.02]),shrink=1,label='Traveltime (s)');
+
 ## specify position of colorbar
 #[lower left x, lower left y, upper right x, upper right y] of the desired colorbar:
 dat_coord = [-1.5,1.5,-0.5,1.75]
@@ -205,6 +207,8 @@ cbar_ax = fig.add_axes(datco)
 #the rest stays the same:
 clevs = [0, 1 , 2]
 cb1 = plt.colorbar(hdl, cax=cbar_ax, orientation='horizontal', ticks=clevs)
+
+plt.colorbar(orientation='horizontal',shrink=0.6,label='Traveltime (s)');
 
 plt.show()
 
@@ -445,6 +449,30 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
   
   
 #numpy 
+np.ma.masked_array (fill some positions with values)
+example
+a=np.ma.masked_array(
+   data=[[5, 8, 17],
+         [8, 16, 24],
+         [17, 24, 61]],
+   mask=[[False, False, False],
+         [False, False, False],
+         [False, False, True]],fill_value=999999)
+    
+rng.choice(5, 3, replace=False) #This is equivalent to rng.permutation(np.arange(5))[:3]
+
+np.isfinite(sp_amp) -> MATLAB: isfinite(sp_amp)
+
+np.atleast_2d(3.0)
+array([[3.]])
+
+rng.integers  #    
+#randomized_vm_ind=rng.integers(low=0, high=num_velocity_models,size=perturbed_origin_depth_km.shape[-1]);
+#rand('state',123);randomized_vm_ind=round(rand(size(perturbed_origin_depth_km,2),1)*num_velocity_models);
+
+rng=np.random.default_rng(123) #seed is 123
+rng.normal(size=(nmc,num_unique_events)) #Draw random samples from a normal (Gaussian) distribution.
+
 .astype(int)
 
 tmp=(x[idx,np.arange(n2)]==False) #This is very tricky, [x[idx,ii] for ii in range(n2)]
