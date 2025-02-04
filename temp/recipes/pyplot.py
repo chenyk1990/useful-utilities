@@ -446,7 +446,8 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
 
 
 
-  
+#in matlab
+a(find(a>0.6))=0 the same as: a(a>0.6)=0
   
 #numpy 
 np.ma.masked_array (fill some positions with values)
@@ -822,6 +823,12 @@ def create_cct_modelS(inputs):
 
     return representation
 
+
+#legend
+h1=plt.plot(paths[0,:],paths[1,:],paths[2,:],'k',markersize=20)
+h2=plt.plot(paths1[0,:],paths1[1,:],paths1[2,:],'g--',markersize=20)
+# Plots endpoint
+plt.legend([h1[0],h2[0]],['Ray 1', 'Ray 2'], loc='upper left')
 
 
 
