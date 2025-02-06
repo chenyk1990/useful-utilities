@@ -542,6 +542,7 @@ df.reset_index(drop=True)
 a = [1,2,3,4,1,2,3,4,1,2,3,4]
 a[::2] #every two
 a[::3] #every three
+a[::-1] #indexing from right to left, reverse order
 
 #numpy thresholding
 tmp=dout[:,:,0]*dout[:,:,0]+dout[:,:,1]*dout[:,:,1]
