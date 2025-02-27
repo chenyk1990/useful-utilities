@@ -467,6 +467,10 @@ np.isfinite(sp_amp) -> MATLAB: isfinite(sp_amp)
 np.atleast_2d(3.0)
 array([[3.]])
 
+np.multiply = * (not need to have same size), e.g., [3*3] * [3,1] -> [3*3], # element-wise multiplication
+
+np.matmul: "real" multiplication between two arrays
+
 rng.integers  #    
 #randomized_vm_ind=rng.integers(low=0, high=num_velocity_models,size=perturbed_origin_depth_km.shape[-1]);
 #rand('state',123);randomized_vm_ind=round(rand(size(perturbed_origin_depth_km,2),1)*num_velocity_models);
