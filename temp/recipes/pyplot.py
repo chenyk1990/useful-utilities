@@ -449,6 +449,11 @@ tmpframe[tmpframe['Mag']==tmpframe['Mag'].max()]
 #in matlab
 a(find(a>0.6))=0 the same as: a(a>0.6)=0
   
+  
+#torch
+a is a torch.tensor
+a.detach().numpy()
+
 #numpy 
 np.ma.masked_array (fill some positions with values)
 example
@@ -639,7 +644,8 @@ plt.savefig('forge1.png',dpi=300)
 plt.savefig('forge1.pdf',dpi=300)
 plt.show()
 
-
+# skimage
+pip install scikit-image  (skimage)
 def calculate_mse(original, reconstructed):
     """Calculate Mean Squared Error"""
     return np.mean((original - reconstructed) ** 2)
