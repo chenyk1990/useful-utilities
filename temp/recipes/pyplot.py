@@ -53,6 +53,9 @@ plt.savefig('test_pyseistr_somf3d.png',format='png',dpi=300)
 
 plt.show()
 
+# skfmm
+pip install scikit-fmm
+
 ## Important one
 plt.gca().set_yticks([]);
 
@@ -65,7 +68,9 @@ plot(x, y, 'go--', linewidth=2, markersize=12)
 plot(x, y, color='green', marker='o', linestyle='dashed',
      linewidth=2, markersize=12, fillstyle='none') #fillstyle='full'
      
-     
+ 
+#rotate
+plt.xticks(rotation=45)     
 
 e.write("test.qml",format="QUAKEML")
 
@@ -841,5 +846,44 @@ h2=plt.plot(paths1[0,:],paths1[1,:],paths1[2,:],'g--',markersize=20)
 # Plots endpoint
 plt.legend([h1[0],h2[0]],['Ray 1', 'Ray 2'], loc='upper left')
 
+
+#confusion map
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+y_test=np.load('RF_y_test.npy')
+y_pred=np.load('RF_y_pred.npy')
+cm = confusion_matrix(y_test, y_pred)
+
+f, axes = plt.subplots(1, 2, figsize=(20, 10))#, sharey='row')
+axes[0].text(-0.15,1,'(a)',transform=axes[0].transAxes,size=20,weight='normal')
+axes[1].text(-0.15,1,'(b)',transform=axes[1].transAxes,size=20,weight='normal')
+
+disp1 = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Fake', 'Real'])
+disp1.plot(ax=axes[0], xticks_rotation=45,colorbar=False, text_kw={'size': 16, 'weight': 'bold', 'color': 'darkred'})
+disp1.ax_.set_title('Random Forest Classifier',size=20,weight='normal')
+disp1.ax_.set_xlabel('Predicted label',size=20,weight='normal')
+disp1.ax_.set_ylabel('',size=20,weight='normal')
+disp1.ax_.xaxis.set_ticklabels(['Fake', 'Real'],size=14,weight='normal');
+disp1.ax_.yaxis.set_ticklabels(['Fake', 'Real'],size=14,weight='normal');
+# disp1.ax_.
+# from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+y_test=np.load('XGBoost_y_test.npy')
+y_pred=np.load('XGBoost_y_pred.npy')
+cm = confusion_matrix(y_test, y_pred)
+
+disp2 = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Fake', 'Real'])
+disp2.plot(ax=axes[1], xticks_rotation=45,colorbar=False,text_kw={'size': 16, 'weight': 'bold', 'color': 'darkred'})
+disp2.ax_.set_title('XGBoost Classifier',size=20,weight='normal')
+disp2.ax_.set_xlabel('Predicted label',size=20,weight='normal')
+disp2.ax_.set_ylabel('',size=20,weight='normal')
+disp2.ax_.xaxis.set_ticklabels(['Fake', 'Real'],size=14,weight='normal');
+disp2.ax_.yaxis.set_ticklabels(['Fake', 'Real'],size=14,weight='normal');
+
+f.add_axes([0.23,0.9,0.3,0.2]);f.gca().axis('off')
+plt.text(0.0,0.0,'Confusion matrix comparison for training database 2',fontsize=30,weight='normal')
+
+f.add_axes([0.1,0.02,0.3,0.2]);f.gca().axis('off')
+plt.text(0.1,0.05,'Fake: 997; Real: 508; Total: 1505 (1053 for training and 452 for testing)',fontsize=12,color='k')
+plt.savefig('XGBoost-cm-data2.png')
+plt.show()
 
 
