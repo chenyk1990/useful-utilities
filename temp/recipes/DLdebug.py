@@ -192,6 +192,7 @@ model.fit(Xnoisy,Xnoisy,batch_size=128,verbose=1,epochs=20,callbacks=[checkpoint
 import os
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
+from keras.optimizers import Adam
 
 ###############################################################################################
 #torch #tensorflow #Height#Width
@@ -208,10 +209,12 @@ H2=(H1+2P-K)/S+1
 #number of parameters
 CONV layer: This is where CNN learns, so certainly we’ll have weight matrices. To calculate the learnable parameters here, all we have to do is just multiply the by the shape of width m, height n, previous layer’s filters d and account for all such filters k in the current layer. Don’t forget the bias term for each of the filter. Number of parameters in a CONV layer would be : ((m * n * d)+1)* k), added 1 because of the bias term for each filter. The same expression can be written as follows: ((shape of width of the filter * shape of height of the filter * number of filters in the previous layer+1)*number of filters). Where the term “filter” refer to the number of filters in the current layer.
 ###############################################################################################
+#torch
+torch.autograd
+
+FullyConnectedNetwork: 
 
 
 
 
-
-from keras.optimizers import Adam
 

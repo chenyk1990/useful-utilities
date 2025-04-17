@@ -4,6 +4,9 @@ warnings.simplefilter("ignore")
 import sys
 sys.path.append('.')
 
+#obsplus
+conda config --add channels conda-forge
+conda install obsplus
 
 plt.imshow(cmpn.reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect='auto')
 
@@ -848,6 +851,7 @@ plt.legend([h1[0],h2[0]],['Ray 1', 'Ray 2'], loc='upper left')
 
 
 #confusion map
+# pip install scikit-learn #sklearn
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 y_test=np.load('RF_y_test.npy')
 y_pred=np.load('RF_y_pred.npy')
