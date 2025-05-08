@@ -73,7 +73,9 @@ plot(x, y, color='green', marker='o', linestyle='dashed',
      
  
 #rotate
-plt.xticks(rotation=45)     
+plt.xticks(rotation=45) 
+plt.yticks(fontsize=30)
+plt.bar_label(plt.gca().containers[0], fontsize=12)
 
 e.write("test.qml",format="QUAKEML")
 
@@ -654,6 +656,8 @@ plt.show()
 
 # skimage
 pip install scikit-image  (skimage)
+pip install opencv-python (cv2)
+
 def calculate_mse(original, reconstructed):
     """Calculate Mean Squared Error"""
     return np.mean((original - reconstructed) ** 2)
@@ -891,3 +895,5 @@ plt.savefig('XGBoost-cm-data2.png')
 plt.show()
 
 
+#ravel()
+The ravel function in NumPy is used to flatten a multi-dimensional array into a one-dimensional array.

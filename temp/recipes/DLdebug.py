@@ -214,6 +214,20 @@ torch.autograd
 
 FullyConnectedNetwork: 
 
+#save model on GPU and load model on CPU
+device=torch.device("cpu")
+model=torch.load('./network/MDA_GAN.pt', map_location=device, weights_only=False)
+
+#RuntimeError: expected scalar type Float but found Half
+for param in model.parameters():
+    # Check if parameter dtype is  Half (float16)
+    if param.dtype == torch.float16:
+        param.data = param.data.to(torch.float32)
+        
+In PyTorch, a DataLoader is used to load data in batches and feed it to a model during training or inference. The DataLoader takes a dataset object as input. This dataset must implement the __getitem__ and __len__ methods, usually via the torch.utils.data.Dataset class or its subclasses.
+###############################################################################################
+
+
 
 
 
