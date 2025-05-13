@@ -52,7 +52,7 @@ plt.title('Filtered (SOMF)',color='k');ax.set_xticks([]);ax.set_yticks([]);
 ax=plt.subplot(5,2,10)
 plt.imshow((cmpn-cmpn_d2).reshape(100,500,order='F'),cmap='jet',clim=(-0.2, 0.2),aspect=0.8)
 plt.title('Noise (SOMF)',color='k');ax.set_xticks([]);ax.set_yticks([]);
-plt.savefig('test_pyseistr_somf3d.png',format='png',dpi=300)
+plt.savefig('test_pyseistr_somf3d.png',format='png',dpi=300,bbox_inches='tight')
 
 plt.show()
 
@@ -192,7 +192,7 @@ plt.gca().set_xlim(xmin=0,xmax=15);
 plt.gca().legend(loc='lower right');
 plt.gca().set_ylabel("Count",fontsize='large', fontweight='normal')
 plt.gca().set_xlabel("Depth (km)",fontsize='large', fontweight='normal')
-plt.savefig('continuous_dep_hist.png',format='png',dpi=300)
+plt.savefig('continuous_dep_hist.png',format='png',dpi=300,bbox_inches='tight')
 plt.show() 
 
 
@@ -279,8 +279,8 @@ pip install matplotlib-scalebar
 #remove margin
 	import matplotlib.pyplot as plt	
 	plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0); 
-	plt.imshow(dn,clim=(-1, 1),aspect='auto');plt.axis('off');plt.margins(0, 0);plt.savefig('dn.png')
-	plt.imshow(d1,clim=(-1, 1),aspect='auto');plt.margins(0, 0);plt.savefig('d1.png')
+	plt.imshow(dn,clim=(-1, 1),aspect='auto');plt.axis('off');plt.margins(0, 0);plt.savefig('dn.png',bbox_inches='tight')
+	plt.imshow(d1,clim=(-1, 1),aspect='auto');plt.margins(0, 0);plt.savefig('d1.png',bbox_inches='tight')
 
 
 ot='2016-10-26T03:15:36.000000Z'
@@ -650,8 +650,8 @@ plt.gca().xaxis.set_tick_params(labelsize=16)
 plt.gca().yaxis.set_tick_params(labelsize=16)
 plt.rc('font', weight='bold');
 
-plt.savefig('forge1.png',dpi=300)
-plt.savefig('forge1.pdf',dpi=300)
+plt.savefig('forge1.png',dpi=300,bbox_inches='tight')
+plt.savefig('forge1.pdf',dpi=300,bbox_inches='tight')
 plt.show()
 
 # skimage
@@ -891,9 +891,16 @@ plt.text(0.0,0.0,'Confusion matrix comparison for training database 2',fontsize=
 
 f.add_axes([0.1,0.02,0.3,0.2]);f.gca().axis('off')
 plt.text(0.1,0.05,'Fake: 997; Real: 508; Total: 1505 (1053 for training and 452 for testing)',fontsize=12,color='k')
-plt.savefig('XGBoost-cm-data2.png')
+plt.savefig('XGBoost-cm-data2.png',bbox_inches='tight')
 plt.show()
 
 
 #ravel()
 The ravel function in NumPy is used to flatten a multi-dimensional array into a one-dimensional array.
+
+
+#system
+import platform
+platform.system()
+
+'Darwin',"Linux"
