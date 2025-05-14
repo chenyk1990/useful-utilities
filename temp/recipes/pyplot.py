@@ -904,3 +904,7 @@ import platform
 platform.system()
 
 'Darwin',"Linux"
+
+#latex #tex #overleaf #reference
+\DeclareRobustCommand{\refname}{10 References/Works Cited} 
+\setcounter{section}{10} #renumbering

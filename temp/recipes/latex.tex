@@ -143,9 +143,9 @@ env=Environment()
 env.Command(['ieee','IEEEtran.bst','IEEEtran.cls'],[os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.bst',os.getenv('HOME')+'/chenyk.open/temp/ieee/IEEEtran.cls'],'cp  ${SOURCES[0]}  ${TARGETS[1]} && cp  ${SOURCES[1]}  ${TARGETS[2]} ')
 
 
+%reference
+\DeclareRobustCommand{\refname}{10 References/Works Cited}
 
-
-w
 
 %\AtEndDocument{
 %\begin{figure}[htb!]
