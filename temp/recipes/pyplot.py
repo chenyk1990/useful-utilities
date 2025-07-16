@@ -318,9 +318,14 @@ plt.gca().axis('off')
 plt.gcf().add_axes([xmin,ymin,0.2,0.2])
 
 
+# linspace in numpy
+ct=np.array(range(300,1201,1)); #or ct=np.linspace(300,1200,901)
+
 ## 3D scatter
 import numpy
 from numpy.random import rand
+
+np.exp(1j) #imaginary no, complex
 
 xs = rand(10)
 ys = rand(10)
