@@ -553,7 +553,12 @@ np.linalg.norm
 print(np.isrealobj(a)) # -> True 
 print(np.iscomplexobj(a)) # -> False
 
-scalogram2 = np.empty(dout.shape[0:2], dtype=np.complex64)
+#easiest way of create complex array is
+np.zeros(10,dtype=np.complex_)
+
+scalogram2 = np.empty(dout.shape[0:2], dtype=np.complex64): the same as 
+scalogram2 = np.empty(dout.shape[0:2], np.complex64): the same as
+scalogram2 = np.zeros(dout.shape[0:2], np.complex64)
 scalogram2.real = dout[:,:,0]
 scalogram2.imag = dout[:,:,1]
 
