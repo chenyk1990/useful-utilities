@@ -82,6 +82,9 @@ def Pickmovie(data,other):
        title="Velocity Scan" point1=0.8 point2=0.8 %s
        '''%other)
 
+## Movie
+Result('gxy3-ts',tmp, 'Movie')
+
 ## Create label A
 Plot('labela',None,
 	'''
