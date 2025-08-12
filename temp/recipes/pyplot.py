@@ -470,6 +470,8 @@ a is a torch.tensor
 a.detach().numpy()
 
 #numpy 
+nos,counts=np.unique(shotNO2,return_counts=True)
+
 np.ma.masked_array (fill some positions with values)
 example
 a=np.ma.masked_array(
