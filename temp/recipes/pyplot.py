@@ -920,3 +920,7 @@ platform.system()
 #latex #tex #overleaf #reference
 \DeclareRobustCommand{\refname}{10 References/Works Cited} 
 \setcounter{section}{10} #renumbering
+
+
+
+python main.py     --seed 0     --mode "train"     --model-name "SeisMoLLM_dis"     --log-base "./logs"     --log-step 500     --data "/Users/chenyk/DATALIB/STEAD"     --dataset-name "stead"     --data-split true     --train-size 0.8     --val-size 0.1     --shuffle true     --workers 6     --in-samples 6000     --batch-size 256     --augmentation true     --epochs 200     --patience 30     --base-lr 0.0005     --max-lr 0.001     --warmup-steps 4500     --down-steps 5000
