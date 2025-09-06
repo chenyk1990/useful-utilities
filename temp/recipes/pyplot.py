@@ -229,6 +229,10 @@ plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.gca().invert_yaxis()
 
 plt.axis('off')
+#yaxis;#xaxis
+plt.setp(ax.get_xticklabels(), visible=False)
+plt.setp(ax.get_yticklabels(), visible=False)
+plt.gca().set_ylabel("")
 
 string='hanning{0}.pdf'.format(2.0,'3',5)
 string='hanning{1}.pdf'.format(2.0,'3',5)
