@@ -226,7 +226,7 @@ for param in model.parameters():
         
 In PyTorch, a DataLoader is used to load data in batches and feed it to a model during training or inference. The DataLoader takes a dataset object as input. This dataset must implement the __getitem__ and __len__ methods, usually via the torch.utils.data.Dataset class or its subclasses.
 ###############################################################################################
-
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
 
 
 
