@@ -255,6 +255,7 @@ if os.path.isdir('./newevents') == False:
 	os.makedirs('./newevents',exist_ok=True)
 os.path.isfile('test.dat')
 
+fig.align_ylabels(ax)
 
 import obspy.core.utcdatetime as utc
 utc.UTCDateTime(year, month, day, 00, 00, 00, 000000)+86400)
