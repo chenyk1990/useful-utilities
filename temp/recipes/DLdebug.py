@@ -218,6 +218,9 @@ FullyConnectedNetwork:
 device=torch.device("cpu")
 model=torch.load('./network/MDA_GAN.pt', map_location=device, weights_only=False)
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
+
 #RuntimeError: expected scalar type Float but found Half
 for param in model.parameters():
     # Check if parameter dtype is  Half (float16)
