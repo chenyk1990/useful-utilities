@@ -475,6 +475,8 @@ a is a torch.tensor
 a.detach().numpy()
 
 #numpy 
+vp1 = np.interp(z_km, depth, vp)
+
 nos,counts=np.unique(shotNO2,return_counts=True)
 
 np.ma.masked_array (fill some positions with values)
