@@ -917,6 +917,20 @@ plt.show()
 #ravel()
 The ravel function in NumPy is used to flatten a multi-dimensional array into a one-dimensional array.
 
+#shape file
+import geopandas as gpd
+import matplotlib.pyplot as plt
+gdf = gpd.read_file("your_shapefile.shp")
+gdf.plot()
+plt.show()
+gdf.plot(
+    figsize=(8, 8),
+    edgecolor="black",
+    facecolor="lightblue"
+)
+plt.title("Shapefile Visualization")
+plt.axis("off")
+plt.show()
 
 #system
 import platform
