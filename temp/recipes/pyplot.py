@@ -182,6 +182,16 @@ datas=scipy.io.loadmat("event_6~16.mat") (dict type)
 plt.gca().set_ylim(ymin=0,ymax=40);
 plt.gca().invert_yaxis();
 
+# colormap
+import matplotlib.colors as mcolors
+# 1. Generate sample data (0 to 100)
+data = np.random.randint(0, 101, size=(10, 10))
+# 2. Define the colors (Green for low/zero, Blue for high/large)
+colors = ["#00FF00", "#0000FF"]  # Hex codes for Green and Blue
+# 3. Create the custom colormap
+cmap_name = "green_to_blue"
+custom_cmap = mcolors.LinearSegmentedColormap.from_list(cmap_name, colors)
+
 
 
 ## Histogram
